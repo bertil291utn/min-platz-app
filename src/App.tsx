@@ -2,6 +2,7 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,18 +37,34 @@ import LoginPages from './pages/LoginPages';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/login" component={LoginPages}/>
-        <Route exact path="/home" component={Home}/>
-        <Route exact path="/">
-          <Redirect to="/login" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const AppRoutes: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <IonRouterOutlet>
+      <Route exact path="/login">
+        {isAuthenticated ? <Redirect to="/home" /> : <LoginPages />}
+      </Route>
+      <Route exact path="/home">
+        {!isAuthenticated ? <Redirect to="/login" /> : <Home />}
+      </Route>
+      <Route exact path="/">
+        <Redirect to={isAuthenticated ? "/home" : "/login"} />
+      </Route>
+    </IonRouterOutlet>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <IonApp>
+      <AuthProvider>
+        <IonReactRouter>
+          <AppRoutes />
+        </IonReactRouter>
+      </AuthProvider>
+    </IonApp>
+  );
+};
 
 export default App;
