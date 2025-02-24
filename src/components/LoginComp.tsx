@@ -73,54 +73,49 @@ const LoginComp: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <IonContent className="ion-padding">
+    <div style={{ display: 'flex', alignItems: 'center', height: '100%', padding: '10px' }}>
+      <IonToast
+        position="top"
+        positionAnchor="header"
+        message="Contraseña o cedula incorrecta"
+        duration={4000}
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
 
-        <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-          <IonToast
-            position="top"
-            positionAnchor="header"
-            message="Contraseña o cedula incorrecta"
-            duration={4000}
-            isOpen={showToast}
-            onDidDismiss={() => setShowToast(false)}
+      ></IonToast>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <IonInput
+          labelPlacement='floating'
+          fill='outline'
+          label='Ingrese numero de cedula'
+          type="text"
+          name="userId"
+          value={credentials.userId}
+          onIonInput={(e) => handleChange(e)}
+          required
+        />
+        <br />
+        <IonInput
+          labelPlacement='floating'
+          fill='outline'
+          label='Ingrese su contraseña'
+          type="password"
+          name="password"
+          value={credentials.password}
+          onIonInput={handleChange}
+          required
 
-          ></IonToast>
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-            <IonInput
-              labelPlacement='floating'
-              fill='outline'
-              label='Ingrese numero de cedula'
-              type="text"
-              name="userId"
-              value={credentials.userId}
-              onIonInput={(e) => handleChange(e)}
-              required
-            />
-            <br />
-            <IonInput
-              labelPlacement='floating'
-              fill='outline'
-              label='Ingrese su contraseña'
-              type="password"
-              name="password"
-              value={credentials.password}
-              onIonInput={handleChange}
-              required
+        >
+          <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
+        </IonInput>
 
-            >
-              <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
-            </IonInput>
-
-            <div className="ion-padding-top">
-              <IonButton expand="block" type="submit" disabled={isLoading}>
-                {isLoading ? 'Procesando...' : 'Entrar'}
-              </IonButton>
-            </div>
-          </form>
+        <div className="ion-padding-top">
+          <IonButton expand="block" type="submit" disabled={isLoading}>
+            {isLoading ? 'Procesando...' : 'Entrar'}
+          </IonButton>
         </div>
-      </IonContent>
-    </IonPage>
+      </form>
+    </div>
   );
 };
 
