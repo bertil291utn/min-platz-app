@@ -9,14 +9,14 @@ import {
   IonTabs,
   IonPage,
 } from '@ionic/react';
-import { playCircle, radio, library, search } from 'ionicons/icons';
+import { playCircle, radio, library, search, home, settings } from 'ionicons/icons';
 import { useAuth } from '../contexts/AuthContext';
 
 // Import tab pages
 import TabHome from './TabHome';
 import TabRadio from './TabRadio';
 import TabLibrary from './TabLibrary';
-import TabSearch from './TabSearch';
+import TabSettings from './TabSettings';
 
 const Tabs: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -38,8 +38,8 @@ const Tabs: React.FC = () => {
           <Route exact path="/tabs/library">
             <TabLibrary />
           </Route>
-          <Route exact path="/tabs/search">
-            <TabSearch />
+          <Route exact path="/tabs/settings">
+            <TabSettings />
           </Route>
           <Route exact path="/tabs">
             <Redirect to="/tabs/home" />
@@ -48,8 +48,8 @@ const Tabs: React.FC = () => {
         
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/tabs/home">
-            <IonIcon icon={playCircle} />
-            <IonLabel>Listen Now</IonLabel>
+            <IonIcon icon={home} />
+            <IonLabel>Principal</IonLabel>
           </IonTabButton>
           
           <IonTabButton tab="radio" href="/tabs/radio">
@@ -62,9 +62,9 @@ const Tabs: React.FC = () => {
             <IonLabel>Library</IonLabel>
           </IonTabButton>
           
-          <IonTabButton tab="search" href="/tabs/search">
-            <IonIcon icon={search} />
-            <IonLabel>Search</IonLabel>
+          <IonTabButton tab="settings" href="/tabs/settings">
+            <IonIcon icon={settings} />
+            <IonLabel>Configurar</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
