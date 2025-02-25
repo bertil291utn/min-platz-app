@@ -1,0 +1,12 @@
+/* Styling for tab content */
+.example-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  margin-top: 20px;
+  background-color: var(--ion-color-light);
+  border-radius: 8px;
+  font-size: 18px;
+  color: var(--ion-color-medium);
+}
