@@ -47,11 +47,12 @@ const AppRoutes: React.FC = () => {
       <Route exact path="/login">
         {isAuthenticated ? <Redirect to="/tabs" /> : <LoginPages />}
       </Route>
-      <Route exact path="/home">
+      {/* <Route exact path="/home">
         {!isAuthenticated ? <Redirect to="/login" /> : <Home />}
-      </Route>
+      </Route> */}
+      {/* check if it really need to use this route because tabs is replacing */}
       <Route path="/tabs">
-        <Tabs />
+        {!isAuthenticated ? <Redirect to="/login" /> : <Tabs />}
       </Route>
       <Route exact path="/">
         <Redirect to={isAuthenticated ? "/tabs" : "/login"} />

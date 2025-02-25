@@ -6,7 +6,7 @@ const TabSearch: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <div className="ion-padding">
+        <div>
           <SettingsC/>
         </div>
       </IonContent>
