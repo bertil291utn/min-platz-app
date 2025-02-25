@@ -1,12 +1,13 @@
 import React from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar } from '@ionic/react';
+import SettingsC from '../components/SettingsComponent';
 
 const TabSearch: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
         <div className="ion-padding">
-          <div className="example-content">Search content</div>
+          <SettingsC/>
         </div>
       </IonContent>
     </IonPage>
