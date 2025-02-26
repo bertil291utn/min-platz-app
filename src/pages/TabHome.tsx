@@ -1,6 +1,6 @@
 import React from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import Home from './Home';
 
 interface TabHomeProps {
   logout: () => void;
@@ -24,9 +24,7 @@ const TabHome: React.FC<TabHomeProps> = ({ logout }) => {
           </IonToolbar>
         </IonHeader>
         <div className="ion-padding">
-          <h2>Welcome to Listen Now</h2>
-          <p>Discover your favorite music and podcasts.</p>
-          <ExploreContainer />
+          <Home />
         </div>
       </IonContent>
     </IonPage>

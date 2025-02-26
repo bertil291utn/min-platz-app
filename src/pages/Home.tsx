@@ -1,24 +1,15 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
-import { useAuth } from '../contexts/AuthContext';
-import ExploreContainer from '../components/ExploreContainer';
+import { useCount } from '../contexts/CountContext';
 import './Home.css';
 
 const Home: React.FC = () => {
-  const { logout } = useAuth();
+  const {count }=useCount();
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Blank1</IonTitle>
-          <IonButton slot="end" onClick={logout} fill="clear">
-            Logout
-          </IonButton>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <ExploreContainer />
-      </IonContent>
-    </IonPage>
+    <div>
+
+      <h2>Welcome to Listen Now</h2>
+      <p>tengo {count} bloques</p>
+
+    </div>
   );
 };
 

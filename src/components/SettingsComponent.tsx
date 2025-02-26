@@ -1,9 +1,9 @@
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonCol, IonIcon } from '@ionic/react';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
-import { useState } from 'react';
+import { useCount } from '../contexts/CountContext';
 
 const SettingsC = () => {
-  const [count, setCount] = useState(1);
+  const { count, setCount } = useCount();
 
   const handleIncrement = () => {
     if (count < 10) {
