@@ -22,6 +22,8 @@ interface BloqueInfoContextType {
   setBloques: (bloques: Bloque[]) => void;
   addBloque: () => void;
   removeBloque: (id: number) => void;
+  addNave: (bloqueId: number) => void;
+  removeNave: (bloqueId: number, naveId: number) => void;
 }
 
 const BloqueInfoContext = createContext<BloqueInfoContextType | undefined>(undefined);
@@ -78,8 +80,47 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
     }
   };
 
+  const addNave = (bloqueId: number) => {
+    setBloques(bloques.map(bloque => {
+      if (bloque.id === bloqueId) {
+        const newNave: Nave = {
+          id: bloque.naves.length + 1,
+          location: '',
+          name: '',
+          numCamas: 0,
+          numCuadrosPerCama: 0,
+          description: ''
+        };
+        return {
+          ...bloque,
+          naves: [...bloque.naves, newNave]
+        };
+      }
+      return bloque;
+    }));
+  };
+
+  const removeNave = (bloqueId: number, naveId: number) => {
+    setBloques(bloques.map(bloque => {
+      if (bloque.id === bloqueId && bloque.naves.length > 1) {
+        return {
+          ...bloque,
+          naves: bloque.naves.filter(nave => nave.id !== naveId)
+        };
+      }
+      return bloque;
+    }));
+  };
+
   return (
-    <BloqueInfoContext.Provider value={{ bloques, setBloques, addBloque, removeBloque }}>
+    <BloqueInfoContext.Provider value={{ 
+      bloques, 
+      setBloques, 
+      addBloque, 
+      removeBloque,
+      addNave,
+      removeNave 
+    }}>
       {children}
     </BloqueInfoContext.Provider>
   );
