@@ -4,7 +4,6 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Tabs from './pages/Tabs';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { BloqueInfoProvider } from './contexts/BloqueInfoContext';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -37,6 +36,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 import './theme/tabs.css';
 import LoginPages from './pages/LoginPages';
+import { BloqueInfoProvider } from './contexts/BloqueInfoContext';
 
 setupIonicReact();
 

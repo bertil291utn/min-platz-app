@@ -1,19 +1,17 @@
-import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonCol, IonIcon } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonIcon } from '@ionic/react';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
 import { useBloqueInfo } from '../contexts/BloqueInfoContext';
 
 const SettingsC = () => {
-  const { bloqueInfo, setBloqueInfo } = useBloqueInfo();
+  const { bloques, addBloque, removeBloque } = useBloqueInfo();
 
   const handleIncrement = () => {
-    if (bloqueInfo < 10) {
-      setBloqueInfo(bloqueInfo + 1);
-    }
+    addBloque();
   };
 
   const handleDecrement = () => {
-    if (bloqueInfo > 1) {
-      setBloqueInfo(bloqueInfo - 1);
+    if (bloques.length > 0) {
+      removeBloque(bloques[bloques.length - 1].id);
     }
   };
 
@@ -30,8 +28,8 @@ const SettingsC = () => {
               <IonButton fill="clear" onClick={handleDecrement} size='large'>
                 <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
               </IonButton>
-              <IonLabel>{bloqueInfo}</IonLabel>
-              <IonButton size='large'  fill="clear" onClick={handleIncrement}>
+              <IonLabel>{bloques.length}</IonLabel>
+              <IonButton size='large' fill="clear" onClick={handleIncrement}>
                 <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
               </IonButton>
             </div>
@@ -48,7 +46,7 @@ const SettingsC = () => {
       </IonAccordion>
       <IonAccordion value="third">
         <IonItem slot="header" color="light">
-          <IonLabel>Camas</IonLabel>
+          <IonLabel>Info naves</IonLabel>
         </IonItem>
         <div className="ion-padding" slot="content">
           Third Content
