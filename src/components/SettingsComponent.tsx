@@ -1,19 +1,19 @@
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonCol, IonIcon } from '@ionic/react';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
-import { useCount } from '../contexts/CountContext';
+import { useBloqueInfo } from '../contexts/BloqueInfoContext';
 
 const SettingsC = () => {
-  const { count, setCount } = useCount();
+  const { bloqueInfo, setBloqueInfo } = useBloqueInfo();
 
   const handleIncrement = () => {
-    if (count < 10) {
-      setCount(count + 1);
+    if (bloqueInfo < 10) {
+      setBloqueInfo(bloqueInfo + 1);
     }
   };
 
   const handleDecrement = () => {
-    if (count > 1) {
-      setCount(count - 1);
+    if (bloqueInfo > 1) {
+      setBloqueInfo(bloqueInfo - 1);
     }
   };
 
@@ -30,7 +30,7 @@ const SettingsC = () => {
               <IonButton fill="clear" onClick={handleDecrement} size='large'>
                 <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
               </IonButton>
-              <IonLabel>{count}</IonLabel>
+              <IonLabel>{bloqueInfo}</IonLabel>
               <IonButton size='large'  fill="clear" onClick={handleIncrement}>
                 <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
               </IonButton>

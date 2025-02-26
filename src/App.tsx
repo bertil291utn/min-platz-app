@@ -4,7 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Tabs from './pages/Tabs';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { CountProvider } from './contexts/CountContext';
+import { BloqueInfoProvider } from './contexts/BloqueInfoContext';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -65,13 +65,13 @@ const AppRoutes: React.FC = () => {
 const App: React.FC = () => {
   return (
     <IonApp>
-      <CountProvider>
+      <BloqueInfoProvider>
         <AuthProvider>
           <IonReactRouter>
             <AppRoutes />
           </IonReactRouter>
         </AuthProvider>
-      </CountProvider>
+      </BloqueInfoProvider>
     </IonApp>
   );
 };
