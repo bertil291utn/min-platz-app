@@ -41,7 +41,20 @@ const SettingsC = () => {
           <IonLabel>Naves</IonLabel>
         </IonItem>
         <div className="ion-padding" slot="content">
-          Second Content
+          {bloques.map((bloque) =>
+            <IonItem>
+              <IonLabel>Bloque {bloque.id}</IonLabel>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <IonButton fill="clear" onClick={handleDecrement} size='large'>
+                  <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
+                </IonButton>
+                <IonLabel>{bloque.naves.length}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement}>
+                  <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
+                </IonButton>
+              </div>
+            </IonItem>
+          )}
         </div>
       </IonAccordion>
       <IonAccordion value="third">

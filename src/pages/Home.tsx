@@ -6,7 +6,6 @@ const Home: React.FC = () => {
   return (
     <div>
 
-      <h2>Welcome to Listen Now</h2>
       <p> {JSON.stringify(bloques)}</p>
 
     </div>

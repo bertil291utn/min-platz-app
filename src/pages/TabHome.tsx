@@ -11,7 +11,6 @@ const TabHome: React.FC<TabHomeProps> = ({ logout }) => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Listen Now</IonTitle>
           <IonButton slot="end" onClick={logout} fill="clear">
             Logout
           </IonButton>
