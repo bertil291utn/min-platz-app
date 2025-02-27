@@ -1,6 +1,6 @@
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonIcon } from '@ionic/react';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
-import { useBloqueInfo } from '../contexts/BloqueInfoContext';
+import { INITIAL_BLOQUE, useBloqueInfo } from '../contexts/BloqueInfoContext';
 
 const SettingsC = () => {
   const { bloques, addBloque, removeBloque } = useBloqueInfo();
@@ -15,6 +15,11 @@ const SettingsC = () => {
     }
   };
 
+  const isObjEqual = (obj1: any, obj2: any): boolean => {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+  };
+
+  const IsNoBloques = bloques?.length === 1 && isObjEqual(bloques[0], INITIAL_BLOQUE);
 
   return (
     <IonAccordionGroup>
@@ -23,33 +28,16 @@ const SettingsC = () => {
           <IonLabel>Bloques</IonLabel>
         </IonItem>
         <div className="ion-padding" slot="content">
-          <IonItem>
-            <IonLabel>Numero de bloques</IonLabel>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <IonButton fill="clear" onClick={handleDecrement} size='large'>
-                <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
-              </IonButton>
-              <IonLabel>{bloques.length}</IonLabel>
-              <IonButton size='large' fill="clear" onClick={handleIncrement}>
-                <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
+          {IsNoBloques ? (
+            <div className="ion-text-center">
+              <p>No hay bloques</p>
+              <IonButton onClick={handleIncrement}>
+                Añadir bloques
               </IonButton>
             </div>
-          </IonItem>
-        </div>
-      </IonAccordion>
-      <IonAccordion value="second">
-        <IonItem slot="header" color="light">
-          <IonLabel>Naves</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-        </div>
-      </IonAccordion>
-      <IonAccordion value="third">
-        <IonItem slot="header" color="light">
-          <IonLabel>Info naves</IonLabel>
-        </IonItem>
-        <div className="ion-padding" slot="content">
-          Third Content
+          ) : (
+            <p>bloques</p>
+          )}
         </div>
       </IonAccordion>
     </IonAccordionGroup>

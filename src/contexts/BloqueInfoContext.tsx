@@ -17,6 +17,17 @@ interface BloqueInfoContextType {
   removeBloque: (id: number) => void;
 }
 
+export const INITIAL_BLOQUE={
+  id: 1,
+  location: '',
+  name: '',
+  description: '',
+  numCamas: 0,
+  numCuadrantes: 0,
+  numCuadrosPerCama: 0,
+}
+
+
 const BloqueInfoContext = createContext<BloqueInfoContextType | undefined>(undefined);
 
 interface BloqueInfoProviderProps {
@@ -25,15 +36,7 @@ interface BloqueInfoProviderProps {
 
 export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children }) => {
   const [bloques, setBloques] = useState<Bloque[]>([
-    {
-      id: 1,
-      location: '',
-      name: '',
-      description: '',
-      numCamas: 0,
-      numCuadrantes: 0,
-      numCuadrosPerCama: 0,
-    }
+    INITIAL_BLOQUE
   ]);
 
   const addBloque = () => {
