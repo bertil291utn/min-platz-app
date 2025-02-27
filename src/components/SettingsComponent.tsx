@@ -39,7 +39,12 @@ const SettingsC = () => {
                 </IonButton>
               </div>
             ) : (
-              <BloquesSettingsC />
+              <div>
+                <IonButton onClick={() => setIsOpenModal(true)}>
+                  Añadir mas bloques
+                </IonButton>
+                <BloquesSettingsC />
+              </div>
             )}
           </div>
         </IonAccordion>
