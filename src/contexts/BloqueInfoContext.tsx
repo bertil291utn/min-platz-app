@@ -42,7 +42,6 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       const newBloque: Bloque = {
         ...bloque,
         id: bloques.length + 1,
-        name: `Bloque ${bloques.length + 1}`
       }
       setBloques([...bloques, newBloque]);
     };
