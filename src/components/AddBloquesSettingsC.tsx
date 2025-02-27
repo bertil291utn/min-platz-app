@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Bloque } from '../contexts/BloqueInfoContext';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
 import { TextareaInputEventDetail } from '@ionic/core';
+import { NUMERO_CUADROS_PER_CAMAS_MIN } from '../bloquesConstant';
 
 interface AddBloquesSettingsModalCProps {
   isOpenModal: boolean;
@@ -22,7 +23,7 @@ const AddBloquesSettingsModalC = (
   }: AddBloquesSettingsModalCProps
 ) => {
 
-  const [cuadroPerCama, setCuadroPerCama] = useState(1);
+  const [cuadroPerCama, setCuadroPerCama] = useState(NUMERO_CUADROS_PER_CAMAS_MIN);
   const [cuadrante, setCuadrante] = useState(1);
 
   useEffect(() => {
@@ -66,9 +67,9 @@ const AddBloquesSettingsModalC = (
       </IonHeader>
       <IonContent>
         <div className="ion-padding">
-          <IonItem>
-            <IonTitle>Anadir nuevo bloque</IonTitle>
-          </IonItem>
+          <IonLabel><b>Anadir nuevo bloque</b></IonLabel>
+          <br />
+          <br />
           <form onSubmit={(e) => e.preventDefault()}>
             <IonInput
               labelPlacement='floating'

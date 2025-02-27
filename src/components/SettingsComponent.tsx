@@ -1,4 +1,5 @@
-import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, 
+import {
+  IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
 } from '@ionic/react';
 import {
   Bloque,
@@ -7,6 +8,7 @@ import {
 import BloquesSettingsC from './BloquesSettingsC';
 import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
+import { NUMERO_CAMAS_MIN } from '../bloquesConstant';
 
 
 const SettingsC = () => {
@@ -17,7 +19,8 @@ const SettingsC = () => {
   useEffect(() => {
     setBloqueForm(prev => ({
       ...prev,
-      name: `Bloque ${bloques.length + 1}`
+      name: `Bloque ${bloques.length + 1}`,
+      numCamas: NUMERO_CAMAS_MIN
     }));
   }, [isOpenModal]);
 
