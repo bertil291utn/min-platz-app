@@ -1,8 +1,8 @@
 const BloquesSettingsC = () => {
-  return ( 
-<p>bloques</p>
+  return (
+    <p>bloques</p>
 
-   );
+  );
 }
- 
+
 export default BloquesSettingsC;

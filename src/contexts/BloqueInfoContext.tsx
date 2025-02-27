@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface Bloque {
-  id: number;
-  location: string;
+  id?: number;
+  location?: string;
   name: string;
-  description: string;
+  description?: string;
   numCuadrantes: number;
   numCamas: number;
   numCuadrosPerCama: number;
@@ -13,7 +13,7 @@ interface Bloque {
 interface BloqueInfoContextType {
   bloques: Bloque[];
   setBloques: (bloques: Bloque[]) => void;
-  addBloque: () => void;
+  addBloque: (bloque:Bloque) => void;
   removeBloque: (id: number) => void;
 }
 
@@ -35,20 +35,14 @@ interface BloqueInfoProviderProps {
 }
 
 export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children }) => {
-  const [bloques, setBloques] = useState<Bloque[]>([
-    INITIAL_BLOQUE
-  ]);
+  const [bloques, setBloques] = useState<Bloque[]>([]);
 
-  const addBloque = () => {
+  const addBloque = (bloque:Bloque) => {
     if (bloques.length < 10) {
       const newBloque: Bloque = {
+        ...bloque,
         id: bloques.length + 1,
-        location: '',
-        name: '',
-        description: '',
-        numCamas: 0,
-        numCuadrantes: 0,
-        numCuadrosPerCama: 0,
+        name: `Bloque ${bloques.length + 1}`
       }
       setBloques([...bloques, newBloque]);
     };
