@@ -1,5 +1,5 @@
 import { InputCustomEvent, InputInputEventDetail, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTextarea, IonTitle, IonToolbar, TextareaCustomEvent } from '@ionic/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Bloque } from '../contexts/BloqueInfoContext';
 import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
 import { TextareaInputEventDetail } from '@ionic/core';
@@ -22,9 +22,16 @@ const AddBloquesSettingsModalC = (
   }: AddBloquesSettingsModalCProps
 ) => {
 
-  const [camas, setCamas] = useState(1);
   const [cuadroPerCama, setCuadroPerCama] = useState(1);
   const [cuadrante, setCuadrante] = useState(1);
+
+  useEffect(() => {
+    setBloqueForm(prev => ({
+      ...prev,
+      numCuadrosPerCama: cuadroPerCama,
+      numCuadrantes: cuadrante
+    }));
+  }, [cuadroPerCama, cuadrante]);
 
   const handleIncrement = (count: number, setCount: Dispatch<SetStateAction<number>>) => () => {
     if (count < 100) {
@@ -75,19 +82,24 @@ const AddBloquesSettingsModalC = (
             />
             <br />
 
-            <IonItem>
-              <IonLabel>Numero de camas</IonLabel>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <IonButton fill="clear" onClick={handleDecrement(camas, setCamas)} size='large'>
-                  <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
-                </IonButton>
-                <IonLabel>{camas}</IonLabel>
-                <IonButton size='large' fill="clear" onClick={handleIncrement(camas, setCamas)}>
-                  <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
-                </IonButton>
-              </div>
-            </IonItem>
-
+            <IonInput
+              labelPlacement='floating'
+              fill='outline'
+              label='Numero de camas total'
+              type="number"
+              name="numCamas"
+              value={bloqueForm.numCamas}
+              onIonInput={(e) => handleChange(e)}
+              required
+            />
+            <br />
+            <IonTextarea fill='outline' label="Descripcion"
+              labelPlacement="floating"
+              name="description"
+              value={bloqueForm.description}
+              onIonInput={(e) => handleChange(e)}
+            ></IonTextarea>
+            <br />
             <IonItem>
               <IonLabel>Numero de cuadros por cama</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -113,14 +125,6 @@ const AddBloquesSettingsModalC = (
                 </IonButton>
               </div>
             </IonItem>
-
-
-            <IonTextarea fill='outline' label="Descripcion"
-              labelPlacement="floating"
-              name="description"
-              value={bloqueForm.description}
-              onIonInput={(e) => handleChange(e)}
-            ></IonTextarea>
 
             <br />
             <IonButton onClick={handleConfirm} expand="block">
