@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-interface Bloque {
+export interface Bloque {
   id?: number;
   location?: string;
   name: string;

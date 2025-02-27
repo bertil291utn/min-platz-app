@@ -1,23 +1,21 @@
 import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonContent, IonModal, IonHeader, IonToolbar, IonButtons, IonTitle } from '@ionic/react';
 import {
+  Bloque,
   INITIAL_BLOQUE, useBloqueInfo
 } from '../contexts/BloqueInfoContext';
 import BloquesSettingsC from './BloquesSettingsC';
 import { useState } from 'react';
+import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 
 const SettingsC = () => {
   const { bloques, addBloque } = useBloqueInfo();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [bloqueForm, setBloqueForm] = useState(INITIAL_BLOQUE);
+  const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
 
   const handleConfirm = () => {
     addBloque(bloqueForm);
     setIsOpenModal(false);
     setBloqueForm(INITIAL_BLOQUE);
-  };
-
-  const isObjEqual = (obj1: any, obj2: any): boolean => {
-    return JSON.stringify(obj1) === JSON.stringify(obj2);
   };
 
   const IsNoBloques = bloques?.length === 0;
@@ -51,47 +49,13 @@ const SettingsC = () => {
       </IonAccordionGroup>
 
       {/* modal add bloques */}
-      <IonModal isOpen={isOpenModal} onDidDismiss={() => setIsOpenModal(false)}>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonButton onClick={() => setIsOpenModal(false)}>Cancel</IonButton>
-            </IonButtons>
-            <IonButtons slot="end">
-              <IonButton strong={true} onClick={handleConfirm}>
-                Confirm
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <div className="ion-padding">
-            <IonTitle>Bloques</IonTitle>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <IonItem>
-                <IonLabel position="stacked">Nombre del Bloque</IonLabel>
-                <input
-                  type="text"
-                  value={bloqueForm.name}
-                  onChange={(e) => setBloqueForm({ ...bloqueForm, name: e.target.value })}
-                  className="ion-padding"
-                  style={{ width: '100%', marginTop: '8px' }}
-                />
-              </IonItem>
-
-              <IonItem>
-                <IonLabel position="stacked">Descripción</IonLabel>
-                <textarea
-                  value={bloqueForm.description}
-                  onChange={(e) => setBloqueForm({ ...bloqueForm, description: e.target.value })}
-                  className="ion-padding"
-                  style={{ width: '100%', marginTop: '8px' }}
-                />
-              </IonItem>
-            </form>
-          </div>
-        </IonContent>
-      </IonModal>
+      <AddBloquesSettingsModalC
+        isOpenModal={isOpenModal}
+        setIsOpenModal={setIsOpenModal}
+        bloqueForm={bloqueForm}
+        setBloqueForm={setBloqueForm}
+        handleConfirm={handleConfirm}
+      />
     </div>
   );
 }
