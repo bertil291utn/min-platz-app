@@ -22,17 +22,19 @@ const AddBloquesSettingsModalC = (
   }: AddBloquesSettingsModalCProps
 ) => {
 
-  const [count, setCount] = useState(1);
+  const [camas, setCamas] = useState(1);
+  const [cuadroPerCama, setCuadroPerCama] = useState(1);
+  const [cuadrante, setCuadrante] = useState(1);
 
-  const handleIncrement = () => {
+  const handleIncrement = (count: number, setCount: Dispatch<SetStateAction<number>>) => () => {
     if (count < 100) {
-      setCount(count + 1);
+      setCount((prev) => prev + 1);
     }
   };
 
-  const handleDecrement = () => {
+  const handleDecrement = (count: number, setCount: Dispatch<SetStateAction<number>>) => () => {
     if (count > 1) {
-      setCount(count - 1);
+      setCount((prev) => prev - 1);
     }
   };
 
@@ -53,11 +55,6 @@ const AddBloquesSettingsModalC = (
           <IonButtons slot="start">
             <IonButton onClick={() => setIsOpenModal(false)}>salir</IonButton>
           </IonButtons>
-          {/* <IonButtons slot="end">
-            <IonButton strong={true} onClick={handleConfirm}>
-              guardar
-            </IonButton>
-          </IonButtons> */}
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -81,11 +78,11 @@ const AddBloquesSettingsModalC = (
             <IonItem>
               <IonLabel>Numero de camas</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <IonButton fill="clear" onClick={handleDecrement} size='large'>
+                <IonButton fill="clear" onClick={handleDecrement(camas, setCamas)} size='large'>
                   <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
                 </IonButton>
-                <IonLabel>{count}</IonLabel>
-                <IonButton size='large' fill="clear" onClick={handleIncrement}>
+                <IonLabel>{camas}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement(camas, setCamas)}>
                   <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
                 </IonButton>
               </div>
@@ -94,11 +91,11 @@ const AddBloquesSettingsModalC = (
             <IonItem>
               <IonLabel>Numero de cuadros por cama</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <IonButton fill="clear" onClick={handleDecrement} size='large'>
+                <IonButton fill="clear" onClick={handleDecrement(cuadroPerCama, setCuadroPerCama)} size='large'>
                   <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
                 </IonButton>
-                <IonLabel>{count}</IonLabel>
-                <IonButton size='large' fill="clear" onClick={handleIncrement}>
+                <IonLabel>{cuadroPerCama}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement(cuadroPerCama, setCuadroPerCama)}>
                   <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
                 </IonButton>
               </div>
@@ -107,11 +104,11 @@ const AddBloquesSettingsModalC = (
             <IonItem>
               <IonLabel>Numero de cuadrantes</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <IonButton fill="clear" onClick={handleDecrement} size='large'>
+                <IonButton fill="clear" onClick={handleDecrement(cuadrante, setCuadrante)} size='large'>
                   <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
                 </IonButton>
-                <IonLabel>{count}</IonLabel>
-                <IonButton size='large' fill="clear" onClick={handleIncrement}>
+                <IonLabel>{cuadrante}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement(cuadrante, setCuadrante)}>
                   <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
                 </IonButton>
               </div>
@@ -130,15 +127,6 @@ const AddBloquesSettingsModalC = (
               guardar
             </IonButton>
 
-            {/* <IonItem>
-              <IonLabel position="stacked">Descripción</IonLabel>
-              <textarea
-                value={bloqueForm.description}
-                onChange={(e) => setBloqueForm({ ...bloqueForm, description: e.target.value })}
-                className="ion-padding"
-                style={{ width: '100%', marginTop: '8px' }}
-              />
-            </IonItem> */}
           </form>
         </div>
       </IonContent>
