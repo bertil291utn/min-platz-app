@@ -88,7 +88,7 @@ const LoginComp: React.FC = () => {
           labelPlacement='floating'
           fill='outline'
           label='Ingrese numero de cedula'
-          type="text"
+          type="number"
           name="userId"
           value={credentials.userId}
           onIonInput={(e) => handleChange(e)}

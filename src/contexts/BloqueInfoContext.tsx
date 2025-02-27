@@ -20,7 +20,7 @@ interface BloqueInfoContextType {
 export const INITIAL_BLOQUE={
   id: 1,
   location: '',
-  name: 'Bloque ',
+  name: '',
   description: '',
   numCamas: 0,
   numCuadrantes: 0,

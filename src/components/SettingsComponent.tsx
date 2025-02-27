@@ -1,17 +1,27 @@
-import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, IonContent, IonModal, IonHeader, IonToolbar, IonButtons, IonTitle } from '@ionic/react';
+import { IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton, 
+} from '@ionic/react';
 import {
   Bloque,
   INITIAL_BLOQUE, useBloqueInfo
 } from '../contexts/BloqueInfoContext';
 import BloquesSettingsC from './BloquesSettingsC';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
+
 
 const SettingsC = () => {
   const { bloques, addBloque } = useBloqueInfo();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
 
+  useEffect(() => {
+    setBloqueForm(prev => ({
+      ...prev,
+      name: `Bloque ${bloques.length + 1}`
+    }));
+  }, [isOpenModal]);
+
+  console.log(bloqueForm)
   const handleConfirm = () => {
     addBloque(bloqueForm);
     setIsOpenModal(false);
