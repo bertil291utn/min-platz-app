@@ -84,11 +84,9 @@ const MonitoreoC = () => {
 
                         {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
                           ?
-                          // <IonIcon slot="start" ios={home} md={home}></IonIcon>
-                          <p>&nbsp;entrada</p>
+                          <p>&nbsp;cuadro desde entrada</p>
                           :
-                          // <IonIcon slot="start" ios={exit} md={exit}></IonIcon>
-                          <p> &nbsp;salida</p>
+                          <p> &nbsp;cuadro desde salida</p>
                         }
                       </IonButton>
                     </IonCol>
