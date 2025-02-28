@@ -4,17 +4,17 @@ import { useState } from 'react';
 import { NUMERO_MAX, NUMERO_MIN } from '../bloquesConstant';
 
 const MonitoreoC = () => {
-  const [count, setCount] = useState(1);
+  const [camaNumber, setCamaNumber] = useState(1);
 
   const handleIncrement = () => () => {
-    if (count < NUMERO_MAX) {
-      setCount((prev) => prev + 1);
+    if (camaNumber < NUMERO_MAX) {
+      setCamaNumber((prev) => prev + 1);
     }
   };
 
   const handleDecrement = () => () => {
-    if (count > NUMERO_MIN) {
-      setCount((prev) => prev - 1);
+    if (camaNumber > NUMERO_MIN) {
+      setCamaNumber((prev) => prev - 1);
     }
   };
 
@@ -28,10 +28,17 @@ const MonitoreoC = () => {
           <IonButton fill="clear" onClick={handleDecrement()} size='large'>
             <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
           </IonButton>
-          <IonLabel>{count}</IonLabel>
+          <IonLabel>{camaNumber}</IonLabel>
           <IonButton size='large' fill="clear" onClick={handleIncrement()}>
             <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
           </IonButton>
+        </div>
+      </IonItem>
+<br />
+      <IonItem >
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <p>Cama #{camaNumber}</p>
+          <p>Cuadro #{10}</p>
         </div>
       </IonItem>
 
