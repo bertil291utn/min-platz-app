@@ -20,6 +20,7 @@ interface BloqueInfoContextType {
   addBloque: (bloque: Bloque) => void;
   removeBloque: (id: number) => void;
   editBloque: (id: number, updatedBloque: Bloque) => void;
+  getBloques:()=> void
 }
 
 export const INITIAL_BLOQUE = {
@@ -81,6 +82,27 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
   const archivedBloques = bloques.filter(bloque => bloque.archived);
   const nonArchivedBloques = bloques.filter(bloque => !bloque.archived);
 
+  const getBloques = async() => {
+    const localBloques = localStorage.getItem(BLOQUE_KEY_LOCAL_STORAGE);
+    if (navigator.onLine) {
+      // TODO: Replace with actual database fetch call
+      try {
+        const response = await fetch('/api/bloques');
+        const dbBloques = await response.json();
+        localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(dbBloques));
+        setBloques(dbBloques);
+      } catch (error) {
+        if (localBloques) {
+          setBloques(JSON.parse(localBloques));
+        }
+      }
+    } else if (localBloques) {
+      setBloques(JSON.parse(localBloques));
+    }
+  }
+     
+
+
   return (
     <BloqueInfoContext.Provider value={{
       bloques,
@@ -89,7 +111,8 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       removeBloque,
       editBloque,
       archivedBloques,
-      nonArchivedBloques
+      nonArchivedBloques,
+      getBloques
     }}>
       {children}
     </BloqueInfoContext.Provider>
