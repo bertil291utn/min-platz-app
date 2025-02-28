@@ -13,10 +13,11 @@ import BloquesSettingsC from './BloquesSettingsC';
 import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
+import ArchivedBloquesSettingsC from './ArchivedBloquesSettingsC';
 
 
 const SettingsC = () => {
-  const { bloques, addBloque, archivedBloques, nonArchivedBloques } = useBloqueInfo();
+  const { bloques, addBloque, nonArchivedBloques } = useBloqueInfo();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
 
@@ -34,7 +35,7 @@ const SettingsC = () => {
     setBloqueForm(INITIAL_BLOQUE);
   };
 
-  const IsThereArchivedBloques = archivedBloques.length > 0;
+
   const IsThereNonArchivedBloques = nonArchivedBloques.length > 0;
 
   return (
@@ -63,26 +64,7 @@ const SettingsC = () => {
             )}
           </div>
         </IonAccordion>
-
-        {IsThereArchivedBloques ? <IonAccordion value="archived-bloques">
-          <IonItem slot="header" color="light">
-            <IonLabel>Bloques archivados</IonLabel>
-          </IonItem>
-          <div className="ion-padding" slot="content">
-            {archivedBloques.map((bloque) =>
-              <IonCard key={bloque.id} onClick={() => { }} style={{ opacity: '30%' }}>
-                <IonCardHeader>
-                  <IonCardTitle>{bloque.name}</IonCardTitle>
-                  <IonLabel>{bloque.numCamas} camas</IonLabel>
-                  <IonLabel>{bloque.numCuadrosPerCama} cuadros por cama</IonLabel>
-                  <IonLabel>{bloque.numCamas * bloque.numCuadrosPerCama} total de cuadros</IonLabel>
-                </IonCardHeader>
-
-                <IonCardContent>{bloque.description}</IonCardContent>
-              </IonCard>
-            )}
-          </div>
-        </IonAccordion> : null}
+        <ArchivedBloquesSettingsC />
       </IonAccordionGroup>
 
       {/* modal add bloques */}
