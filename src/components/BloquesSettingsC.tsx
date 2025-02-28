@@ -1,4 +1,4 @@
-import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonToast } from '@ionic/react';
+import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonLabel, IonToast } from '@ionic/react';
 import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
@@ -37,7 +37,9 @@ const BloquesSettingsC = () => {
         <IonCard key={bloque.id} onClick={handleActions(bloque)}>
           <IonCardHeader>
             <IonCardTitle>{bloque.name}</IonCardTitle>
-            <IonCardSubtitle>{bloque.numCamas} camas - {bloque.numCuadrosPerCama} cuadros por cama</IonCardSubtitle>
+            <IonLabel>{bloque.numCamas} camas</IonLabel>
+            <IonLabel>{bloque.numCuadrosPerCama} cuadros por cama</IonLabel>
+            <IonLabel>{bloque.numCamas * bloque.numCuadrosPerCama} total de cuadros</IonLabel>
           </IonCardHeader>
 
           <IonCardContent>{bloque.description}</IonCardContent>
