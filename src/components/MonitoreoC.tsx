@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonRow, IonTitle } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonHeader, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonRow, IonSegment, IonSegmentButton, IonSegmentContent, IonSegmentView, IonTitle, IonToolbar } from '@ionic/react';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { useState } from 'react';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
@@ -25,11 +25,23 @@ const MonitoreoC = () => {
 
   return (
     <div>
-      <IonTitle>Monitoreo plantas</IonTitle>
-      <br />
-      <IonItemDivider>
-        <IonGrid>
-          <IonRow>
+      <IonHeader>
+        <IonToolbar>
+          <IonSegment value="bloques">
+            <IonSegmentButton value="bloques" contentId="bloques">
+              <IonLabel>Bloques</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value="camas" contentId="camas">
+              <IonLabel>Camas</IonLabel>
+            </IonSegmentButton>
+          </IonSegment>
+        </IonToolbar>
+      </IonHeader>
+
+      <div className="ion-padding">
+        <IonSegmentView>
+          <IonSegmentContent id="bloques">
+            <p>Seleccione un bloque</p>
             {activeBloques.map((bloque: Bloque) => (
               <IonCol size="6" key={bloque.id}>
                 <IonCard onClick={() => setSelectedBloque(bloque)}>
@@ -37,62 +49,67 @@ const MonitoreoC = () => {
                     <IonCardTitle>{bloque.name}</IonCardTitle>
                     <IonLabel>{bloque.numCamas} camas</IonLabel>
                   </IonCardHeader>
-                  <IonCardContent>{bloque.description}</IonCardContent>
                 </IonCard>
               </IonCol>
             ))}
-          </IonRow>
-        </IonGrid>
-      </IonItemDivider>
+          </IonSegmentContent>
+          <IonSegmentContent id="camas">
+            {selectedBloque
+              ?
+              <div>
+                <IonItem>
+                  <IonLabel>Ingrese el numero de cama a monitorear</IonLabel>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <IonButton fill="clear" onClick={handleDecrement()} size='large'>
+                      <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
+                    </IonButton>
+                    <IonLabel>{camaNumber}</IonLabel>
+                    <IonButton size='large' fill="clear" onClick={handleIncrement()}>
+                      <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
+                    </IonButton>
+                  </div>
+                </IonItem>
+                <br />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                    <h1>Cama #{camaNumber}</h1>
+                    <h1>Cuadro #{cuadroNumber}</h1>
+                  </div>
+                  <br />
 
-      {selectedBloque
-        ?
-        <div>
-          <IonItem>
-            <IonLabel>Ingrese el numero de cama a monitorear</IonLabel>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <IonButton fill="clear" onClick={handleDecrement()} size='large'>
-                <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
-              </IonButton>
-              <IonLabel>{camaNumber}</IonLabel>
-              <IonButton size='large' fill="clear" onClick={handleIncrement()}>
-                <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
-              </IonButton>
-            </div>
-          </IonItem>
-          <br />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-              <h1>Cama #{camaNumber}</h1>
-              <h1>Cuadro #{cuadroNumber}</h1>
-            </div>
-            <br />
+                  {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
+                    <IonButton
+                      key={index}
+                      expand='block'
+                      fill='outline'
+                      size='large'
+                      onClick={() => setCuadroNumber(index + 1)}
+                    >
+                      <IonLabel>
+                        {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
+                          ? `${getSpanishOrdinal(index + 1)} cuadro desde entrada`
+                          : index + 1 === selectedBloque.numCuadrosPerCama
+                            ? 'Último cuadro desde salida'
+                            : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`}
+                      </IonLabel>
+                    </IonButton>
+                  ))}
 
-            {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
-              <IonButton
-                expand='block'
-                fill='outline'
-                size='large'
-                onClick={() => setCuadroNumber(index + 1)}
-              >
-                <IonLabel>
-                  {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
-                    ? `${getSpanishOrdinal(index + 1)} cuadro desde entrada`
-                    : index + 1 === selectedBloque.numCuadrosPerCama
-                      ? 'Último cuadro desde salida'
-                      : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`}
-                </IonLabel>
-              </IonButton>
-            ))}
-
-          </div>
+                </div>
 
 
-        </div>
-        :
-        <p>Seleccione un bloque</p>}
+              </div>
+              :
+              null}
+          </IonSegmentContent>
+          {/* <IonSegmentContent id="third">Third</IonSegmentContent> */}
+        </IonSegmentView>
+
+
+
+
+      </div>
     </div>
-
   );
 }
 

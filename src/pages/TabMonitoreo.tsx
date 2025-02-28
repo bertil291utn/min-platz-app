@@ -6,9 +6,7 @@ const TabMonitoreo: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen>
-        <div className="ion-padding">
           <MonitoreoC/>
-        </div>
       </IonContent>
     </IonPage>
   );
