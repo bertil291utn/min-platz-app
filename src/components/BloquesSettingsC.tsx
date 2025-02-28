@@ -1,31 +1,40 @@
-import { IonActionSheet, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
+import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonToast } from '@ionic/react';
 import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { INITIAL_BLOQUE } from '../contexts/BloqueInfoContext';
 
 const BloquesSettingsC = () => {
-  const { bloques, editBloque } = useBloqueInfo();
+  const { bloques, editBloque, removeBloque } = useBloqueInfo();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingBloque, setEditingBloque] = useState<Bloque>(INITIAL_BLOQUE);
   const [isASheetOpen, setIsASheetOpen] = useState(false);
+  const [isDeleteToastOpen, setIsDeleteToastOpen] = useState(false);
 
-  const handleEdit = (bloque: Bloque) => () => {
+  const handleActions = (bloque: Bloque) => () => {
     setEditingBloque(bloque);
     setIsASheetOpen(true)
   };
 
-  const handleEditConfirm = () => {
+  // coming from modal
+  const handleEdit = () => {
     if (editingBloque.id) {
       editBloque(editingBloque.id, editingBloque);
     }
     setIsEditModalOpen(false);
   };
 
+  const handleDelete = (bloqueId?: number) => {
+    if (bloqueId) {
+      removeBloque(bloqueId);
+      setIsASheetOpen(false);
+    }
+  };
+
   return (
     <div>
       {bloques.map((bloque) =>
-        <IonCard key={bloque.id} onClick={handleEdit(bloque)}>
+        <IonCard key={bloque.id} onClick={handleActions(bloque)}>
           <IonCardHeader>
             <IonCardTitle>{bloque.name}</IonCardTitle>
             <IonCardSubtitle>{bloque.numCamas} camas - {bloque.numCuadrosPerCama} cuadros por cama</IonCardSubtitle>
@@ -40,32 +49,45 @@ const BloquesSettingsC = () => {
         setIsOpenModal={setIsEditModalOpen}
         bloqueForm={editingBloque}
         setBloqueForm={setEditingBloque}
-        handleConfirm={handleEditConfirm}
+        handleConfirm={handleEdit}
       />
 
-      <>
-        <IonActionSheet
-          isOpen={isASheetOpen}
-          header="Acciones"
-          buttons={[
-            {
-              text: 'Editar bloque',
-              handler: () => {
-                setIsEditModalOpen(true);
-                setIsASheetOpen(false);
-              }
-            },
-            {
-              text: 'Eliminar bloque',
-              role: 'destructive',
-              handler: () => {
-              }
-            },
+      <IonActionSheet
+        isOpen={isASheetOpen}
+        buttons={[
+          {
+            text: 'Editar bloque',
+            handler: () => {
+              setIsEditModalOpen(true);
+              setIsASheetOpen(false);
+            }
+          },
+          {
+            text: 'Eliminar bloque',
+            role: 'destructive',
+            handler: () => {
+              setIsDeleteToastOpen(true);
+            }
+          },
 
-          ]}
-          onDidDismiss={() => setIsASheetOpen(false)}
-        ></IonActionSheet>
-      </>
+        ]}
+        onDidDismiss={() => setIsASheetOpen(false)}
+      ></IonActionSheet>
+
+      <IonAlert
+        subHeader='Esta seguro de eliminar este bloque?'
+        isOpen={isDeleteToastOpen}
+        buttons={[
+          {
+            text: 'Eliminar',
+            role: 'confirm',
+            handler: () => {
+              handleDelete(editingBloque.id);
+            },
+          },
+        ]}
+        onDidDismiss={() => setIsDeleteToastOpen(false)}
+      ></IonAlert>
     </div>
   );
 }

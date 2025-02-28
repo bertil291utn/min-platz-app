@@ -50,7 +50,7 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
   }
 
   const removeBloque = (id: number) => {
-    if (bloques.length > 1) {
+    if (bloques.length >= 1) {
       setBloques(bloques.filter(bloque => bloque.id !== id));
       //set also as false in database
     }

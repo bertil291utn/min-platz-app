@@ -24,7 +24,6 @@ const SettingsC = () => {
     }));
   }, [isOpenModal]);
 
-  console.log(bloqueForm)
   const handleConfirm = () => {
     addBloque(bloqueForm);
     setIsOpenModal(false);
