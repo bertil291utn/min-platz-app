@@ -15,6 +15,7 @@ interface BloqueInfoContextType {
   setBloques: (bloques: Bloque[]) => void;
   addBloque: (bloque:Bloque) => void;
   removeBloque: (id: number) => void;
+  editBloque: (id: number, updatedBloque: Bloque) => void;
 }
 
 export const INITIAL_BLOQUE={
@@ -44,13 +45,22 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
         id: bloques.length + 1,
       }
       setBloques([...bloques, newBloque]);
+      //store in database 
     };
   }
 
   const removeBloque = (id: number) => {
     if (bloques.length > 1) {
       setBloques(bloques.filter(bloque => bloque.id !== id));
+      //set also as false in database
     }
+  };
+
+  const editBloque = (id: number, updatedBloque: Bloque) => {
+    setBloques(bloques.map(bloque => 
+      bloque.id === id ? { ...updatedBloque, id } : bloque
+    ));
+    //update in database
   };
 
   return (
@@ -59,6 +69,7 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       setBloques,
       addBloque,
       removeBloque,
+      editBloque,
     }}>
       {children}
     </BloqueInfoContext.Provider>

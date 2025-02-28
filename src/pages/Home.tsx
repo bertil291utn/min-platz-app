@@ -6,7 +6,6 @@ const Home: React.FC = () => {
   return (
     <div>
 
-      <p> {JSON.stringify(bloques)}</p>
 
     </div>
   );

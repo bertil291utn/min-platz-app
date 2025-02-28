@@ -23,27 +23,30 @@ const AddBloquesSettingsModalC = (
   }: AddBloquesSettingsModalCProps
 ) => {
 
-  const [cuadroPerCama, setCuadroPerCama] = useState(NUMERO_CUADROS_PER_CAMAS_MIN);
-  const [cuadrante, setCuadrante] = useState(1);
-
   useEffect(() => {
     setBloqueForm(prev => ({
       ...prev,
-      numCuadrosPerCama: cuadroPerCama,
-      numCuadrantes: cuadrante
+      numCuadrosPerCama: bloqueForm.numCuadrosPerCama || NUMERO_CUADROS_PER_CAMAS_MIN,
+      numCuadrantes: bloqueForm.numCuadrantes || 1
     }));
-  }, [cuadroPerCama, cuadrante]);
+  }, [isOpenModal])
 
-  const handleIncrement = (count: number, setCount: Dispatch<SetStateAction<number>>) => () => {
-    if (count < 100) {
-      setCount((prev) => prev + 1);
-    }
+
+
+
+  const handleIncrement = (nameElem: string) => () => {
+    setBloqueForm(prev => ({
+      ...prev,
+      [nameElem as keyof Bloque]: (prev[nameElem as keyof Bloque] as number) + 1,
+    }));
   };
 
-  const handleDecrement = (count: number, setCount: Dispatch<SetStateAction<number>>) => () => {
-    if (count > 1) {
-      setCount((prev) => prev - 1);
-    }
+  const handleDecrement = (nameElem: string) => () => {
+    setBloqueForm(prev => ({
+      ...prev,
+      [nameElem as keyof Bloque]: (prev[nameElem as keyof Bloque] as number) - 1,
+
+    }));
   };
 
   const handleChange = (e: InputCustomEvent<InputInputEventDetail> | TextareaCustomEvent<TextareaInputEventDetail>) => {
@@ -71,6 +74,7 @@ const AddBloquesSettingsModalC = (
           <br />
           <br />
           <form onSubmit={(e) => e.preventDefault()}>
+            {/* name */}
             <IonInput
               labelPlacement='floating'
               fill='outline'
@@ -83,6 +87,7 @@ const AddBloquesSettingsModalC = (
             />
             <br />
 
+            {/* numero camas */}
             <IonInput
               labelPlacement='floating'
               fill='outline'
@@ -94,34 +99,39 @@ const AddBloquesSettingsModalC = (
               required
             />
             <br />
+
+            {/* description */}
             <IonTextarea fill='outline' label="Descripcion"
               labelPlacement="floating"
               name="description"
               value={bloqueForm.description}
               onIonInput={(e) => handleChange(e)}
             ></IonTextarea>
+
             <br />
+            {/* cuadros por cama */}
             <IonItem>
               <IonLabel>Numero de cuadros por cama</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <IonButton fill="clear" onClick={handleDecrement(cuadroPerCama, setCuadroPerCama)} size='large'>
+                <IonButton fill="clear" onClick={handleDecrement('numCuadrosPerCama')} size='large'>
                   <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
                 </IonButton>
-                <IonLabel>{cuadroPerCama}</IonLabel>
-                <IonButton size='large' fill="clear" onClick={handleIncrement(cuadroPerCama, setCuadroPerCama)}>
+                <IonLabel>{bloqueForm.numCuadrosPerCama}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement('numCuadrosPerCama')}>
                   <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
                 </IonButton>
               </div>
             </IonItem>
 
+            {/* numero cuadrantes */}
             <IonItem>
               <IonLabel>Numero de cuadrantes</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <IonButton fill="clear" onClick={handleDecrement(cuadrante, setCuadrante)} size='large'>
+                <IonButton fill="clear" onClick={handleDecrement('numCuadrantes')} size='large'>
                   <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
                 </IonButton>
-                <IonLabel>{cuadrante}</IonLabel>
-                <IonButton size='large' fill="clear" onClick={handleIncrement(cuadrante, setCuadrante)}>
+                <IonLabel>{bloqueForm.numCuadrantes}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement('numCuadrantes')}>
                   <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
                 </IonButton>
               </div>
