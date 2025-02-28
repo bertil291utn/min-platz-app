@@ -5,7 +5,7 @@ import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { INITIAL_BLOQUE } from '../contexts/BloqueInfoContext';
 
 const BloquesSettingsC = () => {
-  const {  editBloque, removeBloque,nonArchivedBloques } = useBloqueInfo();
+  const {  editBloque, removeBloque,activeBloques } = useBloqueInfo();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingBloque, setEditingBloque] = useState<Bloque>(INITIAL_BLOQUE);
   const [isASheetOpen, setIsASheetOpen] = useState(false);
@@ -33,7 +33,7 @@ const BloquesSettingsC = () => {
 
   return (
     <div>
-      {nonArchivedBloques.map((bloque) =>
+      {activeBloques.map((bloque) =>
         <IonCard key={bloque.id} onClick={handleActions(bloque)}>
           <IonCardHeader>
             <IonCardTitle>{bloque.name}</IonCardTitle>

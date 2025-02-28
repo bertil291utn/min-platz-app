@@ -1,7 +1,7 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonRow, IonTitle } from '@ionic/react';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { useState } from 'react';
-import {  NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
+import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 
@@ -9,7 +9,7 @@ const MonitoreoC = () => {
   const [camaNumber, setCamaNumber] = useState(1);
   const [cuadroNumber, setCuadroNumber] = useState(1);
   const [selectedBloque, setSelectedBloque] = useState<Bloque>();
-  const { bloques } = useBloqueInfo()
+  const { activeBloques } = useBloqueInfo()
 
   const handleIncrement = () => () => {
     if (camaNumber < NUMERO_MAX) {
@@ -30,7 +30,7 @@ const MonitoreoC = () => {
       <IonItemDivider>
         <IonGrid>
           <IonRow>
-            {bloques.map((bloque: Bloque) => (
+            {activeBloques.map((bloque: Bloque) => (
               <IonCol size="6" key={bloque.id}>
                 <IonCard onClick={() => setSelectedBloque(bloque)}>
                   <IonCardHeader>

@@ -15,7 +15,7 @@ export interface Bloque {
 interface BloqueInfoContextType {
   bloques: Bloque[];
   archivedBloques: Bloque[];
-  nonArchivedBloques: Bloque[];
+  activeBloques: Bloque[];
   setBloques: (bloques: Bloque[]) => void;
   addBloque: (bloque: Bloque) => void;
   removeBloque: (id: number) => void;
@@ -91,7 +91,7 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
   };
 
   const archivedBloques = bloques.filter(bloque => bloque.archived);
-  const nonArchivedBloques = bloques.filter(bloque => !bloque.archived);
+  const activeBloques = bloques.filter(bloque => !bloque.archived);
 
   const getBloques = async () => {
     const localBloques = localStorage.getItem(BLOQUE_KEY_LOCAL_STORAGE);
@@ -114,6 +114,8 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
 
 
 
+
+  // add a function to send new stored data from local storage  to the database automatically when the user is online or manually by a button press by user
   return (
     <BloqueInfoContext.Provider value={{
       bloques,
@@ -122,7 +124,7 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       removeBloque,
       editBloque,
       archivedBloques,
-      nonArchivedBloques,
+      activeBloques,
       getBloques,
       unarchiveBloque
     }}>

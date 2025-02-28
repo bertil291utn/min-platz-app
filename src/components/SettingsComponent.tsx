@@ -17,7 +17,7 @@ import ArchivedBloquesSettingsC from './ArchivedBloquesSettingsC';
 
 
 const SettingsC = () => {
-  const { bloques, addBloque, nonArchivedBloques } = useBloqueInfo();
+  const { bloques, addBloque, activeBloques } = useBloqueInfo();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
 
@@ -36,7 +36,7 @@ const SettingsC = () => {
   };
 
 
-  const IsThereNonArchivedBloques = nonArchivedBloques.length > 0;
+  const IsThereactiveBloques = activeBloques.length > 0;
 
   return (
     <div>
@@ -47,7 +47,7 @@ const SettingsC = () => {
             <IonLabel>Bloques</IonLabel>
           </IonItem>
           <div className="ion-padding" slot="content">
-            {!IsThereNonArchivedBloques ? (
+            {!IsThereactiveBloques ? (
               <div className="ion-text-center">
                 <p>No hay bloques activos</p>
                 <IonButton onClick={() => setIsOpenModal(true)}>
