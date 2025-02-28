@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Bloque } from '../contexts/BloqueInfoContext';
 import { addCircle, addCircleOutline, remove, removeCircle, removeCircleOutline } from 'ionicons/icons';
 import { TextareaInputEventDetail } from '@ionic/core';
-import { NUMERO_CUADROS_PER_CAMAS_MIN } from '../bloquesConstant';
+import { NUMERO_CUADROS_PER_CAMAS_MIN } from '../helpers/bloquesConstant';
 
 interface AddBloquesSettingsModalCProps {
   isOpenModal: boolean;

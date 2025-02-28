@@ -1,8 +1,9 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonRow, IonTitle } from '@ionic/react';
-import { addCircle, exit, home, removeCircle, returnUpBack, returnUpForward } from 'ionicons/icons';
+import { addCircle, removeCircle } from 'ionicons/icons';
 import { useState } from 'react';
-import { getSpanishOrdinal, NUMERO_MAX, NUMERO_MIN } from '../bloquesConstant';
+import {  NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
+import { getSpanishOrdinal } from '../helpers/viewHelper';
 
 const MonitoreoC = () => {
   const [camaNumber, setCamaNumber] = useState(1);

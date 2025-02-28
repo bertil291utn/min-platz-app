@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { BLOQUE_KEY_LOCAL_STORAGE } from '../helpers/bloquesConstant';
 
 export interface Bloque {
   id?: number;
@@ -8,17 +9,20 @@ export interface Bloque {
   numCuadrantes: number;
   numCamas: number;
   numCuadrosPerCama: number;
+  archived?: boolean;
 }
 
 interface BloqueInfoContextType {
   bloques: Bloque[];
+  archivedBloques: Bloque[];
+  nonArchivedBloques: Bloque[];
   setBloques: (bloques: Bloque[]) => void;
-  addBloque: (bloque:Bloque) => void;
+  addBloque: (bloque: Bloque) => void;
   removeBloque: (id: number) => void;
   editBloque: (id: number, updatedBloque: Bloque) => void;
 }
 
-export const INITIAL_BLOQUE={
+export const INITIAL_BLOQUE = {
   id: 1,
   location: '',
   name: '',
@@ -26,6 +30,7 @@ export const INITIAL_BLOQUE={
   numCamas: 0,
   numCuadrantes: 0,
   numCuadrosPerCama: 0,
+  archived: false
 }
 
 
@@ -38,30 +43,43 @@ interface BloqueInfoProviderProps {
 export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children }) => {
   const [bloques, setBloques] = useState<Bloque[]>([]);
 
-  const addBloque = (bloque:Bloque) => {
+  const addBloque = (bloque: Bloque) => {
     if (bloques.length < 10) {
       const newBloque: Bloque = {
         ...bloque,
         id: bloques.length + 1,
       }
-      setBloques([...bloques, newBloque]);
+      const bloquesToAdd = [...bloques, newBloque];
+      setBloques(bloquesToAdd);
+      localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(bloquesToAdd));
       //store in database 
     };
   }
 
   const removeBloque = (id: number) => {
     if (bloques.length >= 1) {
-      setBloques(bloques.filter(bloque => bloque.id !== id));
+      setBloques(bloques.map(bloque =>
+        bloque.id === id ? { ...bloque, archived: true } : bloque
+      ));
+      localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(bloques.map(bloque =>
+        bloque.id === id ? { ...bloque, archived: true } : bloque
+      )));
       //set also as false in database
     }
   };
 
   const editBloque = (id: number, updatedBloque: Bloque) => {
-    setBloques(bloques.map(bloque => 
+    setBloques(bloques.map(bloque =>
       bloque.id === id ? { ...updatedBloque, id } : bloque
     ));
+    localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(bloques.map(bloque =>
+      bloque.id === id ? { ...updatedBloque, id } : bloque
+    )));
     //update in database
   };
+
+  const archivedBloques = bloques.filter(bloque => bloque.archived);
+  const nonArchivedBloques = bloques.filter(bloque => !bloque.archived);
 
   return (
     <BloqueInfoContext.Provider value={{
@@ -70,6 +88,8 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       addBloque,
       removeBloque,
       editBloque,
+      archivedBloques,
+      nonArchivedBloques
     }}>
       {children}
     </BloqueInfoContext.Provider>

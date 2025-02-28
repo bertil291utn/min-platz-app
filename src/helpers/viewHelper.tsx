@@ -1,8 +1,3 @@
-export const NUMERO_CAMAS_MIN = 1;
-export const NUMERO_CUADROS_PER_CAMAS_MIN = 1;
-export const NUMERO_MIN = 1;
-export const NUMERO_MAX = 1000;
-
 export const getSpanishOrdinal = (number: number, isLast: boolean = false): string => {
   if (isLast) return "último";
 
