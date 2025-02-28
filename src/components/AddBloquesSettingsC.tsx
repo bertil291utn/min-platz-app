@@ -1,7 +1,7 @@
 import { InputCustomEvent, InputInputEventDetail, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTextarea, IonTitle, IonToolbar, TextareaCustomEvent } from '@ionic/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Bloque } from '../contexts/BloqueInfoContext';
-import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
+import { addCircle, addCircleOutline, remove, removeCircle, removeCircleOutline } from 'ionicons/icons';
 import { TextareaInputEventDetail } from '@ionic/core';
 import { NUMERO_CUADROS_PER_CAMAS_MIN } from '../bloquesConstant';
 
@@ -109,11 +109,11 @@ const AddBloquesSettingsModalC = (
               <IonLabel>Numero de cuadros por cama</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <IonButton fill="clear" onClick={handleDecrement('numCuadrosPerCama')} size='large'>
-                  <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
+                  <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
                 </IonButton>
                 <IonLabel>{bloqueForm.numCuadrosPerCama}</IonLabel>
                 <IonButton size='large' fill="clear" onClick={handleIncrement('numCuadrosPerCama')}>
-                  <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
+                  <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
                 </IonButton>
               </div>
             </IonItem>
@@ -123,11 +123,11 @@ const AddBloquesSettingsModalC = (
               <IonLabel>Numero de cuadrantes</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <IonButton fill="clear" onClick={handleDecrement('numCuadrantes')} size='large'>
-                  <IonIcon slot="icon-only" ios={removeCircleOutline} md={removeCircleOutline}></IonIcon>
+                  <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
                 </IonButton>
                 <IonLabel>{bloqueForm.numCuadrantes}</IonLabel>
                 <IonButton size='large' fill="clear" onClick={handleIncrement('numCuadrantes')}>
-                  <IonIcon slot="icon-only" ios={addCircleOutline} md={addCircleOutline}></IonIcon>
+                  <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
                 </IonButton>
               </div>
             </IonItem>
