@@ -1,4 +1,4 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
+import { IonActionSheet, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from '@ionic/react';
 import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
@@ -8,10 +8,11 @@ const BloquesSettingsC = () => {
   const { bloques, editBloque } = useBloqueInfo();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingBloque, setEditingBloque] = useState<Bloque>(INITIAL_BLOQUE);
+  const [isASheetOpen, setIsASheetOpen] = useState(false);
 
   const handleEdit = (bloque: Bloque) => () => {
     setEditingBloque(bloque);
-    setIsEditModalOpen(true);
+    setIsASheetOpen(true)
   };
 
   const handleEditConfirm = () => {
@@ -41,6 +42,30 @@ const BloquesSettingsC = () => {
         setBloqueForm={setEditingBloque}
         handleConfirm={handleEditConfirm}
       />
+
+      <>
+        <IonActionSheet
+          isOpen={isASheetOpen}
+          header="Acciones"
+          buttons={[
+            {
+              text: 'Editar bloque',
+              handler: () => {
+                setIsEditModalOpen(true);
+                setIsASheetOpen(false);
+              }
+            },
+            {
+              text: 'Eliminar bloque',
+              role: 'destructive',
+              handler: () => {
+              }
+            },
+
+          ]}
+          onDidDismiss={() => setIsASheetOpen(false)}
+        ></IonActionSheet>
+      </>
     </div>
   );
 }

@@ -61,13 +61,6 @@ const AddBloquesSettingsModalC = (
 
   return (
     <IonModal isOpen={isOpenModal} onDidDismiss={() => setIsOpenModal(false)}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={() => setIsOpenModal(false)}>salir</IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
       <IonContent>
         <div className="ion-padding">
           <IonLabel><b>Anadir nuevo bloque</b></IonLabel>
@@ -140,6 +133,9 @@ const AddBloquesSettingsModalC = (
             <br />
             <IonButton onClick={handleConfirm} expand="block">
               guardar
+            </IonButton>
+            <IonButton onClick={() => setIsOpenModal(false)} expand="block" fill='clear'>
+              salir
             </IonButton>
 
           </form>
