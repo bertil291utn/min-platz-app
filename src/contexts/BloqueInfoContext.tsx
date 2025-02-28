@@ -19,8 +19,9 @@ interface BloqueInfoContextType {
   setBloques: (bloques: Bloque[]) => void;
   addBloque: (bloque: Bloque) => void;
   removeBloque: (id: number) => void;
+  unarchiveBloque: (id: number) => void;
   editBloque: (id: number, updatedBloque: Bloque) => void;
-  getBloques:()=> void
+  getBloques: () => void
 }
 
 export const INITIAL_BLOQUE = {
@@ -69,6 +70,16 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
     }
   };
 
+  const unarchiveBloque = (id: number) => {
+    setBloques(bloques.map(bloque =>
+      bloque.id === id ? { ...bloque, archived: false } : bloque
+    ));
+    localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(bloques.map(bloque =>
+      bloque.id === id ? { ...bloque, archived: false } : bloque
+    )));
+    //update in database
+  };
+
   const editBloque = (id: number, updatedBloque: Bloque) => {
     setBloques(bloques.map(bloque =>
       bloque.id === id ? { ...updatedBloque, id } : bloque
@@ -82,7 +93,7 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
   const archivedBloques = bloques.filter(bloque => bloque.archived);
   const nonArchivedBloques = bloques.filter(bloque => !bloque.archived);
 
-  const getBloques = async() => {
+  const getBloques = async () => {
     const localBloques = localStorage.getItem(BLOQUE_KEY_LOCAL_STORAGE);
     if (navigator.onLine) {
       // TODO: Replace with actual database fetch call
@@ -100,7 +111,7 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       setBloques(JSON.parse(localBloques));
     }
   }
-     
+
 
 
   return (
@@ -112,7 +123,8 @@ export const BloqueInfoProvider: React.FC<BloqueInfoProviderProps> = ({ children
       editBloque,
       archivedBloques,
       nonArchivedBloques,
-      getBloques
+      getBloques,
+      unarchiveBloque
     }}>
       {children}
     </BloqueInfoContext.Provider>
