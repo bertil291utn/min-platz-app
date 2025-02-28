@@ -60,42 +60,31 @@ const MonitoreoC = () => {
             </div>
           </IonItem>
           <br />
-          <IonItem >
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                <p>Cama #{camaNumber}</p>
-                <h1>Cuadro #{cuadroNumber}</h1>
-              </div>
-              <br />
-
-              <IonGrid>
-                <IonRow>
-                  {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
-                    <IonCol  key={index + 1}>
-                      <IonButton
-                        fill='outline'
-                        size='large'
-                        onClick={() => setCuadroNumber(index + 1)}
-                      >
-                        {index + 1 <= selectedBloque.numCuadrosPerCama / 2
-                          ? getSpanishOrdinal(index + 1)
-                          : index + 1 === selectedBloque.numCuadrosPerCama ? 'Último'
-                            : getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)}
-
-                        {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
-                          ?
-                          <p>&nbsp;cuadro desde entrada</p>
-                          :
-                          <p> &nbsp;cuadro desde salida</p>
-                        }
-                      </IonButton>
-                    </IonCol>
-                  ))}
-                </IonRow>
-              </IonGrid>
-
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+              <h1>Cama #{camaNumber}</h1>
+              <h1>Cuadro #{cuadroNumber}</h1>
             </div>
-          </IonItem>
+            <br />
+
+            {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
+              <IonButton
+                expand='block'
+                fill='outline'
+                size='large'
+                onClick={() => setCuadroNumber(index + 1)}
+              >
+                <IonLabel>
+                  {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
+                    ? `${getSpanishOrdinal(index + 1)} cuadro desde entrada`
+                    : index + 1 === selectedBloque.numCuadrosPerCama
+                      ? 'Último cuadro desde salida'
+                      : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`}
+                </IonLabel>
+              </IonButton>
+            ))}
+
+          </div>
 
 
         </div>
