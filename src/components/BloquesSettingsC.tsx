@@ -52,6 +52,7 @@ const BloquesSettingsC = () => {
         bloqueForm={editingBloque}
         setBloqueForm={setEditingBloque}
         handleConfirm={handleEdit}
+        type='edit'
       />
 
       <IonActionSheet

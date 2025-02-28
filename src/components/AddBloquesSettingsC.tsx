@@ -11,6 +11,7 @@ interface AddBloquesSettingsModalCProps {
   bloqueForm: Bloque;
   setBloqueForm: React.Dispatch<React.SetStateAction<Bloque>>;
   handleConfirm: () => void;
+  type: 'edit' | 'new';
 }
 
 const AddBloquesSettingsModalC = (
@@ -19,7 +20,8 @@ const AddBloquesSettingsModalC = (
     setIsOpenModal,
     bloqueForm,
     setBloqueForm,
-    handleConfirm
+    handleConfirm,
+    type
   }: AddBloquesSettingsModalCProps
 ) => {
 
@@ -63,7 +65,7 @@ const AddBloquesSettingsModalC = (
     <IonModal isOpen={isOpenModal} onDidDismiss={() => setIsOpenModal(false)}>
       <IonContent>
         <div className="ion-padding">
-          <IonLabel><b>Anadir nuevo bloque</b></IonLabel>
+          <IonLabel><b>{type == 'new' ? 'Anadir nuevo' : 'Editar'} bloque</b></IonLabel>
           <br />
           <br />
           <form onSubmit={(e) => e.preventDefault()}>

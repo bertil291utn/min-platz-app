@@ -67,6 +67,7 @@ const SettingsC = () => {
         bloqueForm={bloqueForm}
         setBloqueForm={setBloqueForm}
         handleConfirm={handleConfirm}
+        type='new'
       />
     </div>
   );
