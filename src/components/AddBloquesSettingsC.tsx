@@ -1,4 +1,4 @@
-import { InputCustomEvent, InputInputEventDetail, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonModal, IonTextarea, IonTitle, IonToolbar, TextareaCustomEvent } from '@ionic/react';
+import { InputCustomEvent, InputInputEventDetail, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonTextarea, IonTitle, IonToolbar, TextareaCustomEvent } from '@ionic/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Bloque } from '../contexts/BloqueInfoContext';
 import { addCircle, addCircleOutline, remove, removeCircle, removeCircleOutline } from 'ionicons/icons';
@@ -101,7 +101,9 @@ const AddBloquesSettingsModalC = (
               name="description"
               value={bloqueForm.description}
               onIonInput={(e) => handleChange(e)}
+              rows={3}
             ></IonTextarea>
+
 
             <br />
             {/* cuadros por cama */}
