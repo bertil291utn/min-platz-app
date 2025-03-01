@@ -1,12 +1,8 @@
 import {
   IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
 } from '@ionic/react';
 import {
-  Bloque,
+  
   INITIAL_BLOQUE, useBloqueInfo
 } from '../contexts/BloqueInfoContext';
 import BloquesSettingsC from './BloquesSettingsC';
@@ -14,6 +10,7 @@ import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
 import ArchivedBloquesSettingsC from './ArchivedBloquesSettingsC';
+import { Bloque } from '../interfaces/Bloque';
 
 
 const SettingsC = () => {
@@ -36,7 +33,7 @@ const SettingsC = () => {
   };
 
 
-  const IsThereactiveBloques = activeBloques.length > 0;
+  const IsThereActiveBloques = activeBloques.length > 0;
 
   return (
     <div>
@@ -47,11 +44,11 @@ const SettingsC = () => {
             <IonLabel>Bloques</IonLabel>
           </IonItem>
           <div className="ion-padding" slot="content">
-            {!IsThereactiveBloques ? (
+            {!IsThereActiveBloques ? (
               <div className="ion-text-center">
                 <p>No hay bloques activos</p>
                 <IonButton onClick={() => setIsOpenModal(true)}>
-                  Añadir bloques
+                  {IsThereActiveBloques ?'Añadir mas bloques' :'Añadir bloques'}
                 </IonButton>
               </div>
             ) : (

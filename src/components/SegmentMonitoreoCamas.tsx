@@ -1,6 +1,5 @@
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { Bloque } from '../contexts/BloqueInfoContext';
+import { useState } from 'react';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
