@@ -1,16 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { BLOQUE_KEY_LOCAL_STORAGE } from '../helpers/bloquesConstant';
+import { Bloque } from '../interfaces/Bloque';
 
-export interface Bloque {
-  id?: number;
-  location?: string;
-  name: string;
-  description?: string;
-  numCuadrantes: number;
-  numCamas: number;
-  numCuadrosPerCama: number;
-  archived?: boolean;
-}
+
 
 interface BloqueInfoContextType {
   bloques: Bloque[];

@@ -1,6 +1,7 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonCol, IonLabel } from '@ionic/react';
-import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
+import {  useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useSelectedBloque } from '../contexts/SelectedBloqueContext';
+import { Bloque } from '../interfaces/Bloque';
 
 const SegmentMonitoreoBloques = () => {
   const { selectedBloque, setSelectedBloque } = useSelectedBloque();

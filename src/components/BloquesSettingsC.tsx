@@ -1,8 +1,9 @@
 import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonLabel, IonToast } from '@ionic/react';
-import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
+import {  useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { INITIAL_BLOQUE } from '../contexts/BloqueInfoContext';
+import { Bloque } from '../interfaces/Bloque';
 
 const BloquesSettingsC = () => {
   const {  editBloque, removeBloque,activeBloques } = useBloqueInfo();

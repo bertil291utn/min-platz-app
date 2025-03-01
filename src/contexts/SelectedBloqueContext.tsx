@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { Bloque } from './BloqueInfoContext';
+import { Bloque } from '../interfaces/Bloque';
 
 interface SelectedBloqueContextType {
   selectedBloque: Bloque | undefined;

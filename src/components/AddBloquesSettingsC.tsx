@@ -1,9 +1,9 @@
 import { InputCustomEvent, InputInputEventDetail, IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonTextarea, IonTitle, IonToolbar, TextareaCustomEvent } from '@ionic/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Bloque } from '../contexts/BloqueInfoContext';
 import { addCircle, addCircleOutline, remove, removeCircle, removeCircleOutline } from 'ionicons/icons';
 import { TextareaInputEventDetail } from '@ionic/core';
 import { NUMERO_CUADROS_PER_CAMAS_MIN } from '../helpers/bloquesConstant';
+import { Bloque } from '../interfaces/Bloque';
 
 interface AddBloquesSettingsModalCProps {
   isOpenModal: boolean;

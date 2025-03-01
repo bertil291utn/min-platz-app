@@ -1,6 +1,7 @@
 import { IonAccordion, IonActionSheet, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel } from '@ionic/react';
-import { Bloque, INITIAL_BLOQUE, useBloqueInfo } from '../contexts/BloqueInfoContext';
+import {  INITIAL_BLOQUE, useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
+import { Bloque } from '../interfaces/Bloque';
 
 const ArchivedBloquesSettingsC = () => {
   const { archivedBloques, unarchiveBloque } = useBloqueInfo();
