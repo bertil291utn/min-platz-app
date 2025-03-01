@@ -1,18 +1,17 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonCol, IonLabel } from '@ionic/react';
 import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
+import { useSelectedBloque } from '../contexts/SelectedBloqueContext';
 
-interface SegmentMonitoreoBloquesProps {
-  setSelectedBloque: (bloque: Bloque) => void;
-}
-
-const SegmentMonitoreoBloques = ({ setSelectedBloque }: SegmentMonitoreoBloquesProps) => {
+const SegmentMonitoreoBloques = () => {
+  const { selectedBloque, setSelectedBloque } = useSelectedBloque();
   const { activeBloques } = useBloqueInfo()
   return (
     <>
-      <p>Seleccione un bloque</p>
+      <p>{selectedBloque ? 'El bloque seleccionado es' : 'Seleccione un bloque'}</p>
+      <h1>{selectedBloque ? `${selectedBloque.name}` : ''}</h1>
       {activeBloques.map((bloque: Bloque) => (
         <IonCol size="6" key={bloque.id}>
-          <IonCard onClick={() => setSelectedBloque(bloque)}>
+          <IonCard onClick={() => setSelectedBloque(bloque)} color={selectedBloque?.id == bloque.id ? 'primary' : ''}>
             <IonCardHeader>
               <IonCardTitle>{bloque.name}</IonCardTitle>
               <IonLabel>{bloque.numCamas} camas</IonLabel>

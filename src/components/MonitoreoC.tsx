@@ -1,15 +1,10 @@
 import { IonHeader, IonLabel, IonSegment, IonSegmentButton, IonSegmentContent, IonSegmentView, IonToolbar } from '@ionic/react';
-import { useState } from 'react';
-import { Bloque } from '../contexts/BloqueInfoContext';
+import { SelectedBloqueProvider, useSelectedBloque } from '../contexts/SelectedBloqueContext';
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 
-const MonitoreoC = () => {
-  const [selectedBloque, setSelectedBloque] = useState<Bloque>();
-
-
-
- 
+const MonitoreoContent = () => {
+  const { selectedBloque } = useSelectedBloque();
 
   return (
     <div>
@@ -19,9 +14,9 @@ const MonitoreoC = () => {
             <IonSegmentButton value="bloques" contentId="bloques">
               <IonLabel>Bloques</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value="camas" contentId="camas">
+            {selectedBloque && <IonSegmentButton value="camas" contentId="camas">
               <IonLabel>Camas</IonLabel>
-            </IonSegmentButton>
+            </IonSegmentButton>}
           </IonSegment>
         </IonToolbar>
       </IonHeader>
@@ -29,23 +24,22 @@ const MonitoreoC = () => {
       <div className="ion-padding">
         <IonSegmentView>
           <IonSegmentContent id="bloques">
-           <SegmentMonitoreoBloques
-           setSelectedBloque={setSelectedBloque}
-           />
+            <SegmentMonitoreoBloques />
           </IonSegmentContent>
           <IonSegmentContent id="camas">
-            <SegmentMonitoreoCamas
-            selectedBloque={selectedBloque}
-            />
+            <SegmentMonitoreoCamas />
           </IonSegmentContent>
-          {/* <IonSegmentContent id="third">Third</IonSegmentContent> */}
         </IonSegmentView>
-
-
-
-
       </div>
     </div>
+  );
+}
+
+const MonitoreoC = () => {
+  return (
+    <SelectedBloqueProvider>
+      <MonitoreoContent />
+    </SelectedBloqueProvider>
   );
 }
 

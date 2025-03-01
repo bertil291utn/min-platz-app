@@ -4,14 +4,10 @@ import { Bloque } from '../contexts/BloqueInfoContext';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
+import { useSelectedBloque } from '../contexts/SelectedBloqueContext';
 
-interface SegmentMonitoreoCamasProps {
-  selectedBloque: Bloque | undefined;
-}
-
-const SegmentMonitoreoCamas = ({
-  selectedBloque,
-}: SegmentMonitoreoCamasProps) => {
+const SegmentMonitoreoCamas = () => {
+  const { selectedBloque } = useSelectedBloque();
 
   const [camaNumber, setCamaNumber] = useState(1);
   const [cuadroNumber, setCuadroNumber] = useState(1);
