@@ -1,4 +1,4 @@
-import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import { useState } from 'react';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { addCircle, removeCircle } from 'ionicons/icons';
@@ -24,12 +24,13 @@ const SegmentMonitoreoCamas = () => {
     }
   };
 
-
   return (
     <>
       {selectedBloque
         ?
         <div>
+          <h3 className='ion-text-center'>{selectedBloque.name}</h3>
+          <br />
           <IonItem>
             <IonLabel>Ingrese el numero de cama a monitorear</IonLabel>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -50,23 +51,26 @@ const SegmentMonitoreoCamas = () => {
             </div>
             <br />
 
-            {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
-              <IonButton
-                key={index}
-                expand='block'
-                fill='outline'
-                size='large'
-                onClick={() => setCuadroNumber(index + 1)}
-              >
-                <IonLabel>
-                  {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
-                    ? `${getSpanishOrdinal(index + 1)} cuadro desde entrada`
-                    : index + 1 === selectedBloque.numCuadrosPerCama
-                      ? 'Último cuadro desde salida'
-                      : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`}
-                </IonLabel>
-              </IonButton>
-            ))}
+            <div style={{ height: '50vh', overflowY: 'scroll' }}>
+              {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
+                <IonButton
+                  key={index}
+                  expand='block'
+                  fill={cuadroNumber === index + 1 ? 'solid' : 'outline'}
+                  size='large'
+                  color={cuadroNumber === index + 1 ? 'primary' : 'default'}
+                  onClick={() => setCuadroNumber(index + 1)}
+                >
+                  <IonLabel>
+                    {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
+                      ? `${getSpanishOrdinal(index + 1)} cuadro desde entrada`
+                      : index + 1 === selectedBloque.numCuadrosPerCama
+                        ? 'Último cuadro desde salida'
+                        : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`}
+                  </IonLabel>
+                </IonButton>
+              ))}
+            </div>
 
           </div>
 
