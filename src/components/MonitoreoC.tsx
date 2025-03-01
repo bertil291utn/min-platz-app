@@ -3,9 +3,10 @@ import { MonitoringBloqueProvider, useMonitoringBloque } from '../contexts/Monit
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import { SegmentBloque } from '../interfaces/Bloque';
+import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 
 const MonitoreoContent = () => {
-  const { selectedBloque, activeSegment, setActiveSegment } = useMonitoringBloque();
+  const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro } = useMonitoringBloque();
 
 
   return (
@@ -19,6 +20,9 @@ const MonitoreoContent = () => {
             {selectedBloque && <IonSegmentButton value="camas">
               <IonLabel>Camas</IonLabel>
             </IonSegmentButton>}
+            {selectedCuadro && <IonSegmentButton value="diseases">
+              <IonLabel>enfermedad</IonLabel>
+            </IonSegmentButton>}
           </IonSegment>
         </IonToolbar>
       </IonHeader>
@@ -26,6 +30,7 @@ const MonitoreoContent = () => {
       <div className="ion-padding">
         {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
+        {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
       </div>
     </div>
   );

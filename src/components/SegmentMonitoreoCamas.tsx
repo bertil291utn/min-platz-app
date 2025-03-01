@@ -6,7 +6,7 @@ import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 
 const SegmentMonitoreoCamas = () => {
-  const { selectedBloque } = useMonitoringBloque();
+  const { selectedBloque, setSelectedCuadro } = useMonitoringBloque();
 
   const [camaNumber, setCamaNumber] = useState(1);
   const [cuadroNumber, setCuadroNumber] = useState(1);
@@ -23,6 +23,12 @@ const SegmentMonitoreoCamas = () => {
       setCamaNumber((prev) => prev - 1);
     }
   };
+
+
+  const handleSelectCuadro = (cuadro: number) => () => {
+    setSelectedCuadro(cuadro);
+    setCuadroNumber(cuadro)
+  }
 
   return (
     <>
@@ -59,7 +65,7 @@ const SegmentMonitoreoCamas = () => {
                   fill={cuadroNumber === index + 1 ? 'solid' : 'outline'}
                   size='large'
                   color={cuadroNumber === index + 1 ? 'primary' : 'default'}
-                  onClick={() => setCuadroNumber(index + 1)}
+                  onClick={handleSelectCuadro(index + 1)}
                 >
                   <IonLabel>
                     {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
