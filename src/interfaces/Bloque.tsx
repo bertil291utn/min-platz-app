@@ -8,3 +8,6 @@ export interface Bloque {
   numCuadrosPerCama: number;
   archived?: boolean;
 }
+
+
+export type SegmentBloque = 'bloques' | 'camas';

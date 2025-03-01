@@ -1,20 +1,22 @@
-import { IonHeader, IonLabel, IonSegment, IonSegmentButton, IonSegmentContent, IonSegmentView, IonToolbar } from '@ionic/react';
-import { SelectedBloqueProvider, useSelectedBloque } from '../contexts/SelectedBloqueContext';
+import { IonHeader, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
+import { MonitoringBloqueProvider, useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
+import { SegmentBloque } from '../interfaces/Bloque';
 
 const MonitoreoContent = () => {
-  const { selectedBloque } = useSelectedBloque();
+  const { selectedBloque, activeSegment, setActiveSegment } = useMonitoringBloque();
+
 
   return (
     <div>
       <IonHeader>
         <IonToolbar>
-          <IonSegment value="bloques">
-            <IonSegmentButton value="bloques" contentId="bloques">
+          <IonSegment value={activeSegment} onIonChange={e => setActiveSegment(e.detail.value as SegmentBloque)}>
+            <IonSegmentButton value="bloques">
               <IonLabel>Bloques</IonLabel>
             </IonSegmentButton>
-            {selectedBloque && <IonSegmentButton value="camas" contentId="camas">
+            {selectedBloque && <IonSegmentButton value="camas">
               <IonLabel>Camas</IonLabel>
             </IonSegmentButton>}
           </IonSegment>
@@ -22,14 +24,8 @@ const MonitoreoContent = () => {
       </IonHeader>
 
       <div className="ion-padding">
-        <IonSegmentView>
-          <IonSegmentContent id="bloques">
-            <SegmentMonitoreoBloques />
-          </IonSegmentContent>
-          <IonSegmentContent id="camas">
-            <SegmentMonitoreoCamas />
-          </IonSegmentContent>
-        </IonSegmentView>
+        {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
+        {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
       </div>
     </div>
   );
@@ -37,9 +33,9 @@ const MonitoreoContent = () => {
 
 const MonitoreoC = () => {
   return (
-    <SelectedBloqueProvider>
+    <MonitoringBloqueProvider>
       <MonitoreoContent />
-    </SelectedBloqueProvider>
+    </MonitoringBloqueProvider>
   );
 }
 

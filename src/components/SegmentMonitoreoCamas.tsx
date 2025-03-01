@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
-import { useSelectedBloque } from '../contexts/SelectedBloqueContext';
+import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 
 const SegmentMonitoreoCamas = () => {
-  const { selectedBloque } = useSelectedBloque();
+  const { selectedBloque } = useMonitoringBloque();
 
   const [camaNumber, setCamaNumber] = useState(1);
   const [cuadroNumber, setCuadroNumber] = useState(1);
