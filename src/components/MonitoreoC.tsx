@@ -1,15 +1,13 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonGrid, IonHeader, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonLabel, IonList, IonRow, IonSegment, IonSegmentButton, IonSegmentContent, IonSegmentView, IonTitle, IonToolbar } from '@ionic/react';
-import { addCircle, removeCircle } from 'ionicons/icons';
+import { IonHeader, IonLabel, IonSegment, IonSegmentButton, IonSegmentContent, IonSegmentView, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
-import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
-import { Bloque, useBloqueInfo } from '../contexts/BloqueInfoContext';
-import { getSpanishOrdinal } from '../helpers/viewHelper';
+import { Bloque } from '../contexts/BloqueInfoContext';
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
+import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 
 const MonitoreoC = () => {
   const [selectedBloque, setSelectedBloque] = useState<Bloque>();
 
-  const { activeBloques } = useBloqueInfo()
+
 
  
 
@@ -31,17 +29,9 @@ const MonitoreoC = () => {
       <div className="ion-padding">
         <IonSegmentView>
           <IonSegmentContent id="bloques">
-            <p>Seleccione un bloque</p>
-            {activeBloques.map((bloque: Bloque) => (
-              <IonCol size="6" key={bloque.id}>
-                <IonCard onClick={() => setSelectedBloque(bloque)}>
-                  <IonCardHeader>
-                    <IonCardTitle>{bloque.name}</IonCardTitle>
-                    <IonLabel>{bloque.numCamas} camas</IonLabel>
-                  </IonCardHeader>
-                </IonCard>
-              </IonCol>
-            ))}
+           <SegmentMonitoreoBloques
+           setSelectedBloque={setSelectedBloque}
+           />
           </IonSegmentContent>
           <IonSegmentContent id="camas">
             <SegmentMonitoreoCamas
