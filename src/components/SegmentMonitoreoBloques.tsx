@@ -1,4 +1,4 @@
-import { IonCard, IonCardHeader, IonCardTitle, IonCol, IonLabel } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonLabel } from '@ionic/react';
 import { useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { Bloque } from '../interfaces/Bloque';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';

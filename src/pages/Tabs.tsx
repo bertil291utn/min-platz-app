@@ -48,7 +48,7 @@ const Tabs: React.FC = () => {
             <TabSettings />
           </Route>
           <Route exact path="/tabs">
-            <Redirect to="/tabs/settings" />
+            <Redirect to="/tabs/monitoreo" />
           </Route>
         </IonRouterOutlet>
 
