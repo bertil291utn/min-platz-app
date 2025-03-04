@@ -11,6 +11,7 @@ import {
   InputInputEventDetail,
   InputCustomEvent
 } from '@ionic/react';
+import { USER_AUTH } from '../helpers/AuthConst';
 
 const LoginComp: React.FC = () => {
   const [credentials, setCredentials] = useState({
@@ -33,7 +34,7 @@ const LoginComp: React.FC = () => {
       token: 'your-auth-token' // Add proper token handling
     };
 
-    localStorage.setItem('userAuth', JSON.stringify(storageData));
+    localStorage.setItem(USER_AUTH, JSON.stringify(storageData));
   };
 
 

@@ -2,7 +2,7 @@ import {
   IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
 } from '@ionic/react';
 import {
-  
+
   INITIAL_BLOQUE, useBloqueInfo
 } from '../contexts/BloqueInfoContext';
 import BloquesSettingsC from './BloquesSettingsC';
@@ -11,6 +11,7 @@ import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
 import ArchivedBloquesSettingsC from './ArchivedBloquesSettingsC';
 import { Bloque } from '../interfaces/Bloque';
+import TipoUserSettingsC from './TipoUserSettingsC';
 
 
 const SettingsC = () => {
@@ -48,7 +49,7 @@ const SettingsC = () => {
               <div className="ion-text-center">
                 <p>No hay bloques activos</p>
                 <IonButton onClick={() => setIsOpenModal(true)}>
-                  {IsThereActiveBloques ?'Añadir mas bloques' :'Añadir bloques'}
+                  {IsThereActiveBloques ? 'Añadir mas bloques' : 'Añadir bloques'}
                 </IonButton>
               </div>
             ) : (
@@ -62,6 +63,16 @@ const SettingsC = () => {
           </div>
         </IonAccordion>
         <ArchivedBloquesSettingsC />
+        <IonAccordion value="user">
+          <IonItem slot="header" color="light">
+            <IonLabel>Usuario</IonLabel>
+          </IonItem>
+          <div className="ion-padding" slot="content">
+            <TipoUserSettingsC/>
+          </div>
+
+        </IonAccordion>
+
       </IonAccordionGroup>
 
       {/* modal add bloques */}

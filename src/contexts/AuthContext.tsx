@@ -1,9 +1,12 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { EXPERT_USER, USER_AUTH } from '../helpers/AuthConst';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
   logout: () => void;
+  expertUser: boolean;
+  setExpertUser: (value: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -14,10 +17,11 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  
+  const [expertUser, setExpertUser] = useState<boolean>(false);
+
   useEffect(() => {
     // Check if user auth exists in local storage
-    const userAuth = localStorage.getItem('userAuth');
+    const userAuth = localStorage.getItem(USER_AUTH);
     
     if (userAuth) {
       try {
@@ -29,24 +33,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsAuthenticated(true);
         } else {
           // Token expired, clean up
-          localStorage.removeItem('userAuth');
+          localStorage.removeItem(USER_AUTH);
           setIsAuthenticated(false);
         }
       } catch (error) {
         // Invalid JSON, clean up
-        localStorage.removeItem('userAuth');
+        localStorage.removeItem(USER_AUTH);
         setIsAuthenticated(false);
       }
+    }
+
+    // Load expert user preference
+    const expertPreference = localStorage.getItem(EXPERT_USER);
+    if (expertPreference) {
+      setExpertUser(JSON.parse(expertPreference));
     }
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('userAuth');
+    localStorage.removeItem(USER_AUTH);
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, logout }}>
+    <AuthContext.Provider value={{ 
+      isAuthenticated, 
+      setIsAuthenticated, 
+      logout,
+      expertUser,
+      setExpertUser 
+    }}>
       {children}
     </AuthContext.Provider>
   );
