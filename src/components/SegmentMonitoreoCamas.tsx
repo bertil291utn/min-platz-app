@@ -1,6 +1,6 @@
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
-import { addCircle, removeCircle } from 'ionicons/icons';
+import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 
@@ -39,7 +39,11 @@ const SegmentMonitoreoCamas = () => {
       {selectedBloque
         ?
         <div>
-          <h3 className='ion-text-center'>{selectedBloque.name}</h3>
+          <IonButton fill="clear" onClick={() => setActiveSegment('bloques')}>
+            <IonIcon slot="start" icon={arrowBack}></IonIcon>
+            regresar
+          </IonButton>
+          <h3 className='ion-text-center' style={{margin:'0'}}>{selectedBloque.name}</h3>
           <br />
           <IonItem>
             <IonLabel>Ingrese el numero de cama a monitorear</IonLabel>

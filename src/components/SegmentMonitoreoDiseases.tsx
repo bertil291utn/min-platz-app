@@ -1,10 +1,11 @@
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { useState } from 'react';
 import { DISEASES } from '../helpers/diseases';
-import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonItemDivider } from '@ionic/react';
+import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonItemDivider } from '@ionic/react';
 import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
 import { useAuth } from '../contexts/AuthContext';
+import { arrowBack } from 'ionicons/icons';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
@@ -29,6 +30,11 @@ const SegmentMonitoreoDiseases = () => {
   } = useMonitoringBloque();
   return (
     <div>
+
+      <IonButton fill="clear" onClick={() => setActiveSegment('camas')}>
+        <IonIcon slot="start" icon={arrowBack}></IonIcon>
+        regresar
+      </IonButton>
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
