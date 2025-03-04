@@ -2,6 +2,7 @@ export const DISEASES = [
   {
     id: 1,
     name: 'Ácaros',
+    folderName: 'acaros',
     images: [
       {
         id: 1,
@@ -19,6 +20,7 @@ export const DISEASES = [
   {
     id: 2,
     name: 'Botrytis',
+    folderName: 'botrytis',
     images: [
       {
         id: 1,
@@ -36,6 +38,7 @@ export const DISEASES = [
   {
     id: 3,
     name: 'Mosca Blanca',
+    folderName: 'moscab',
     images: [
       {
         id: 1,
@@ -48,6 +51,7 @@ export const DISEASES = [
   {
     id: 4,
     name: 'Oidio',
+    folderName: 'oidio',
     images: [
       {
         id: 1,
@@ -65,6 +69,7 @@ export const DISEASES = [
   {
     id: 5,
     name: 'Pulgon',
+    folderName: 'pulgon',
     images: [
       {
         id: 1,
@@ -82,6 +87,7 @@ export const DISEASES = [
   {
     id: 6,
     name: 'Thrips',
+    folderName: 'thrips',
     images: [
       {
         id: 1,
@@ -104,6 +110,7 @@ export const DISEASES = [
   {
     id: 7,
     name: 'Velloso',
+    folderName: 'velloso',
     images: [
       {
         id: 1,

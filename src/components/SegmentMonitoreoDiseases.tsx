@@ -5,16 +5,21 @@ import { useEffect, useState } from 'react';
 import { DISEASES } from '../helpers/diseases';
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonItemDivider } from '@ionic/react';
 import { Disease } from '../interfaces/Diseases';
+import DiseaseImagesModal from './DiseaseImagesModal';
 // import infoAcacros from '../assets/data/rosas-diseases/acaros/info.txt';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
   const { setSelectedDisease, selectedDisease } = useMonitoringBloque();
-
+  const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
 
   const handleChangeSegment = (disease: Disease) => () => {
     selectedDisease?.id == disease.id ? setSelectedDisease(undefined) : setSelectedDisease(disease);
     // setActiveSegment('camas');
+  }
+
+  const handleViewDisease = (disease: Disease) => () => {
+    setShowModalDisease(disease);
   }
 
   const {
@@ -39,7 +44,7 @@ const SegmentMonitoreoDiseases = () => {
       <p>Seleccione una enfermedad</p>
       <br />
       {diseasesArr.map((disease) => (
-        <IonItemDivider>
+        <IonItemDivider key={disease.id}>
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', padding: '1rem 0' }}>
             <IonCard key={disease.id} onClick={handleChangeSegment(disease)}
               color={selectedDisease?.id == disease.id ? 'primary' : ''}
@@ -48,13 +53,19 @@ const SegmentMonitoreoDiseases = () => {
                 <IonCardTitle>{disease.name}</IonCardTitle>
               </IonCardHeader>
             </IonCard>
-            <IonButton fill="clear" expand='block'>ver como son {disease.name}?</IonButton>
+            <IonButton fill="clear" expand='block'
+              onClick={handleViewDisease(disease)}
+            >ver como son {disease.name}?</IonButton>
           </div>
         </IonItemDivider>
       ))}
 
-      {/* <img src={acaros01} alt="Ácaros" style={{ width: '100%', height: '500px' }} />
-      <img src={acaros02} alt="Ácaros2" style={{ width: '100%', height: '500px' }} /> */}
+      {showModalDisease &&
+        <DiseaseImagesModal
+          isOpen={!!showModalDisease}
+          onDismiss={() => setShowModalDisease(false)}
+          disease={showModalDisease as Disease}
+        />}
     </div>
 
   );

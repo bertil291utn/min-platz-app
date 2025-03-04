@@ -8,6 +8,7 @@ export interface Disease {
 
   id: number;
   name: string;
+  folderName: string;
   images: ImageD[];
   info: string;
 }
