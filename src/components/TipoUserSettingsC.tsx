@@ -14,8 +14,8 @@ const TipoUserSettingsC = () => {
   return (
     <>
       <IonItem>
-        <IonLabel>Activar a usuario experto</IonLabel>
-        <IonToggle 
+        <IonLabel>{expertUser ? 'Desactivar de' : 'Activar a'}  usuario experto</IonLabel>
+        <IonToggle
           checked={expertUser}
           onIonChange={handleToggleChange}
           slot="end"
