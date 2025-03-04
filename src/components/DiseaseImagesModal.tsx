@@ -15,7 +15,7 @@ interface Props {
   disease: Disease;
 }
 
-const IMAGES_DISEASE_PATH= '../assets/rosas-diseases';
+const IMAGES_DISEASE_PATH= '/assets/rosas-diseases';
 
 const DiseaseImagesModal: React.FC<Props> = ({ isOpen, onDismiss, disease }) => {
   return (
@@ -24,23 +24,17 @@ const DiseaseImagesModal: React.FC<Props> = ({ isOpen, onDismiss, disease }) => 
         <IonToolbar>
           <IonTitle>{disease.name}</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={onDismiss}>Close</IonButton>
+            <IonButton onClick={onDismiss}>salir</IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <Swiper>
-          <SwiperSlide>
-            <img src={acaros01} alt={`${disease.name} 1`} style={{ width: '100%', height: 'auto' }} />
-          </SwiperSlide>
-          <SwiperSlide>
-            <img src={acaros02} alt={`${disease.name} 1`} style={{ width: '100%', height: 'auto' }} />
-          </SwiperSlide>
-          {/* {disease.images.map((image, index) => (
+          {disease.images.map((image, index) => (
             <SwiperSlide key={index}>
-              <img src={`${IMAGES_DISEASE_PATH}/${disease.name}/${image.src}`} alt={`${disease.name} ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
+              <img src={`${IMAGES_DISEASE_PATH}/${disease.folderName}/${image.src}`} alt={`${disease.name} ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
             </SwiperSlide>
-          ))} */}
+          ))}
         </Swiper>
       </IonContent>
     </IonModal>
