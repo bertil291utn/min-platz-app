@@ -1,12 +1,9 @@
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
-import acaros01 from '../assets/rosas-diseases/acaros/acaros01.png';
-import acaros02 from '../assets/rosas-diseases/acaros/acaros02.jpg';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DISEASES } from '../helpers/diseases';
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonItemDivider } from '@ionic/react';
 import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
-// import infoAcacros from '../assets/data/rosas-diseases/acaros/info.txt';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
