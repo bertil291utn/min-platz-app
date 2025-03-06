@@ -13,8 +13,9 @@ const SegmentMonitoreoDiseases = () => {
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const { expertUser } = useAuth();
 
-  const handleChangeSegment = (disease: Disease) => () => {
+  const handleSelectDisease = (disease: Disease) => () => {
     selectedDisease?.id == disease.id ? setSelectedDisease(undefined) : setSelectedDisease(disease);
+
     // setActiveSegment('camas');
   }
 
@@ -53,7 +54,7 @@ const SegmentMonitoreoDiseases = () => {
           <div key={disease.id}>
             <DiseaseCard
               disease={disease}
-              handleChangeSegment={handleChangeSegment}
+              handleSelectDisease={handleSelectDisease}
               selectedDisease={selectedDisease}
             />
           </div>
@@ -62,7 +63,7 @@ const SegmentMonitoreoDiseases = () => {
             <div style={{ display: 'flex', flexDirection: 'column', width: '100%', padding: '1rem 0' }}>
               <DiseaseCard
                 disease={disease}
-                handleChangeSegment={handleChangeSegment}
+                handleSelectDisease={handleSelectDisease}
                 selectedDisease={selectedDisease}
               />
               <IonButton fill="clear" expand='block'
@@ -89,16 +90,16 @@ const SegmentMonitoreoDiseases = () => {
 export default SegmentMonitoreoDiseases;
 
 
-const DiseaseCard = ({ disease, handleChangeSegment, selectedDisease }:
+const DiseaseCard = ({ disease, handleSelectDisease, selectedDisease }:
   {
     disease: Disease,
-    handleChangeSegment: (disease: Disease) => () => void
+    handleSelectDisease: (disease: Disease) => () => void
     selectedDisease: Disease | undefined
 
   }
 ) => {
   return (
-    <IonCard key={disease.id} onClick={handleChangeSegment(disease)}
+    <IonCard key={disease.id} onClick={handleSelectDisease(disease)}
       color={selectedDisease?.id == disease.id ? 'primary' : ''}
     >
       <IonCardHeader>
