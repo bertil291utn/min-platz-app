@@ -54,14 +54,14 @@ const SegmentMonitoreoOptions = () => {
         ></IonTextarea>
         <br />
 
-        <IonLabel>Vas a guardar estas enfermedades:</IonLabel>
+        <IonLabel>Vas a guardar estas enfermedades en el cuadro #{selectedCuadro}</IonLabel>
         <ul onClick={() => setActiveSegment('diseases')}>
           {selectedDiseases.map((disease) =>
             <li>{`${disease.name} ${disease.folderName == 'acaros' ? 'nivel ' + selectedAcarosLevel : ''}`}</li>
           )}
         </ul>
         <IonButton expand="block" onClick={handleSubmitCuadro}>
-          guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''} cuadro #{selectedCuadro}
+          guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''}
         </IonButton>
       </div>
     </div>
