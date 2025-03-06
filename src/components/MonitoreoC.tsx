@@ -14,7 +14,11 @@ const MonitoreoContent = () => {
     <div>
       <IonHeader>
         <IonToolbar>
-          <IonSegment value={activeSegment} onIonChange={e => setActiveSegment(e.detail.value as SegmentBloque)}>
+          <IonSegment 
+          value={activeSegment} 
+          onIonChange={e => setActiveSegment(e.detail.value as SegmentBloque)}
+          scrollable
+          >
             <IonSegmentButton value="bloques">
               <IonLabel>Bloques</IonLabel>
             </IonSegmentButton>

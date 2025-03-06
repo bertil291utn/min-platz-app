@@ -3,6 +3,7 @@ import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
 import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import ReturnButtonC from './ReturnButtonC';
 
 const SegmentMonitoreoCamas = () => {
   const {
@@ -39,10 +40,9 @@ const SegmentMonitoreoCamas = () => {
       {selectedBloque
         ?
         <div>
-          <IonButton fill="clear" onClick={() => setActiveSegment('bloques')}>
-            <IonIcon slot="start" icon={arrowBack}></IonIcon>
-            regresar
-          </IonButton>
+          <ReturnButtonC
+            segmentReturn={'bloques'}
+          />
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',

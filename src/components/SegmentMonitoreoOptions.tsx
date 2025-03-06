@@ -1,9 +1,13 @@
+import ReturnButtonC from './ReturnButtonC';
+
 const SegmentMonitoreoOptions = () => {
-  return ( 
-    <div className='ion-padding'>
-      this is options
+  return (
+    <div>
+      <ReturnButtonC
+        segmentReturn={'diseases'}
+      />
     </div>
-   );
+  );
 }
- 
+
 export default SegmentMonitoreoOptions;

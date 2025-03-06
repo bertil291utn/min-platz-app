@@ -6,6 +6,7 @@ import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
 import { useAuth } from '../contexts/AuthContext';
 import { arrowBack } from 'ionicons/icons';
+import ReturnButtonC from './ReturnButtonC';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
@@ -15,8 +16,7 @@ const SegmentMonitoreoDiseases = () => {
 
   const handleSelectDisease = (disease: Disease) => () => {
     selectedDisease?.id == disease.id ? setSelectedDisease(undefined) : setSelectedDisease(disease);
-
-    // setActiveSegment('camas');
+    setActiveSegment('options');
   }
 
   const handleViewDisease = (disease: Disease) => () => {
@@ -32,10 +32,10 @@ const SegmentMonitoreoDiseases = () => {
   return (
     <div>
 
-      <IonButton fill="clear" onClick={() => setActiveSegment('camas')}>
-        <IonIcon slot="start" icon={arrowBack}></IonIcon>
-        regresar
-      </IonButton>
+      <ReturnButtonC
+        segmentReturn={'camas'}
+      />
+      
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
