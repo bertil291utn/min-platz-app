@@ -36,7 +36,7 @@ const DiseaseImagesModal: React.FC<Props> = ({ isOpen, onDismiss, disease }) => 
         <IonToolbar>
           <IonTitle>{disease.name}</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={onDismiss}>salir</IonButton>
+            <IonButton onClick={onDismiss}>regresar</IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>

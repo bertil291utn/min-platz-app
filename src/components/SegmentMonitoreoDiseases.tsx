@@ -46,7 +46,7 @@ const SegmentMonitoreoDiseases = () => {
         <h1 style={{ fontWeight: 'bold' }}>Cama #{selectedCama}</h1>
       </div>
 
-      <p>Seleccione una enfermedad</p>
+      <p>Seleccione enfermedad</p>
       <br />
       {diseasesArr.map((disease) => (
         expertUser ? (
