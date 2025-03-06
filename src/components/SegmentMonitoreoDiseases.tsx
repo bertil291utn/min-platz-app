@@ -5,7 +5,7 @@ import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonItemDivide
 import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
 import { useAuth } from '../contexts/AuthContext';
-import {  arrowForward } from 'ionicons/icons';
+import { arrowForward } from 'ionicons/icons';
 import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
 
@@ -41,13 +41,15 @@ const SegmentMonitoreoDiseases = () => {
           segmentReturn={'camas'}
         />
 
-        <IonButton fill="clear" onClick={() => setActiveSegment('options')}>
-          <IonIcon slot="end" icon={arrowForward}></IonIcon>
-          avanzar
-        </IonButton>
+        {selectedDiseases.length > 0 &&
+          <IonButton fill="clear" onClick={() => setActiveSegment('options')}>
+            <IonIcon slot="end" icon={arrowForward}></IonIcon>
+            avanzar
+          </IonButton>
+        }
       </div>
 
-      <LabelMonitoring/>
+      <LabelMonitoring />
       <p>Seleccione enfermedad</p>
       <br />
 

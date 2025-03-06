@@ -51,33 +51,50 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
 
 
   const updateMonitoring = async (bloqueId: number, camaId: number, newCuadro: CuadroMonitored) => {
-    console.log(newCuadro)
-    const updatedBloques = bloquesMonitored.map(bloque => {
-      if (bloque.id !== bloqueId) return bloque;
+    let updatedBloques = [...bloquesMonitored];
+    // Find or create bloque
+    let bloqueIndex = updatedBloques.findIndex(b => b.id === bloqueId);
+    if (bloqueIndex === -1) {
+      updatedBloques.push({
+      id: bloqueId,
+      name: `Bloque ${bloqueId}`,
+      dateMonitoring: new Date().toISOString(),
+      camas: []
+      });
+      bloqueIndex = updatedBloques.length - 1;
+    }
 
-      return {
-        ...bloque,
-        camas: bloque.camas.map(cama => {
-          if (cama.id !== camaId) return cama;
-          return {
-            ...cama,
-            cuadros: [...cama.cuadros, newCuadro]
-          };
-        })
-      };
-    });
+    // Find or create cama
+    let cama = updatedBloques[bloqueIndex].camas.find(c => c.id === camaId);
+    if (!cama) {
+      updatedBloques[bloqueIndex].camas.push({
+      id: camaId,
+      name:`Cama ${camaId}`,
+      cuadros: []
+      });
+      cama = updatedBloques[bloqueIndex].camas[updatedBloques[bloqueIndex].camas.length - 1];
+    }
+
+    // Find and update existing cuadro or add new one
+    const cuadroIndex = cama.cuadros.findIndex(c => c.id === newCuadro.id);
+    if (cuadroIndex !== -1) {
+      cama.cuadros[cuadroIndex] = newCuadro;
+    } else {
+      cama.cuadros.push(newCuadro);
+    }
+    console.log(updatedBloques)
     // Update local state and storage
     setBloquesMonitored(updatedBloques);
     localStorage.setItem('monitoring', JSON.stringify(updatedBloques));
 
     // If online, sync with database
-    // if (isOnline) {
-    //   try {
-    //     await updateDatabaseMonitoring(bloqueId, camaId, newCuadro);
-    //   } catch (error) {
-    //     console.error('Failed to sync with database:', error);
-    //   }
-    // }
+    if (isOnline) {
+      try {
+        await updateDatabaseMonitoring(bloqueId, camaId, newCuadro);
+      } catch (error) {
+        console.error('Failed to sync with database:', error);
+      }
+    }
   };
 
   const syncWithDatabase = async () => {

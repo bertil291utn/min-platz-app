@@ -78,7 +78,7 @@ const SegmentMonitoreoOptions = () => {
             fill='outline'
             placeholder="Notas adicionales"
             value={notes}
-            onIonChange={e => setNotes(e.detail.value as string)}
+            onIonInput={e => setNotes(e.detail.value as string)}
             rows={4}
             autoGrow={true}
             name='notes'
@@ -89,7 +89,9 @@ const SegmentMonitoreoOptions = () => {
         <IonLabel>Vas a guardar estas enfermedades en el cuadro #{selectedCuadro}</IonLabel>
         <ul onClick={() => setActiveSegment('diseases')}>
           {selectedDiseases.map((disease) =>
-            <li>{`${disease.name} ${disease.folderName == 'acaros' ? 'nivel ' + selectedAcarosLevel : ''}`}</li>
+            <li key={disease.id}>
+              {`${disease.name} ${disease.folderName == 'acaros' ? 'nivel ' + selectedAcarosLevel : ''}`}
+            </li>
           )}
         </ul>
         <IonButton expand="block" onClick={handleSubmitCuadro}>
