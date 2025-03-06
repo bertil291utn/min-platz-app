@@ -7,17 +7,17 @@ import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
 
 const MonitoreoContent = () => {
-  const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro,selectedDisease } = useMonitoringBloque();
+  const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro, selectedDiseases } = useMonitoringBloque();
 
 
   return (
     <div>
       <IonHeader>
         <IonToolbar>
-          <IonSegment 
-          value={activeSegment} 
-          onIonChange={e => setActiveSegment(e.detail.value as SegmentBloque)}
-          scrollable
+          <IonSegment
+            value={activeSegment}
+            onIonChange={e => setActiveSegment(e.detail.value as SegmentBloque)}
+            scrollable
           >
             <IonSegmentButton value="bloques">
               <IonLabel>Bloques</IonLabel>
@@ -28,7 +28,7 @@ const MonitoreoContent = () => {
             {selectedCuadro && <IonSegmentButton value="diseases">
               <IonLabel>enfermedad</IonLabel>
             </IonSegmentButton>}
-            {selectedDisease && <IonSegmentButton value="options">
+            {selectedDiseases.length > 0 && <IonSegmentButton value="options">
               <IonLabel>opciones</IonLabel>
             </IonSegmentButton>}
           </IonSegment>

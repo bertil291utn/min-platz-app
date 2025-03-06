@@ -9,8 +9,8 @@ interface MonitoringBloqueContextType {
   setSelectedCuadro: (cuadro: number | undefined) => void;
   selectedCama: number;
   setSelectedCama: Dispatch<SetStateAction<number>>;
-  selectedDisease: Disease | undefined;
-  setSelectedDisease: Dispatch<SetStateAction<Disease | undefined>>;
+  selectedDiseases: Disease[];
+  setSelectedDiseases: Dispatch<SetStateAction<Disease[]>>;
   activeSegment: SegmentBloque;
   setActiveSegment: (segment: SegmentBloque) => void;
 }
@@ -23,7 +23,7 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
   const [selectedBloque, setSelectedBloque] = useState<Bloque>();
   const [selectedCuadro, setSelectedCuadro] = useState<number>();
   const [selectedCama, setSelectedCama] = useState(1);
-  const [selectedDisease, setSelectedDisease] = useState<Disease>();
+  const [selectedDiseases, setSelectedDiseases] = useState<Disease[]>([]);
 
   return (
     <MonitoringBloqueContext.Provider value={{
@@ -35,8 +35,8 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       setSelectedCuadro,
       selectedCama,
       setSelectedCama,
-      selectedDisease,
-      setSelectedDisease
+      selectedDiseases,
+      setSelectedDiseases
     }}>
       {children}
     </MonitoringBloqueContext.Provider>

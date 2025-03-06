@@ -10,32 +10,39 @@ import ReturnButtonC from './ReturnButtonC';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
-  const { setSelectedDisease, selectedDisease } = useMonitoringBloque();
+  const { setSelectedDiseases, selectedDiseases,
+    selectedBloque,
+    selectedCuadro,
+    selectedCama,
+    setActiveSegment,
+   } = useMonitoringBloque();
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const { expertUser } = useAuth();
 
+
+
   const handleSelectDisease = (disease: Disease) => () => {
-    selectedDisease?.id == disease.id ? setSelectedDisease(undefined) : setSelectedDisease(disease);
-    setActiveSegment('options');
+    setSelectedDiseases(prev => {
+      const isSelected = prev.some(d => d.id === disease.id);
+      if (isSelected) {
+        return prev.filter(d => d.id !== disease.id);
+      } else {
+        return [...prev, disease];
+      }
+    });
   }
 
   const handleViewDisease = (disease: Disease) => () => {
     setShowModalDisease(disease);
   }
 
-  const {
-    selectedBloque,
-    selectedCuadro,
-    selectedCama,
-    setActiveSegment
-  } = useMonitoringBloque();
   return (
     <div>
 
       <ReturnButtonC
         segmentReturn={'camas'}
       />
-      
+
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -55,7 +62,7 @@ const SegmentMonitoreoDiseases = () => {
             <DiseaseCard
               disease={disease}
               handleSelectDisease={handleSelectDisease}
-              selectedDisease={selectedDisease}
+              selectedDiseases={selectedDiseases}
             />
           </div>
         ) : (
@@ -64,7 +71,7 @@ const SegmentMonitoreoDiseases = () => {
               <DiseaseCard
                 disease={disease}
                 handleSelectDisease={handleSelectDisease}
-                selectedDisease={selectedDisease}
+                selectedDiseases={selectedDiseases}
               />
               <IonButton fill="clear" expand='block'
                 onClick={handleViewDisease(disease)}
@@ -90,17 +97,17 @@ const SegmentMonitoreoDiseases = () => {
 export default SegmentMonitoreoDiseases;
 
 
-const DiseaseCard = ({ disease, handleSelectDisease, selectedDisease }:
+const DiseaseCard = ({ disease, handleSelectDisease, selectedDiseases }:
   {
     disease: Disease,
     handleSelectDisease: (disease: Disease) => () => void
-    selectedDisease: Disease | undefined
+    selectedDiseases: Disease[]
 
   }
 ) => {
   return (
-    <IonCard key={disease.id} onClick={handleSelectDisease(disease)}
-      color={selectedDisease?.id == disease.id ? 'primary' : ''}
+    <IonCard onClick={handleSelectDisease(disease)}
+      color={selectedDiseases.some((diseaseArr) => diseaseArr.id == disease.id) ? 'medium' : ''}
     >
       <IonCardHeader>
         <IonCardTitle>{disease.name}</IonCardTitle>

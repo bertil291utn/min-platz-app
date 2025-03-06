@@ -1,12 +1,18 @@
 import ReturnButtonC from './ReturnButtonC';
-import { IonContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonTextarea, IonGrid, IonRow, IonCol, IonLabel } from '@ionic/react';
+import { IonContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonTextarea, IonGrid, IonRow, IonCol, IonLabel, IonButton } from '@ionic/react';
 import { useState } from 'react';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 
 const SegmentMonitoreoOptions = () => {
-  const [selectedLevel, setSelectedLevel] = useState<number>(2);
+  const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
   const [notes, setNotes] = useState<string>('');
-  const { selectedDisease } = useMonitoringBloque();
+  const { selectedDiseases, selectedCuadro, setActiveSegment } = useMonitoringBloque();
+
+  const handleSubmitCuadro = () => {
+
+  }
+
+
   return (
     <div>
       <ReturnButtonC
@@ -16,15 +22,15 @@ const SegmentMonitoreoOptions = () => {
       {/* content */}
       <div style={{ margin: '1rem 0' }}>
         {
-          selectedDisease?.folderName === 'acaros' &&
+          selectedDiseases.some((diseaseArr) => diseaseArr.folderName === 'acaros') &&
           <>
             <IonLabel>Seleccione el nivel donde se encuentra los acaros</IonLabel>
             <br />
             <br />
-            {[1, 2, 3].map((level: any) => (
+            {[1, 2, 3].map((level) => (
               <IonCard
-                onClick={() => setSelectedLevel(level)}
-                color={selectedLevel === level ? 'primary' : ''}
+                onClick={() => setSelectedAcarosLevel(level)}
+                color={selectedAcarosLevel === level ? 'medium' : ''}
                 button={true}
               >
                 <IonCardHeader>
@@ -43,6 +49,17 @@ const SegmentMonitoreoOptions = () => {
           rows={4}
           autoGrow={true}
         ></IonTextarea>
+        <br />
+
+        <IonLabel>Vas a guardar estas enfermedades:</IonLabel>
+        <ul onClick={() => setActiveSegment('diseases')}>
+          {selectedDiseases.map((disease) =>
+            <li>{`${disease.name} ${disease.folderName == 'acaros' ? 'nivel ' + selectedAcarosLevel : ''}`}</li>
+          )}
+        </ul>
+        <IonButton expand="block" onClick={handleSubmitCuadro}>
+          guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''} cuadro #{selectedCuadro}
+        </IonButton>
       </div>
     </div>
   );
