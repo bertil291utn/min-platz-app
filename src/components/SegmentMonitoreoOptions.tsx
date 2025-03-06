@@ -7,6 +7,7 @@ import LabelMonitoring from './LabelMonitoring';
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
   const [notes, setNotes] = useState<string>('');
+  const [showTextarea, setShowTextarea] = useState<boolean>(false);
   const { selectedDiseases, selectedCuadro, setActiveSegment } = useMonitoringBloque();
 
   const handleSubmitCuadro = () => {
@@ -44,14 +45,23 @@ const SegmentMonitoreoOptions = () => {
           </>
         }
         <br />
-        <IonTextarea
-          fill='outline'
-          placeholder="Notas adicionales"
-          value={notes}
-          onIonChange={e => setNotes(e.detail.value!)}
-          rows={4}
-          autoGrow={true}
-        ></IonTextarea>
+        <IonButton 
+          fill="outline" 
+          expand="block" 
+          onClick={() => setShowTextarea(!showTextarea)}
+        >
+          {showTextarea ? 'Ocultar notas' : 'Agregar notas'}
+        </IonButton>
+        {showTextarea && (
+          <IonTextarea
+            fill='outline'
+            placeholder="Notas adicionales"
+            value={notes}
+            onIonChange={e => setNotes(e.detail.value!)}
+            rows={4}
+            autoGrow={true}
+          ></IonTextarea>
+        )}
         <br />
 
         <IonLabel>Vas a guardar estas enfermedades en el cuadro #{selectedCuadro}</IonLabel>
