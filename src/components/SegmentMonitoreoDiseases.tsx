@@ -5,17 +5,15 @@ import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonItemDivide
 import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
 import { useAuth } from '../contexts/AuthContext';
-import { arrowBack } from 'ionicons/icons';
+import {  arrowForward } from 'ionicons/icons';
 import ReturnButtonC from './ReturnButtonC';
+import LabelMonitoring from './LabelMonitoring';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
   const { setSelectedDiseases, selectedDiseases,
-    selectedBloque,
-    selectedCuadro,
-    selectedCama,
     setActiveSegment,
-   } = useMonitoringBloque();
+  } = useMonitoringBloque();
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const { expertUser } = useAuth();
 
@@ -38,48 +36,47 @@ const SegmentMonitoreoDiseases = () => {
 
   return (
     <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <ReturnButtonC
+          segmentReturn={'camas'}
+        />
 
-      <ReturnButtonC
-        segmentReturn={'camas'}
-      />
-
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '1rem'
-      }}>
-        <h1 style={{ fontWeight: 'bold' }}>Cuadro #{selectedCuadro}</h1>
-        <h2 style={{ fontSize: '0.875rem', color: '#6B7280' }}>{selectedBloque?.name}</h2>
-        <h1 style={{ fontWeight: 'bold' }}>Cama #{selectedCama}</h1>
+        <IonButton fill="clear" onClick={() => setActiveSegment('options')}>
+          <IonIcon slot="end" icon={arrowForward}></IonIcon>
+          avanzar
+        </IonButton>
       </div>
 
+      <LabelMonitoring/>
       <p>Seleccione enfermedad</p>
       <br />
-      {diseasesArr.map((disease) => (
-        expertUser ? (
-          <div key={disease.id}>
-            <DiseaseCard
-              disease={disease}
-              handleSelectDisease={handleSelectDisease}
-              selectedDiseases={selectedDiseases}
-            />
-          </div>
-        ) : (
-          <IonItemDivider key={disease.id}>
-            <div style={{ display: 'flex', flexDirection: 'column', width: '100%', padding: '1rem 0' }}>
+
+      <div style={{ height: '60vh', overflowY: 'scroll' }}>
+        {diseasesArr.map((disease) => (
+          expertUser ? (
+            <div key={disease.id}>
               <DiseaseCard
                 disease={disease}
                 handleSelectDisease={handleSelectDisease}
                 selectedDiseases={selectedDiseases}
               />
-              <IonButton fill="clear" expand='block'
-                onClick={handleViewDisease(disease)}
-              >ver como son {disease.name}?</IonButton>
             </div>
-          </IonItemDivider>
-        )
-      ))}
+          ) : (
+            <IonItemDivider key={disease.id}>
+              <div style={{ display: 'flex', flexDirection: 'column', width: '100%', padding: '1rem 0' }}>
+                <DiseaseCard
+                  disease={disease}
+                  handleSelectDisease={handleSelectDisease}
+                  selectedDiseases={selectedDiseases}
+                />
+                <IonButton fill="clear" expand='block'
+                  onClick={handleViewDisease(disease)}
+                >ver como son {disease.name}?</IonButton>
+              </div>
+            </IonItemDivider>
+          )
+        ))}
+      </div>
 
       {
         showModalDisease &&

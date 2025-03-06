@@ -1,7 +1,8 @@
 import ReturnButtonC from './ReturnButtonC';
-import { IonContent, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonTextarea, IonGrid, IonRow, IonCol, IonLabel, IonButton } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton } from '@ionic/react';
 import { useState } from 'react';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import LabelMonitoring from './LabelMonitoring';
 
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
@@ -19,6 +20,8 @@ const SegmentMonitoreoOptions = () => {
         segmentReturn={'diseases'}
       />
 
+
+      <LabelMonitoring />
       {/* content */}
       <div style={{ margin: '1rem 0' }}>
         {

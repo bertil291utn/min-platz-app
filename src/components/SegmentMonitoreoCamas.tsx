@@ -1,9 +1,10 @@
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
-import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
+import { addCircle, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import ReturnButtonC from './ReturnButtonC';
+import LabelMonitoring from './LabelMonitoring';
 
 const SegmentMonitoreoCamas = () => {
   const {
@@ -43,16 +44,8 @@ const SegmentMonitoreoCamas = () => {
           <ReturnButtonC
             segmentReturn={'bloques'}
           />
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1rem'
-          }}>
-            {selectedCuadro ? <h1 style={{ fontWeight: 'bold' }}>Cuadro #{selectedCuadro}</h1> : null}
-            <h2 style={{ fontSize: '0.875rem', color: '#6B7280' }}>{selectedBloque?.name}</h2>
-            <h1 style={{ fontWeight: 'bold' }}>Cama #{selectedCama}</h1>
-          </div>
+          <LabelMonitoring/>
+
           <br />
           <IonLabel>Seleccione numero de cama</IonLabel>
           <br />
