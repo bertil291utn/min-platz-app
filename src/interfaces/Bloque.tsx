@@ -10,4 +10,4 @@ export interface Bloque {
 }
 
 
-export type SegmentBloque = 'bloques' | 'camas' | 'diseases';
+export type SegmentBloque = 'bloques' | 'camas' | 'diseases' | 'options';

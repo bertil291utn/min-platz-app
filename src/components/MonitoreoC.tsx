@@ -4,9 +4,10 @@ import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import { SegmentBloque } from '../interfaces/Bloque';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
+import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
 
 const MonitoreoContent = () => {
-  const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro } = useMonitoringBloque();
+  const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro,selectedDisease } = useMonitoringBloque();
 
 
   return (
@@ -23,6 +24,9 @@ const MonitoreoContent = () => {
             {selectedCuadro && <IonSegmentButton value="diseases">
               <IonLabel>enfermedad</IonLabel>
             </IonSegmentButton>}
+            {selectedDisease && <IonSegmentButton value="options">
+              <IonLabel>opciones</IonLabel>
+            </IonSegmentButton>}
           </IonSegment>
         </IonToolbar>
       </IonHeader>
@@ -31,6 +35,7 @@ const MonitoreoContent = () => {
         {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
+        {activeSegment === 'options' && <SegmentMonitoreoOptions />}
       </div>
     </div>
   );
