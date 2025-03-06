@@ -1,19 +1,39 @@
 import ReturnButtonC from './ReturnButtonC';
 import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton } from '@ionic/react';
 import { useState } from 'react';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import LabelMonitoring from './LabelMonitoring';
+import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { CuadroMonitored } from '../interfaces/Monitoring';
 
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
   const [notes, setNotes] = useState<string>('');
   const [showTextarea, setShowTextarea] = useState<boolean>(false);
-  const { selectedDiseases, selectedCuadro, setActiveSegment } = useMonitoringBloque();
+  const {
+    selectedDiseases,
+    selectedCuadro,
+    setActiveSegment,
+    selectedBloque,
+    selectedCama,
+    updateMonitoring
+  } = useMonitoringBloque();
 
-  const handleSubmitCuadro = () => {
+  const handleSubmitCuadro = async () => {
+    const newCuadro: CuadroMonitored = {
+      id: selectedCuadro || 1,
+      name: `Cuadro ${selectedCuadro}`,
+      diseases: selectedDiseases.map(disease => (
+        {
+          ...disease,
+          level: disease.folderName === 'acaros' ? selectedAcarosLevel : 0
+        }
+      )),
+      notes: notes || undefined
+    };
 
+    await updateMonitoring(selectedBloque?.id as number, selectedCama, newCuadro);
+    // setActiveSegment('diseases');
   }
-
 
   return (
     <div>
@@ -36,6 +56,7 @@ const SegmentMonitoreoOptions = () => {
                 onClick={() => setSelectedAcarosLevel(level)}
                 color={selectedAcarosLevel === level ? 'medium' : ''}
                 button={true}
+                key={level}
               >
                 <IonCardHeader>
                   <IonCardTitle>Nivel {level}</IonCardTitle>
@@ -45,9 +66,9 @@ const SegmentMonitoreoOptions = () => {
           </>
         }
         <br />
-        <IonButton 
-          fill="outline" 
-          expand="block" 
+        <IonButton
+          fill="outline"
+          expand="block"
           onClick={() => setShowTextarea(!showTextarea)}
         >
           {showTextarea ? 'Ocultar notas' : 'Agregar notas'}
@@ -57,9 +78,10 @@ const SegmentMonitoreoOptions = () => {
             fill='outline'
             placeholder="Notas adicionales"
             value={notes}
-            onIonChange={e => setNotes(e.detail.value!)}
+            onIonChange={e => setNotes(e.detail.value as string)}
             rows={4}
             autoGrow={true}
+            name='notes'
           ></IonTextarea>
         )}
         <br />
