@@ -47,7 +47,7 @@ const SegmentMonitoreoCamas = () => {
     const bloqueIndex = parsedData?.findIndex(b => b.id == selectedBloque?.id)
     const bloque = parsedData[bloqueIndex]
     const camasIndex = bloque?.camas?.findIndex(c => c.id == selectedCama)
-    if (camasIndex == -1) return
+    if (camasIndex == -1) { setActiveSegment('diseases'); return }
     const cama = bloque?.camas[camasIndex]
     const IsCuadroMonitoreado = cama?.cuadros?.findIndex(c => c.id == cuadro) ?? -1;
 

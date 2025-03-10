@@ -30,6 +30,8 @@ const SegmentMonitoreoOptions = () => {
     const cuadro = selectedCuadros[cuadroIndex]
     setNotes(cuadro?.notes as string)
     setShowTextarea(!!cuadro?.notes)
+    const acaros = cuadro.diseases.find(c => c.folderName == 'acaros')
+    setSelectedAcarosLevel(acaros?.level as number)
 
   }, [])
 

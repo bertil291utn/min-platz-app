@@ -4,10 +4,22 @@ import { Bloque } from '../interfaces/Bloque';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 
 const SegmentMonitoreoBloques = () => {
-  const { selectedBloque, setSelectedBloque, setActiveSegment } = useMonitoringBloque();
+  const {
+    selectedBloque,
+    setSelectedBloque,
+    setActiveSegment,
+    setSelectedDiseases,
+    setSelectedCuadros,
+    setSelectedCuadro,
+    setSelectedCama
+  } = useMonitoringBloque();
   const { activeBloques } = useBloqueInfo();
 
   const handleChangeSegment = (bloque: Bloque) => () => {
+    setSelectedDiseases([]);
+    setSelectedCuadros([]);
+    setSelectedCuadro(undefined);
+    setSelectedCama(1)
     setSelectedBloque(bloque);
     setActiveSegment('camas');
   }
