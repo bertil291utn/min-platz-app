@@ -1,10 +1,11 @@
 import { IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
-import { NUMERO_MAX, NUMERO_MIN } from '../helpers/bloquesConstant';
+import { NUMERO_MAX, NUMERO_MIN, STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
+import { BloqueMonitored } from '../interfaces/Monitoring';
 
 const SegmentMonitoreoCamas = () => {
   const {
@@ -13,7 +14,9 @@ const SegmentMonitoreoCamas = () => {
     selectedCuadro,
     setSelectedCama,
     selectedCama,
-    setActiveSegment
+    setActiveSegment,
+    setSelectedDiseases,
+    setSelectedCuadros
   } = useMonitoringBloque();
 
 
@@ -32,8 +35,23 @@ const SegmentMonitoreoCamas = () => {
 
 
   const handleSelectCuadro = (cuadro: number) => () => {
+    setSelectedDiseases([])
     setSelectedCuadro(cuadro);
     setActiveSegment('diseases');
+    const existingData = localStorage.getItem(STORE_MONITORED_VAR);
+
+    if (!existingData) return;
+    const parsedData: BloqueMonitored[] = JSON.parse(existingData);
+    const bloqueIndex = parsedData?.findIndex(b => b.id == selectedBloque?.id)
+    const bloque = parsedData[bloqueIndex]
+    const camasIndex = bloque?.camas?.findIndex(c => c.id == selectedCama)
+    if (camasIndex == -1) return
+    const cama = bloque?.camas[camasIndex]
+    const cuadroIndex = cama?.cuadros?.findIndex(c => c.id == cuadro)
+    setSelectedCuadros(cama?.cuadros)
+    setSelectedDiseases(cama?.cuadros[cuadroIndex].diseases || []);
+
+
   }
 
   return (

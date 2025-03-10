@@ -1,6 +1,6 @@
 import ReturnButtonC from './ReturnButtonC';
 import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton, IonToast } from '@ionic/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LabelMonitoring from './LabelMonitoring';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { CuadroMonitored } from '../interfaces/Monitoring';
@@ -19,9 +19,21 @@ const SegmentMonitoreoOptions = () => {
     selectedCama,
     updateMonitoring,
     setSelectedDiseases,
-    setSelectedCuadro
-
+    setSelectedCuadro,
+    selectedCuadros
   } = useMonitoringBloque();
+
+  useEffect(() => {
+    if (selectedCuadros.length == 0) return
+    const cuadroIndex = selectedCuadros?.findIndex(c => c.id == selectedCuadro)
+    if (cuadroIndex == -1) return;
+    const cuadro = selectedCuadros[cuadroIndex]
+    setNotes(cuadro?.notes as string)
+    setShowTextarea(!!cuadro?.notes)
+
+  }, [])
+
+
 
   const handleSubmitCuadro = async () => {
     const newCuadro: CuadroMonitored = {

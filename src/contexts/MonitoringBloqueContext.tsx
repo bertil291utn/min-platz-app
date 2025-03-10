@@ -13,6 +13,8 @@ interface MonitoringBloqueContextType {
   setSelectedCama: Dispatch<SetStateAction<number>>;
   selectedDiseases: Disease[];
   setSelectedDiseases: Dispatch<SetStateAction<Disease[]>>;
+  selectedCuadros: CuadroMonitored[];
+  setSelectedCuadros: Dispatch<SetStateAction<CuadroMonitored[]>>;
   activeSegment: SegmentBloque;
   setActiveSegment: (segment: SegmentBloque) => void;
   updateMonitoring: (bloqueId: number, camaId: number, newCuadro: CuadroMonitored) => Promise<void>;
@@ -36,6 +38,7 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
   const [selectedCuadro, setSelectedCuadro] = useState<number>();
   const [selectedCama, setSelectedCama] = useState(1);
   const [selectedDiseases, setSelectedDiseases] = useState<Disease[]>([]);
+  const [selectedCuadros, setSelectedCuadros] = useState<CuadroMonitored[]>([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [bloquesMonitored, setBloquesMonitored] = useState<BloqueMonitored[]>([]);
 
@@ -57,10 +60,10 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
     let bloqueIndex = updatedBloques.findIndex(b => b.id === bloqueId);
     if (bloqueIndex === -1) {
       updatedBloques.push({
-      id: bloqueId,
-      name: `Bloque ${bloqueId}`,
-      dateMonitoring: new Date().toISOString(),
-      camas: []
+        id: bloqueId,
+        name: `Bloque ${bloqueId}`,
+        dateMonitoring: new Date().toISOString(),
+        camas: []
       });
       bloqueIndex = updatedBloques.length - 1;
     }
@@ -69,9 +72,9 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
     let cama = updatedBloques[bloqueIndex].camas.find(c => c.id === camaId);
     if (!cama) {
       updatedBloques[bloqueIndex].camas.push({
-      id: camaId,
-      name:`Cama ${camaId}`,
-      cuadros: []
+        id: camaId,
+        name: `Cama ${camaId}`,
+        cuadros: []
       });
       cama = updatedBloques[bloqueIndex].camas[updatedBloques[bloqueIndex].camas.length - 1];
     }
@@ -127,10 +130,12 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       setSelectedCama,
       selectedDiseases,
       setSelectedDiseases,
-      updateMonitoring, 
+      updateMonitoring,
       syncWithDatabase,
       isOnline,
-      bloquesMonitored
+      bloquesMonitored,
+      selectedCuadros,
+      setSelectedCuadros
     }}>
       {children}
     </MonitoringBloqueContext.Provider>
