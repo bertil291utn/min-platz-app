@@ -1,13 +1,15 @@
 import ReturnButtonC from './ReturnButtonC';
-import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton, IonToast } from '@ionic/react';
 import { useState } from 'react';
 import LabelMonitoring from './LabelMonitoring';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { CuadroMonitored } from '../interfaces/Monitoring';
+import { sleep } from '../helpers/regularHelper';
 
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
   const [notes, setNotes] = useState<string>('');
+  const [IsToastOpen, setIsToastOpen] = useState(false);
   const [showTextarea, setShowTextarea] = useState<boolean>(false);
   const {
     selectedDiseases,
@@ -15,7 +17,10 @@ const SegmentMonitoreoOptions = () => {
     setActiveSegment,
     selectedBloque,
     selectedCama,
-    updateMonitoring
+    updateMonitoring,
+    setSelectedDiseases,
+    setSelectedCuadro
+
   } = useMonitoringBloque();
 
   const handleSubmitCuadro = async () => {
@@ -32,11 +37,16 @@ const SegmentMonitoreoOptions = () => {
     };
 
     await updateMonitoring(selectedBloque?.id as number, selectedCama, newCuadro);
-    // setActiveSegment('diseases');
+    setIsToastOpen(true);
+
+    await sleep(3);
+    setActiveSegment('camas');
+    setSelectedDiseases([]);
+    setSelectedCuadro(undefined);
   }
 
   return (
-    <div>
+    <>
       <ReturnButtonC
         segmentReturn={'diseases'}
       />
@@ -98,7 +108,13 @@ const SegmentMonitoreoOptions = () => {
           guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''}
         </IonButton>
       </div>
-    </div>
+      <IonToast
+        isOpen={IsToastOpen}
+        message={`Monitoreo de cuadro #${selectedCuadro} guardado`}
+        onDidDismiss={() => setIsToastOpen(false)}
+        duration={3000}
+      ></IonToast>
+    </>
   );
 }
 
