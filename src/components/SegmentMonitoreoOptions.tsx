@@ -122,7 +122,7 @@ const SegmentMonitoreoOptions = () => {
       </div>
       <IonToast
         isOpen={IsToastOpen}
-        message={`Monitoreo de cuadro #${selectedCuadro} guardado`}
+        message={`Monitoreo de cuadro #${selectedCuadro}, cama #${selectedCama} guardado`}
         onDidDismiss={() => setIsToastOpen(false)}
         duration={3000}
       ></IonToast>
