@@ -2,6 +2,7 @@ import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, 
 import { Bloque, SegmentBloque } from '../interfaces/Bloque';
 import { Disease } from '../interfaces/Diseases';
 import { BloqueMonitored, CuadroMonitored } from '../interfaces/Monitoring';
+import { STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
 
 interface MonitoringBloqueContextType {
   selectedBloque: Bloque | undefined;
@@ -82,10 +83,9 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
     } else {
       cama.cuadros.push(newCuadro);
     }
-    console.log(updatedBloques)
     // Update local state and storage
     setBloquesMonitored(updatedBloques);
-    localStorage.setItem('monitoring', JSON.stringify(updatedBloques));
+    localStorage.setItem(STORE_MONITORED_VAR, JSON.stringify(updatedBloques));
 
     // If online, sync with database
     if (isOnline) {
@@ -108,7 +108,7 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       });
       const updatedData = await response.json();
       setBloquesMonitored(updatedData);
-      localStorage.setItem('monitoring', JSON.stringify(updatedData));
+      localStorage.setItem(STORE_MONITORED_VAR, JSON.stringify(updatedData));
     } catch (error) {
       console.error('Failed to sync with database:', error);
     }

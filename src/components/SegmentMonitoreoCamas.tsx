@@ -44,7 +44,7 @@ const SegmentMonitoreoCamas = () => {
           <ReturnButtonC
             segmentReturn={'bloques'}
           />
-          <LabelMonitoring/>
+          <LabelMonitoring />
 
           <br />
           <IonLabel>Seleccione numero de cama</IonLabel>
@@ -76,9 +76,8 @@ const SegmentMonitoreoCamas = () => {
                   <IonLabel>
                     {index + 1 <= Math.ceil(selectedBloque.numCuadrosPerCama / 2)
                       ? `${getSpanishOrdinal(index + 1)} cuadro desde entrada`
-                      : index + 1 === selectedBloque.numCuadrosPerCama
-                        ? 'Último cuadro desde salida'
-                        : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`}
+                      : `${getSpanishOrdinal(selectedBloque.numCuadrosPerCama - index)} cuadro desde salida`
+                    }
                   </IonLabel>
                 </IonButton>
               ))}

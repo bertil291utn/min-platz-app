@@ -4,3 +4,4 @@ export const NUMERO_MIN = 1;
 export const NUMERO_MAX = 1000;
 
 export const BLOQUE_KEY_LOCAL_STORAGE = 'bloques';
+export const STORE_MONITORED_VAR = 'monitoring';
