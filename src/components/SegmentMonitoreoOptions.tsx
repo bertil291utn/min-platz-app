@@ -1,5 +1,5 @@
 import ReturnButtonC from './ReturnButtonC';
-import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton, IonToast } from '@ionic/react';
+import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton, IonToast, IonSpinner } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import LabelMonitoring from './LabelMonitoring';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
@@ -11,6 +11,7 @@ const SegmentMonitoreoOptions = () => {
   const [notes, setNotes] = useState<string>('');
   const [IsToastOpen, setIsToastOpen] = useState(false);
   const [showTextarea, setShowTextarea] = useState<boolean>(false);
+  const [loadingForm, setLoadingForm] = useState<boolean>(false);
   const {
     selectedDiseases,
     selectedCuadro,
@@ -38,6 +39,7 @@ const SegmentMonitoreoOptions = () => {
 
 
   const handleSubmitCuadro = async () => {
+    setLoadingForm(true)
     const newCuadro: CuadroMonitored = {
       id: selectedCuadro || 1,
       name: `Cuadro ${selectedCuadro}`,
@@ -50,13 +52,20 @@ const SegmentMonitoreoOptions = () => {
       notes: notes || undefined
     };
 
-    await updateMonitoring(selectedBloque?.id as number, selectedCama, newCuadro);
-    setIsToastOpen(true);
+    try {
+      await updateMonitoring(selectedBloque?.id as number, selectedCama, newCuadro);
+      setIsToastOpen(true);
+      await sleep(3);
+      setActiveSegment('camas');
+      setSelectedDiseases([]);
+      setSelectedCuadro(undefined);
+    } catch (error) {
+      setLoadingForm(false)
+    }
+    finally {
+      setLoadingForm(false)
+    }
 
-    await sleep(3);
-    setActiveSegment('camas');
-    setSelectedDiseases([]);
-    setSelectedCuadro(undefined);
   }
 
   return (
@@ -118,8 +127,16 @@ const SegmentMonitoreoOptions = () => {
             </li>
           )}
         </ul>
-        <IonButton expand="block" onClick={handleSubmitCuadro}>
-          guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''}
+        <IonButton expand="block" onClick={handleSubmitCuadro} disabled={loadingForm}>
+          {!loadingForm ?
+            <IonLabel>
+              guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''}
+            </IonLabel>
+            :
+            <>
+              <IonLabel>guardando</IonLabel><IonSpinner name="dots"></IonSpinner>
+            </>
+          }
         </IonButton>
       </div>
       <IonToast
