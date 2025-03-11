@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   IonHeader,
   IonToolbar,
@@ -24,10 +24,10 @@ import {
   IonNote,
   IonTitle
 } from '@ionic/react';
-import { 
-  calendarOutline, 
-  filterOutline, 
-  searchOutline, 
+import {
+  calendarOutline,
+  filterOutline,
+  searchOutline,
   arrowBackOutline,
   leafOutline
 } from 'ionicons/icons';
@@ -42,14 +42,21 @@ const ViewMonitoredC: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [dateFilter, setDateFilter] = useState<string | null>(null);
 
+  const { getMonitoredBloques } = useMonitoringBloque();
+
+  useEffect(() => {
+    getMonitoredBloques();
+  }, [])
+
+
   // Filter bloques by search text and date
   const filteredBloques = bloquesMonitored.filter(bloque => {
-    const matchesSearch = searchText === '' || 
+    const matchesSearch = searchText === '' ||
       bloque.name.toLowerCase().includes(searchText.toLowerCase());
-    
-    const matchesDate = !dateFilter || 
+
+    const matchesDate = !dateFilter ||
       new Date(bloque.dateMonitoring).toDateString() === new Date(dateFilter).toDateString();
-    
+
     return matchesSearch && matchesDate;
   });
 
@@ -105,8 +112,8 @@ const ViewMonitoredC: React.FC = () => {
                   onIonChange={e => setDateFilter(typeof e.detail.value === 'string' ? e.detail.value : null)}
                 />
                 {dateFilter && (
-                  <IonButton 
-                    fill="clear" 
+                  <IonButton
+                    fill="clear"
                     onClick={() => setDateFilter(null)}
                   >
                     Limpiar filtro
@@ -128,9 +135,9 @@ const ViewMonitoredC: React.FC = () => {
       ) : (
         <IonList>
           {filteredBloques.map(bloque => (
-            <IonItem 
-              key={`${bloque.id}-${bloque.dateMonitoring}`} 
-              button 
+            <IonItem
+              key={`${bloque.id}-${bloque.dateMonitoring}`}
+              button
               onClick={() => setSelectedBloque(bloque)}
             >
               <IonLabel>
@@ -150,7 +157,7 @@ const ViewMonitoredC: React.FC = () => {
   // Render the details of a selected bloque
   const renderBloqueDetails = () => {
     if (!selectedBloque) return null;
-    
+
     return (
       <>
         <IonHeader>
@@ -165,9 +172,9 @@ const ViewMonitoredC: React.FC = () => {
 
         <IonList>
           {selectedBloque.camas.map(cama => (
-            <IonItem 
-              key={cama.id} 
-              button 
+            <IonItem
+              key={cama.id}
+              button
               onClick={() => setSelectedCama(cama)}
             >
               <IonLabel>
@@ -187,7 +194,7 @@ const ViewMonitoredC: React.FC = () => {
   // Render the details of a selected cama
   const renderCamaDetails = () => {
     if (!selectedCama) return null;
-    
+
     return (
       <>
         <IonHeader>
@@ -201,9 +208,9 @@ const ViewMonitoredC: React.FC = () => {
 
         <IonList>
           {selectedCama.cuadros.map(cuadro => (
-            <IonItem 
-              key={cuadro.id} 
-              button 
+            <IonItem
+              key={cuadro.id}
+              button
               onClick={() => setSelectedCuadro(cuadro)}
             >
               <IonLabel>
@@ -223,7 +230,7 @@ const ViewMonitoredC: React.FC = () => {
   // Render the details of a selected cuadro
   const renderCuadroDetails = () => {
     if (!selectedCuadro) return null;
-    
+
     return (
       <>
         <IonHeader>
@@ -267,8 +274,8 @@ const ViewMonitoredC: React.FC = () => {
                         <p>Carpeta: {disease.folderName}</p>
                       </IonLabel>
                       {disease.level !== undefined && (
-                        <IonBadge 
-                          color={disease.level > 2 ? "danger" : disease.level > 1 ? "warning" : "success"} 
+                        <IonBadge
+                          color={disease.level > 2 ? "danger" : disease.level > 1 ? "warning" : "success"}
                           slot="end"
                         >
                           Nivel {disease.level}

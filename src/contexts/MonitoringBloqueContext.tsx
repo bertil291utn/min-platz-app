@@ -21,6 +21,7 @@ interface MonitoringBloqueContextType {
   syncWithDatabase: () => Promise<void>;
   isOnline: boolean;
   bloquesMonitored: BloqueMonitored[];
+  getMonitoredBloques:()=>void
 }
 
 const MonitoringBloqueContext = createContext<MonitoringBloqueContextType | undefined>(undefined);
@@ -118,6 +119,25 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
   };
 
 
+  const getMonitoredBloques = async () => {
+    const localBloques = localStorage.getItem(STORE_MONITORED_VAR);
+    if (navigator.onLine) {
+      // TODO: Replace with actual database fetch call
+      try {
+        const response = await fetch('/api/monitored-bloques');
+        const dbBloques = await response.json();
+        localStorage.setItem(STORE_MONITORED_VAR, JSON.stringify(dbBloques));
+        setBloquesMonitored(dbBloques);
+      } catch (error) {
+        if (localBloques) {
+          setBloquesMonitored(JSON.parse(localBloques));
+        }
+      }
+    } else if (localBloques) {
+      setBloquesMonitored(JSON.parse(localBloques));
+    }
+  }
+
   return (
     <MonitoringBloqueContext.Provider value={{
       selectedBloque,
@@ -135,7 +155,8 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       isOnline,
       bloquesMonitored,
       selectedCuadros,
-      setSelectedCuadros
+      setSelectedCuadros,
+      getMonitoredBloques
     }}>
       {children}
     </MonitoringBloqueContext.Provider>
