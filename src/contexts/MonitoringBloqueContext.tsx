@@ -62,7 +62,7 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       updatedBloques.push({
         id: bloqueId,
         name: `Bloque ${bloqueId}`,
-        dateMonitoring: new Date().toISOString(),
+        dateMonitoring: new Date(new Date().getTime() - 5 * 60 * 60 * 1000).toISOString(),
         camas: []
       });
       bloqueIndex = updatedBloques.length - 1;
