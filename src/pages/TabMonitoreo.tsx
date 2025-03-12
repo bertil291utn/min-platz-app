@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  IonContent, 
-  IonPage, 
+import {
+  IonContent,
+  IonPage,
   IonGrid,
   IonRow,
   IonCol,
@@ -30,36 +30,26 @@ const MonitoreoHome: React.FC = () => {
   const { url } = useRouteMatch();
 
   return (
-    <IonPage>
-      <IonContent fullscreen>
-        <IonGrid className="monitoring-cards">
-          <IonRow className="ion-justify-content-center">
-            <IonCol sizeMd="6" sizeSm="12">
-              <IonCard button onClick={() => history.push(`${url}/monitorear`)}>
-                <IonCardHeader>
-                  <IonIcon icon={clipboardOutline} size="large" color="primary" />
-                  <IonCardTitle>Monitorear</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  Iniciar nuevo monitoreo de bloques, camas y enfermedades
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-            <IonCol sizeMd="6" sizeSm="12">
-              <IonCard button onClick={() => history.push(`${url}/ver`)}>
-                <IonCardHeader>
-                  <IonIcon icon={eyeOutline} size="large" color="secondary" />
-                  <IonCardTitle>Ver Monitoreo</IonCardTitle>
-                </IonCardHeader>
-                <IonCardContent>
-                  Ver historial de monitoreos realizados anteriormente
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
-      </IonContent>
-    </IonPage>
+    <IonContent>
+      <IonCard button onClick={() => history.push(`${url}/monitorear`)}>
+        <IonCardHeader>
+          <IonIcon icon={clipboardOutline} size="large" color="primary" />
+          <IonCardTitle>Monitorear</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          Iniciar nuevo monitoreo de bloques, camas y enfermedades
+        </IonCardContent>
+      </IonCard>
+      <IonCard button onClick={() => history.push(`${url}/ver`)}>
+        <IonCardHeader>
+          <IonIcon icon={eyeOutline} size="large" color="secondary" />
+          <IonCardTitle>Ver Monitoreo</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          Ver historial de monitoreos realizados anteriormente
+        </IonCardContent>
+      </IonCard>
+    </IonContent>
   );
 };
 
@@ -90,22 +80,25 @@ const VerMonitoreoPage: React.FC = () => {
 // Main TabMonitoreo component with routing
 const TabMonitoreo: React.FC = () => {
   const { path } = useRouteMatch();
-  
+
   return (
-    <IonRouterOutlet>
-      <Route exact path={path}>
-        <MonitoreoHome />
-      </Route>
-      <Route path={`${path}/monitorear`}>
-        <MonitorearPage />
-      </Route>
-      <Route path={`${path}/ver`}>
-        <VerMonitoreoPage />
-      </Route>
-      <Route>
-        <Redirect to={path} />
-      </Route>
-    </IonRouterOutlet>
+    <IonPage>
+
+      <IonRouterOutlet>
+        <Route exact path={path}>
+          <MonitoreoHome />
+        </Route>
+        <Route  path={`${path}/monitorear`}>
+          <MonitorearPage />
+        </Route>
+        <Route  path={`${path}/ver`}>
+          <VerMonitoreoPage />
+        </Route>
+        <Route>
+          <Redirect to={path} />
+        </Route>
+      </IonRouterOutlet>
+    </IonPage>
   );
 };
 
