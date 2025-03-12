@@ -38,7 +38,7 @@ const Tabs: React.FC = () => {
           <Route exact path="/tabs/home">
             <TabHome logout={logout} />
           </Route>
-          <Route path="/tabs/monitoreo">
+          <Route exact path="/tabs/monitoreo">
             <TabMonitoreo />
           </Route>
           <Route exact path="/tabs/library">
