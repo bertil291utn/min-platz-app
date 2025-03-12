@@ -5,8 +5,14 @@ import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import { SegmentBloque } from '../interfaces/Bloque';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
+import { useEffect } from 'react';
 
 const MonitoreoContent = () => {
+ const { getMonitoredBloques } = useMonitoringBloque();
+  useEffect(() => {
+      getMonitoredBloques();
+    }, [])
+
   const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro, selectedDiseases } = useMonitoringBloque();
 
 
