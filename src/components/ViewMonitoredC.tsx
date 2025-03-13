@@ -100,7 +100,7 @@ const ViewMonitoredContent: React.FC = () => {
                 <h2>{bloque.name}</h2>
                 <p>{formatDate(bloque.dateMonitoring)}</p>
               </IonLabel>
-              <IonBadge color="primary" slot="end">
+              <IonBadge color="secondary" slot="end">
                 {bloque.camas.length} camas
               </IonBadge>
             </IonItem>
@@ -110,8 +110,8 @@ const ViewMonitoredContent: React.FC = () => {
     </>
   );
 
-  // Render the details of a selected bloque
-  const renderBloqueDetails = () => {
+  // Render the camas
+  const renderCamas = () => {
     if (!selectedBloque) return null;
 
     return (
@@ -122,7 +122,7 @@ const ViewMonitoredContent: React.FC = () => {
             <IonCardContent>
               <div>
                 <IonChip
-                  color="primary"
+                  color="secondary"
                   onClick={() => {
                     setActiveViewSegment('bloques');
                     setSelectedBloque(null);
@@ -159,8 +159,8 @@ const ViewMonitoredContent: React.FC = () => {
     );
   };
 
-  // Render the details of a selected cama
-  const renderCamaDetails = () => {
+  // Render the cuadros
+  const renderCuadroDetails = () => {
     if (!selectedCama) return null;
 
     return (
@@ -170,7 +170,7 @@ const ViewMonitoredContent: React.FC = () => {
             <IonCardContent>
               <div>
                 <IonChip
-                  color="primary"
+                  color="secondary"
                   onClick={() => {
                     setActiveViewSegment('bloques');
                     setSelectedBloque(null);
@@ -181,7 +181,6 @@ const ViewMonitoredContent: React.FC = () => {
                   <IonIcon icon={homeOutline} />
                   <IonLabel>{selectedBloque?.name}</IonLabel>
                 </IonChip>
-                <IonIcon icon="chevron-forward-outline" />
                 <IonChip color="secondary"
                   onClick={() => {
                     setActiveViewSegment('camas');
@@ -206,7 +205,7 @@ const ViewMonitoredContent: React.FC = () => {
                 <h2>{cuadro.name}</h2>
                 {cuadro.notes && <p>{cuadro.notes}</p>}
               </IonLabel>
-              <IonBadge color="tertiary" slot="end">
+              <IonBadge color="secondary" slot="end">
                 {cuadro.diseases.length} enfermedades
               </IonBadge>
             </IonItem>
@@ -216,8 +215,8 @@ const ViewMonitoredContent: React.FC = () => {
     );
   };
 
-  // Render the details of a selected cuadro
-  const renderCuadroDetails = () => {
+  // Render the details 
+  const renderDetails = () => {
     if (!selectedCuadro) return null;
 
     return (
@@ -227,7 +226,7 @@ const ViewMonitoredContent: React.FC = () => {
           <IonCardContent>
             <div>
               <IonChip
-                color="tertiary"
+                color="secondary"
                 onClick={() => {
                   setActiveViewSegment('bloques');
                   setSelectedBloque(null);
@@ -240,7 +239,7 @@ const ViewMonitoredContent: React.FC = () => {
               </IonChip>
               <IonIcon icon="chevron-forward-outline" />
               <IonChip
-                color="tertiary"
+                color="secondary"
                 onClick={() => {
                   setActiveViewSegment('camas');
                   setSelectedCuadro(null);
@@ -250,7 +249,7 @@ const ViewMonitoredContent: React.FC = () => {
                 <IonIcon icon={scanOutline} />
                 <IonLabel>{selectedCama?.name}</IonLabel>
               </IonChip>
-              <IonChip color="tertiary"
+              <IonChip color="secondary"
                 onClick={() => {
                   setActiveViewSegment('cuadros');
                   setSelectedCuadro(null);
@@ -341,9 +340,9 @@ const ViewMonitoredContent: React.FC = () => {
 
       <div className="ion-padding">
         {activeViewSegment === 'bloques' && renderBloquesList()}
-        {activeViewSegment === 'camas' && renderBloqueDetails()}
-        {activeViewSegment === 'cuadros' && renderCamaDetails()}
-        {activeViewSegment === 'details' && renderCuadroDetails()}
+        {activeViewSegment === 'camas' && renderCamas()}
+        {activeViewSegment === 'cuadros' && renderCuadroDetails()}
+        {activeViewSegment === 'details' && renderDetails()}
       </div>
     </div>
   );
