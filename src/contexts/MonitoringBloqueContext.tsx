@@ -3,6 +3,7 @@ import { Bloque, SegmentBloque, SegmentViewBloque } from '../interfaces/Bloque';
 import { Disease } from '../interfaces/Diseases';
 import { BloqueMonitored, CuadroMonitored } from '../interfaces/Monitoring';
 import { STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
+import { CURRENT_DATE_UTC5, getWeekNumber } from '../helpers/regularHelper';
 
 interface MonitoringBloqueContextType {
   selectedBloque: Bloque | undefined;
@@ -60,19 +61,36 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
     };
   }, []);
 
+  
 
   const updateMonitoring = async (bloqueId: number, camaId: number, newCuadro: CuadroMonitored) => {
     let updatedBloques = [...bloquesMonitored];
-    // Find or create bloque
-    let bloqueIndex = updatedBloques.findIndex(b => b.id === bloqueId);
+    const currentWeekNumber = getWeekNumber(CURRENT_DATE_UTC5);
+    
+    // First check if there's any bloque in the same week
+    let bloqueIndex = updatedBloques.findIndex(b => 
+      b.weekNumber === currentWeekNumber && b.id === bloqueId
+    );
+
+    // If no bloque found in current week, check if we need to create a new one
     if (bloqueIndex === -1) {
-      updatedBloques.push({
-        id: bloqueId,
-        name: `Bloque ${bloqueId}`,
-        dateMonitoring: new Date(new Date().getTime() - 5 * 60 * 60 * 1000).toISOString(),
-        camas: []
-      });
-      bloqueIndex = updatedBloques.length - 1;
+      // Check if this bloque ID exists in any week
+      const existingBloqueIndex = updatedBloques.findIndex(b => b.id === bloqueId);
+      
+      if (existingBloqueIndex === -1) {
+        // Bloque doesn't exist at all, create new one
+        updatedBloques.push({
+          id: bloqueId,
+          name: `Bloque ${bloqueId}`,
+          dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
+          weekNumber: currentWeekNumber,
+          camas: []
+        });
+        bloqueIndex = updatedBloques.length - 1;
+      } else {
+        // Bloque exists but in different week
+        bloqueIndex = existingBloqueIndex;
+      }
     }
 
     // Find or create cama
@@ -93,6 +111,7 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
     } else {
       cama.cuadros.push(newCuadro);
     }
+
     // Update local state and storage
     setBloquesMonitored(updatedBloques);
     localStorage.setItem(STORE_MONITORED_VAR, JSON.stringify(updatedBloques));

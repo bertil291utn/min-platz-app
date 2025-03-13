@@ -22,5 +22,6 @@ export interface BloqueMonitored {
   id: number;
   name: string;
   dateMonitoring: string;
+  weekNumber: number;
   camas: CamaMonitored[];
 }

@@ -38,7 +38,7 @@ const TabMonitoreo: React.FC = () => {
       <IonContent fullscreen>
         <IonCard onClick={handleModal('monitorear')}>
           <IonCardHeader>
-            <IonIcon icon={clipboardOutline} size="large" color="primary" />
+            <IonIcon icon={clipboardOutline} size="large" color="secondary" />
             <IonCardTitle>Monitorear</IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
