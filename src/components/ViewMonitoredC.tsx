@@ -15,6 +15,9 @@ import {
   IonText,
   IonSegment,
   IonSegmentButton,
+  IonItemGroup,
+  IonItemDivider,
+  IonNote,
 } from '@ionic/react';
 import {
   leafOutline,
@@ -73,10 +76,20 @@ const ViewMonitoredContent: React.FC = () => {
     });
   };
 
+  const groupedByWeek = Object.entries(
+    bloquesMonitored.reduce((acc, bloque) => {
+      const week = bloque.weekNumber || 0;
+      if (!acc[week]) {
+        acc[week] = [];
+      }
+      acc[week].push(bloque);
+      return acc;
+    }, {} as { [key: number]: typeof bloquesMonitored })
+  ).sort(([weekA], [weekB]) => Number(weekB) - Number(weekA))
+
   // Render the list of bloques
   const renderBloquesList = () => (
     <>
-
       {bloquesMonitored.length === 0 ? (
         <div className="ion-padding ion-text-center">
           <IonText color="medium">
@@ -86,24 +99,41 @@ const ViewMonitoredContent: React.FC = () => {
         </div>
       ) : (
         <IonList>
-          {bloquesMonitored.map(bloque => (
-            <IonItem
-              key={`${bloque.id}-${bloque.dateMonitoring}`}
-              button
-              onClick={() => {
-                setSelectedBloque(bloque);
-                setActiveViewSegment('camas');
-                setSelectedBloque(bloque);
-              }}
-            >
-              <IonLabel>
-                <h2>{bloque.name}</h2>
-                <p>{formatDate(bloque.dateMonitoring)}</p>
-              </IonLabel>
-              <IonBadge color="secondary" slot="end">
-                {bloque.camas.length} camas
-              </IonBadge>
-            </IonItem>
+          {groupedByWeek.map(([week, bloques]) => (
+            <React.Fragment key={week}>
+              <IonItemGroup>
+                <IonItemDivider sticky color="light">
+                  <IonLabel>
+                    <h2>Semana {week}</h2>
+                    <IonNote slot="end">
+                      {bloques.length} {bloques.length === 1 ? 'bloque' : 'bloques'}
+                    </IonNote>
+                  </IonLabel>
+                </IonItemDivider>
+
+                {bloques.map(bloque => (
+                  <IonItem
+                    key={`${bloque.id}-${bloque.dateMonitoring}`}
+                    button
+                    detail
+                    onClick={() => {
+                      setSelectedBloque(bloque);
+                      setActiveViewSegment('camas');
+                      setSelectedBloque(bloque);
+                    }}
+                  >
+                    <IonLabel>
+                      <h2>{bloque.name}</h2>
+                      <IonNote>{formatDate(bloque.dateMonitoring)}</IonNote>
+                    </IonLabel>
+                    <IonChip color="secondary" slot="end">
+                      <IonIcon icon={scanOutline} />
+                      <IonLabel>{bloque.camas.length}</IonLabel>
+                    </IonChip>
+                  </IonItem>
+                ))}
+              </IonItemGroup>
+            </React.Fragment>
           ))}
         </IonList>
       )}
@@ -323,7 +353,7 @@ const ViewMonitoredContent: React.FC = () => {
             scrollable
           >
             <IonSegmentButton value="bloques">
-              <IonLabel>Bloques</IonLabel>
+              <IonLabel>Semanas</IonLabel>
             </IonSegmentButton>
             {selectedBloque && <IonSegmentButton value="camas">
               <IonLabel>Camas</IonLabel>
