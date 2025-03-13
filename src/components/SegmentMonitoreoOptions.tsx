@@ -19,7 +19,6 @@ const SegmentMonitoreoOptions = () => {
     selectedCama,
     updateMonitoring,
     setSelectedDiseases,
-    setSelectedCuadro,
     selectedCuadros,
     setIsToastSavedOpen
   } = useMonitoringBloque();

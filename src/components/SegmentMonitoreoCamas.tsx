@@ -29,12 +29,18 @@ const SegmentMonitoreoCamas = () => {
 
   const handleIncrement = () => () => {
     if (selectedCama < NUMERO_MAX) {
+      setSelectedDiseases([]);
+      setSelectedCuadros([]);
+      setSelectedCuadro(undefined);
       setSelectedCama((prev) => prev + 1);
     }
   };
 
   const handleDecrement = () => () => {
     if (selectedCama > NUMERO_MIN) {
+      setSelectedDiseases([]);
+      setSelectedCuadros([]);
+      setSelectedCuadro(undefined);
       setSelectedCama((prev) => prev - 1);
     }
   };
