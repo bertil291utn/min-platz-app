@@ -21,7 +21,9 @@ interface MonitoringBloqueContextType {
   syncWithDatabase: () => Promise<void>;
   isOnline: boolean;
   bloquesMonitored: BloqueMonitored[];
-  getMonitoredBloques:()=>void
+  getMonitoredBloques: () => void
+  IsToastSavedOpen: boolean;
+  setIsToastSavedOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const MonitoringBloqueContext = createContext<MonitoringBloqueContextType | undefined>(undefined);
@@ -42,6 +44,7 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
   const [selectedCuadros, setSelectedCuadros] = useState<CuadroMonitored[]>([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [bloquesMonitored, setBloquesMonitored] = useState<BloqueMonitored[]>([]);
+  const [IsToastSavedOpen, setIsToastSavedOpen] = useState(false);
 
   useEffect(() => {
     // Set up online/offline listeners
@@ -156,7 +159,9 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       bloquesMonitored,
       selectedCuadros,
       setSelectedCuadros,
-      getMonitoredBloques
+      getMonitoredBloques,
+      IsToastSavedOpen,
+      setIsToastSavedOpen
     }}>
       {children}
     </MonitoringBloqueContext.Provider>

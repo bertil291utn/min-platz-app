@@ -9,7 +9,6 @@ import { sleep } from '../helpers/regularHelper';
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
   const [notes, setNotes] = useState<string>('');
-  const [IsToastOpen, setIsToastOpen] = useState(false);
   const [showTextarea, setShowTextarea] = useState<boolean>(false);
   const [loadingForm, setLoadingForm] = useState<boolean>(false);
   const {
@@ -21,7 +20,8 @@ const SegmentMonitoreoOptions = () => {
     updateMonitoring,
     setSelectedDiseases,
     setSelectedCuadro,
-    selectedCuadros
+    selectedCuadros,
+    setIsToastSavedOpen
   } = useMonitoringBloque();
 
   useEffect(() => {
@@ -54,11 +54,11 @@ const SegmentMonitoreoOptions = () => {
 
     try {
       await updateMonitoring(selectedBloque?.id as number, selectedCama, newCuadro);
-      setIsToastOpen(true);
-      await sleep(3);
+      await sleep(1.5);
       setActiveSegment('camas');
+      setIsToastSavedOpen(true);
       setSelectedDiseases([]);
-      setSelectedCuadro(undefined);
+      
     } catch (error) {
       setLoadingForm(false)
     }
@@ -139,12 +139,7 @@ const SegmentMonitoreoOptions = () => {
           }
         </IonButton>
       </div>
-      <IonToast
-        isOpen={IsToastOpen}
-        message={`Monitoreo de cuadro #${selectedCuadro}, cama #${selectedCama} guardado`}
-        onDidDismiss={() => setIsToastOpen(false)}
-        duration={3000}
-      ></IonToast>
+      
     </>
   );
 }

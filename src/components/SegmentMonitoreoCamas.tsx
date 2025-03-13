@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonIcon, IonItem, IonLabel } from '@ionic/react';
+import { IonAlert, IonButton, IonIcon, IonItem, IonLabel, IonToast } from '@ionic/react';
 import { NUMERO_MAX, NUMERO_MIN, STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
@@ -6,7 +6,10 @@ import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
 import { BloqueMonitored } from '../interfaces/Monitoring';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { sleep } from '../helpers/regularHelper';
+
+const DISPLAY_TOAST_SECONDS = 3
 
 const SegmentMonitoreoCamas = () => {
   const {
@@ -17,7 +20,9 @@ const SegmentMonitoreoCamas = () => {
     selectedCama,
     setActiveSegment,
     setSelectedDiseases,
-    setSelectedCuadros
+    setSelectedCuadros,
+    setIsToastSavedOpen,
+    IsToastSavedOpen
   } = useMonitoringBloque();
 
   const [displayAlert, setDisplayAlert] = useState(false);
@@ -59,6 +64,18 @@ const SegmentMonitoreoCamas = () => {
 
 
   }
+
+  const setSelectedCuadroUndefined = async () => {
+    if (IsToastSavedOpen) {
+      await sleep(DISPLAY_TOAST_SECONDS + 1)
+      setSelectedCuadro(undefined);
+    }
+  }
+
+  useEffect(() => {
+    setSelectedCuadroUndefined()
+  }, [IsToastSavedOpen])
+
 
   const editCuadro = () => {
     setActiveSegment('diseases');
@@ -138,6 +155,13 @@ const SegmentMonitoreoCamas = () => {
         ]}
         onDidDismiss={() => setDisplayAlert(false)}
       ></IonAlert>
+
+      <IonToast
+        isOpen={IsToastSavedOpen}
+        message={`Monitoreo de cuadro #${selectedCuadro}, cama #${selectedCama} guardado`}
+        onDidDismiss={() => setIsToastSavedOpen(false)}
+        duration={DISPLAY_TOAST_SECONDS * 1000}
+      ></IonToast>
     </>
   );
 }
