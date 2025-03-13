@@ -1,5 +1,5 @@
 import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { Bloque, SegmentBloque } from '../interfaces/Bloque';
+import { Bloque, SegmentBloque, SegmentViewBloque } from '../interfaces/Bloque';
 import { Disease } from '../interfaces/Diseases';
 import { BloqueMonitored, CuadroMonitored } from '../interfaces/Monitoring';
 import { STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
@@ -23,7 +23,9 @@ interface MonitoringBloqueContextType {
   bloquesMonitored: BloqueMonitored[];
   getMonitoredBloques: () => void
   IsToastSavedOpen: boolean;
-  setIsToastSavedOpen: Dispatch<SetStateAction<boolean>>
+  setIsToastSavedOpen: Dispatch<SetStateAction<boolean>>;
+  activeViewSegment: SegmentViewBloque;
+  setActiveViewSegment: Dispatch<SetStateAction<SegmentViewBloque>>
 }
 
 const MonitoringBloqueContext = createContext<MonitoringBloqueContextType | undefined>(undefined);
@@ -37,6 +39,7 @@ const INITIAL_BLOQUES_MONITORED = [{
 export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const [activeSegment, setActiveSegment] = useState<SegmentBloque>('bloques');
+  const [activeViewSegment, setActiveViewSegment] = useState<SegmentViewBloque>('bloques');
   const [selectedBloque, setSelectedBloque] = useState<Bloque>();
   const [selectedCuadro, setSelectedCuadro] = useState<number>();
   const [selectedCama, setSelectedCama] = useState(1);
@@ -161,7 +164,9 @@ export const MonitoringBloqueProvider: React.FC<{ children: React.ReactNode }> =
       setSelectedCuadros,
       getMonitoredBloques,
       IsToastSavedOpen,
-      setIsToastSavedOpen
+      setIsToastSavedOpen,
+      activeViewSegment,
+      setActiveViewSegment
     }}>
       {children}
     </MonitoringBloqueContext.Provider>

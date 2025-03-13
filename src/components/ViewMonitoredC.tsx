@@ -22,7 +22,9 @@ import {
   IonCol,
   IonText,
   IonNote,
-  IonTitle
+  IonTitle,
+  IonSegment,
+  IonSegmentButton,
 } from '@ionic/react';
 import {
   calendarOutline,
@@ -33,21 +35,24 @@ import {
 } from 'ionicons/icons';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { BloqueMonitored, CamaMonitored, CuadroMonitored } from '../interfaces/Monitoring';
+import { SegmentViewBloque } from '../interfaces/Bloque';
 
-const ViewMonitoredC: React.FC = () => {
-  const { bloquesMonitored } = useMonitoringBloque();
+const ViewMonitoredContent: React.FC = () => {
+  const {
+    bloquesMonitored,
+    getMonitoredBloques,
+    activeViewSegment,
+    setActiveViewSegment
+  } = useMonitoringBloque();
   const [selectedBloque, setSelectedBloque] = useState<BloqueMonitored | null>(null);
   const [selectedCama, setSelectedCama] = useState<CamaMonitored | null>(null);
   const [selectedCuadro, setSelectedCuadro] = useState<CuadroMonitored | null>(null);
   const [searchText, setSearchText] = useState('');
   const [dateFilter, setDateFilter] = useState<string | null>(null);
 
-  const { getMonitoredBloques } = useMonitoringBloque();
-
   useEffect(() => {
     getMonitoredBloques();
-  }, [])
-
+  }, []);
 
   // Filter bloques by search text and date
   const filteredBloques = bloquesMonitored.filter(bloque => {
@@ -60,16 +65,6 @@ const ViewMonitoredC: React.FC = () => {
     return matchesSearch && matchesDate;
   });
 
-  // Handle navigation back from detail views
-  const handleBack = () => {
-    if (selectedCuadro) {
-      setSelectedCuadro(null);
-    } else if (selectedCama) {
-      setSelectedCama(null);
-    } else if (selectedBloque) {
-      setSelectedBloque(null);
-    }
-  };
 
   // Format date for display
   const formatDate = (dateString: string) => {
@@ -86,46 +81,8 @@ const ViewMonitoredC: React.FC = () => {
   // Render the list of bloques
   const renderBloquesList = () => (
     <>
-      <IonHeader>
-        <IonToolbar>
-          <IonSearchbar
-            value={searchText}
-            onIonChange={e => setSearchText(e.detail.value || '')}
-            placeholder="Buscar bloque"
-          />
-        </IonToolbar>
-      </IonHeader>
 
-      <IonGrid>
-        <IonRow>
-          <IonCol size="12">
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>
-                  <IonIcon icon={calendarOutline} /> Filtrar por fecha
-                </IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <IonDatetime
-                  presentation="date"
-                  value={dateFilter || undefined}
-                  onIonChange={e => setDateFilter(typeof e.detail.value === 'string' ? e.detail.value : null)}
-                />
-                {dateFilter && (
-                  <IonButton
-                    fill="clear"
-                    onClick={() => setDateFilter(null)}
-                  >
-                    Limpiar filtro
-                  </IonButton>
-                )}
-              </IonCardContent>
-            </IonCard>
-          </IonCol>
-        </IonRow>
-      </IonGrid>
-
-      {filteredBloques.length === 0 ? (
+      {bloquesMonitored.length === 0 ? (
         <div className="ion-padding ion-text-center">
           <IonText color="medium">
             <h5>No hay registros de monitoreo</h5>
@@ -134,11 +91,11 @@ const ViewMonitoredC: React.FC = () => {
         </div>
       ) : (
         <IonList>
-          {filteredBloques.map(bloque => (
+          {bloquesMonitored.map(bloque => (
             <IonItem
               key={`${bloque.id}-${bloque.dateMonitoring}`}
               button
-              onClick={() => setSelectedBloque(bloque)}
+              onClick={() => {setSelectedBloque(bloque);setActiveViewSegment('camas')}}
             >
               <IonLabel>
                 <h2>{bloque.name}</h2>
@@ -160,22 +117,13 @@ const ViewMonitoredC: React.FC = () => {
 
     return (
       <>
-        <IonHeader>
-          <IonToolbar>
-            <IonButton slot="start" fill="clear" onClick={handleBack}>
-              <IonIcon icon={arrowBackOutline} />
-            </IonButton>
-            <IonTitle>{selectedBloque.name}</IonTitle>
-            <IonNote slot="end">{formatDate(selectedBloque.dateMonitoring)}</IonNote>
-          </IonToolbar>
-        </IonHeader>
 
         <IonList>
           {selectedBloque.camas.map(cama => (
             <IonItem
               key={cama.id}
               button
-              onClick={() => setSelectedCama(cama)}
+              onClick={() => {setSelectedCama(cama);setActiveViewSegment('cuadros')}}
             >
               <IonLabel>
                 <h2>{cama.name}</h2>
@@ -197,21 +145,13 @@ const ViewMonitoredC: React.FC = () => {
 
     return (
       <>
-        <IonHeader>
-          <IonToolbar>
-            <IonButton slot="start" fill="clear" onClick={handleBack}>
-              <IonIcon icon={arrowBackOutline} />
-            </IonButton>
-            <IonTitle>{selectedCama.name}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
 
         <IonList>
           {selectedCama.cuadros.map(cuadro => (
             <IonItem
               key={cuadro.id}
               button
-              onClick={() => setSelectedCuadro(cuadro)}
+              onClick={() => {setSelectedCuadro(cuadro);setActiveViewSegment('details')}}
             >
               <IonLabel>
                 <h2>{cuadro.name}</h2>
@@ -233,14 +173,6 @@ const ViewMonitoredC: React.FC = () => {
 
     return (
       <>
-        <IonHeader>
-          <IonToolbar>
-            <IonButton slot="start" fill="clear" onClick={handleBack}>
-              <IonIcon icon={arrowBackOutline} />
-            </IonButton>
-            <IonTitle>{selectedCuadro.name}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
 
         <div className="ion-padding">
           {selectedCuadro.notes && (
@@ -292,16 +224,43 @@ const ViewMonitoredC: React.FC = () => {
     );
   };
 
-  // Determine which view to render based on selection state
-  if (selectedCuadro) {
-    return renderCuadroDetails();
-  } else if (selectedCama) {
-    return renderCamaDetails();
-  } else if (selectedBloque) {
-    return renderBloqueDetails();
-  } else {
-    return renderBloquesList();
-  }
+  return (
+    <div>
+      <IonHeader>
+        <IonToolbar>
+          <IonSegment
+            value={activeViewSegment}
+            onIonChange={e => setActiveViewSegment(e.detail.value as SegmentViewBloque)}
+            scrollable
+          >
+            <IonSegmentButton value="bloques">
+              <IonLabel>Bloques</IonLabel>
+            </IonSegmentButton>
+            {selectedBloque && <IonSegmentButton value="camas">
+              <IonLabel>Camas</IonLabel>
+            </IonSegmentButton>}
+            {selectedCama && <IonSegmentButton value="cuadros">
+              <IonLabel>Cuadros</IonLabel>
+            </IonSegmentButton>}
+            {selectedCuadro && <IonSegmentButton value="details">
+              <IonLabel>Detalles</IonLabel>
+            </IonSegmentButton>}
+          </IonSegment>
+        </IonToolbar>
+      </IonHeader>
+
+      <div className="ion-padding">
+        {activeViewSegment === 'bloques' && renderBloquesList()}
+        {activeViewSegment === 'camas' && renderBloqueDetails()}
+        {activeViewSegment === 'cuadros' && renderCamaDetails()}
+        {activeViewSegment === 'details' && renderCuadroDetails()}
+      </div>
+    </div>
+  );
+};
+
+const ViewMonitoredC: React.FC = () => {
+  return <ViewMonitoredContent />;
 };
 
 export default ViewMonitoredC;

@@ -11,3 +11,4 @@ export interface Bloque {
 
 
 export type SegmentBloque = 'bloques' | 'camas' | 'diseases' | 'options';
+export type SegmentViewBloque = 'bloques' | 'camas' | 'cuadros' | 'details';
