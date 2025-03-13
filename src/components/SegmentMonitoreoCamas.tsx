@@ -7,7 +7,7 @@ import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
 import { BloqueMonitored } from '../interfaces/Monitoring';
 import { useEffect, useState } from 'react';
-import { sleep } from '../helpers/regularHelper';
+import { CURRENT_DATE_UTC5, getWeekNumber, sleep } from '../helpers/regularHelper';
 
 const DISPLAY_TOAST_SECONDS = 3
 
@@ -50,23 +50,27 @@ const SegmentMonitoreoCamas = () => {
     setSelectedDiseases([])
     setSelectedCuadros([])
     setSelectedCuadro(cuadro);
+    const currentWeekNumber = getWeekNumber(CURRENT_DATE_UTC5);
     const existingData = localStorage.getItem(STORE_MONITORED_VAR);
 
     if (!existingData) { setActiveSegment('diseases'); return; }
 
     const parsedData: BloqueMonitored[] = JSON.parse(existingData as string);
-    const bloqueIndex = parsedData?.findIndex(b => b.id == selectedBloque?.id)
+    const bloqueIndex = parsedData?.findIndex(b => b.id == selectedBloque?.id && b.weekNumber === currentWeekNumber)
     const bloque = parsedData[bloqueIndex]
     const camasIndex = bloque?.camas?.findIndex(c => c.id == selectedCama)
     if (camasIndex == -1) { setActiveSegment('diseases'); return }
     const cama = bloque?.camas[camasIndex]
-    const IsCuadroMonitoreado = cama?.cuadros?.findIndex(c => c.id == cuadro) ?? -1;
 
-    if (IsCuadroMonitoreado == -1) { setActiveSegment('diseases'); return; }
+    let cuadroIndex = -1;
+    if (bloque?.weekNumber === currentWeekNumber)
+      cuadroIndex = cama?.cuadros?.findIndex(c => c.id == cuadro)
+
+    if (cuadroIndex == -1) { setActiveSegment('diseases'); return; }
     setDisplayAlert(true);
     const cuadros = cama?.cuadros ?? [];
     setSelectedCuadros(cuadros);
-    setSelectedDiseases(cuadros[IsCuadroMonitoreado]?.diseases ?? []);
+    setSelectedDiseases(cuadros[cuadroIndex]?.diseases ?? []);
 
 
   }
