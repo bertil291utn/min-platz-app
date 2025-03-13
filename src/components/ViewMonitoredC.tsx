@@ -34,19 +34,27 @@ import {
   leafOutline
 } from 'ionicons/icons';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { useViewMonitored, ViewMonitoredProvider } from '../contexts/ViewMonitoredContext';
 import { BloqueMonitored, CamaMonitored, CuadroMonitored } from '../interfaces/Monitoring';
 import { SegmentViewBloque } from '../interfaces/Bloque';
 
 const ViewMonitoredContent: React.FC = () => {
   const {
+    activeViewSegment,
+    setActiveViewSegment,
+    selectedBloque,
+    setSelectedBloque,
+    selectedCama,
+    setSelectedCama,
+    selectedCuadro,
+    setSelectedCuadro
+  } = useViewMonitored();
+
+  const {
     bloquesMonitored,
     getMonitoredBloques,
-    activeViewSegment,
-    setActiveViewSegment
   } = useMonitoringBloque();
-  const [selectedBloque, setSelectedBloque] = useState<BloqueMonitored | null>(null);
-  const [selectedCama, setSelectedCama] = useState<CamaMonitored | null>(null);
-  const [selectedCuadro, setSelectedCuadro] = useState<CuadroMonitored | null>(null);
+
   const [searchText, setSearchText] = useState('');
   const [dateFilter, setDateFilter] = useState<string | null>(null);
 
@@ -95,7 +103,11 @@ const ViewMonitoredContent: React.FC = () => {
             <IonItem
               key={`${bloque.id}-${bloque.dateMonitoring}`}
               button
-              onClick={() => {setSelectedBloque(bloque);setActiveViewSegment('camas')}}
+              onClick={() => {
+                setSelectedBloque(bloque);
+                setActiveViewSegment('camas');
+                setSelectedBloque(bloque);
+              }}
             >
               <IonLabel>
                 <h2>{bloque.name}</h2>
@@ -119,11 +131,16 @@ const ViewMonitoredContent: React.FC = () => {
       <>
 
         <IonList>
+          <p>{selectedBloque.name}</p>
           {selectedBloque.camas.map(cama => (
             <IonItem
               key={cama.id}
               button
-              onClick={() => {setSelectedCama(cama);setActiveViewSegment('cuadros')}}
+              onClick={() => {
+                setSelectedCama(cama);
+                setActiveViewSegment('cuadros');
+                setSelectedCama(cama)
+              }}
             >
               <IonLabel>
                 <h2>{cama.name}</h2>
@@ -147,11 +164,15 @@ const ViewMonitoredContent: React.FC = () => {
       <>
 
         <IonList>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <p>{selectedBloque?.name}</p>
+            <p>{selectedCama.name}</p>
+          </div>
           {selectedCama.cuadros.map(cuadro => (
             <IonItem
               key={cuadro.id}
               button
-              onClick={() => {setSelectedCuadro(cuadro);setActiveViewSegment('details')}}
+              onClick={() => { setSelectedCuadro(cuadro); setActiveViewSegment('details') }}
             >
               <IonLabel>
                 <h2>{cuadro.name}</h2>
@@ -175,6 +196,11 @@ const ViewMonitoredContent: React.FC = () => {
       <>
 
         <div className="ion-padding">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <p>{selectedBloque?.name}</p>
+            <p>{selectedCama?.name}</p>
+            <p>{selectedCuadro.name}</p>
+          </div>
           {selectedCuadro.notes && (
             <IonCard>
               <IonCardHeader>
@@ -260,7 +286,12 @@ const ViewMonitoredContent: React.FC = () => {
 };
 
 const ViewMonitoredC: React.FC = () => {
-  return <ViewMonitoredContent />;
+  return (
+    <ViewMonitoredProvider>
+      <ViewMonitoredContent />
+    </ViewMonitoredProvider>
+  )
+    ;
 };
 
 export default ViewMonitoredC;
