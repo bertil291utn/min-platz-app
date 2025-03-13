@@ -11,31 +11,18 @@ import {
   IonCardContent,
   IonBadge,
   IonIcon,
-  IonButton,
-  IonDatetime,
-  IonSelect,
-  IonSelectOption,
-  IonSearchbar,
   IonChip,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonText,
-  IonNote,
-  IonTitle,
   IonSegment,
   IonSegmentButton,
 } from '@ionic/react';
 import {
-  calendarOutline,
-  filterOutline,
-  searchOutline,
-  arrowBackOutline,
-  leafOutline
+  leafOutline,
+  homeOutline,
+  scanOutline,
 } from 'ionicons/icons';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { useViewMonitored, ViewMonitoredProvider } from '../contexts/ViewMonitoredContext';
-import { BloqueMonitored, CamaMonitored, CuadroMonitored } from '../interfaces/Monitoring';
 import { SegmentViewBloque } from '../interfaces/Bloque';
 
 const ViewMonitoredContent: React.FC = () => {
@@ -131,7 +118,23 @@ const ViewMonitoredContent: React.FC = () => {
       <>
 
         <IonList>
-          <p>{selectedBloque.name}</p>
+          <IonCard>
+            <IonCardContent>
+              <div>
+                <IonChip
+                  color="primary"
+                  onClick={() => {
+                    setActiveViewSegment('bloques');
+                    setSelectedBloque(null);
+                  }}
+                >
+                  <IonIcon icon={homeOutline} />
+                  <IonLabel>{selectedBloque?.name}</IonLabel>
+                </IonChip>
+
+              </div>
+            </IonCardContent>
+          </IonCard>
           {selectedBloque.camas.map(cama => (
             <IonItem
               key={cama.id}
@@ -162,12 +165,37 @@ const ViewMonitoredContent: React.FC = () => {
 
     return (
       <>
-
         <IonList>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <p>{selectedBloque?.name}</p>
-            <p>{selectedCama.name}</p>
-          </div>
+          <IonCard>
+            <IonCardContent>
+              <div>
+                <IonChip
+                  color="primary"
+                  onClick={() => {
+                    setActiveViewSegment('bloques');
+                    setSelectedBloque(null);
+                    setSelectedCuadro(null);
+                    setSelectedCama(null);
+                  }}
+                >
+                  <IonIcon icon={homeOutline} />
+                  <IonLabel>{selectedBloque?.name}</IonLabel>
+                </IonChip>
+                <IonIcon icon="chevron-forward-outline" />
+                <IonChip color="secondary"
+                  onClick={() => {
+                    setActiveViewSegment('camas');
+                    setSelectedCuadro(null);
+                    setSelectedCama(null);
+                  }}
+                >
+                  <IonIcon icon={scanOutline} />
+                  <IonLabel>{selectedCama?.name}</IonLabel>
+                </IonChip>
+              </div>
+            </IonCardContent>
+          </IonCard>
+
           {selectedCama.cuadros.map(cuadro => (
             <IonItem
               key={cuadro.id}
@@ -195,12 +223,47 @@ const ViewMonitoredContent: React.FC = () => {
     return (
       <>
 
+        <IonCard>
+          <IonCardContent>
+            <div>
+              <IonChip
+                color="tertiary"
+                onClick={() => {
+                  setActiveViewSegment('bloques');
+                  setSelectedBloque(null);
+                  setSelectedCuadro(null);
+                  setSelectedCama(null);
+                }}
+              >
+                <IonIcon icon={homeOutline} />
+                <IonLabel>{selectedBloque?.name}</IonLabel>
+              </IonChip>
+              <IonIcon icon="chevron-forward-outline" />
+              <IonChip
+                color="tertiary"
+                onClick={() => {
+                  setActiveViewSegment('camas');
+                  setSelectedCuadro(null);
+                  setSelectedCama(null);
+                }}
+              >
+                <IonIcon icon={scanOutline} />
+                <IonLabel>{selectedCama?.name}</IonLabel>
+              </IonChip>
+              <IonChip color="tertiary"
+                onClick={() => {
+                  setActiveViewSegment('cuadros');
+                  setSelectedCuadro(null);
+                }}
+              >
+                <IonIcon icon={leafOutline} />
+                <IonLabel>{selectedCuadro.name}</IonLabel>
+              </IonChip>
+            </div>
+          </IonCardContent>
+        </IonCard>
+
         <div className="ion-padding">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <p>{selectedBloque?.name}</p>
-            <p>{selectedCama?.name}</p>
-            <p>{selectedCuadro.name}</p>
-          </div>
           {selectedCuadro.notes && (
             <IonCard>
               <IonCardHeader>
@@ -246,6 +309,7 @@ const ViewMonitoredContent: React.FC = () => {
             </IonCardContent>
           </IonCard>
         </div>
+
       </>
     );
   };
