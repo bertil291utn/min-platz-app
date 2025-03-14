@@ -15,9 +15,9 @@ const LabelMonitoring = () => {
       alignItems: 'center',
       marginBottom: '1rem'
     }}>
-      <h1 onClick={()=>setActiveSegment('camas')} style={{ fontWeight: 'bold' }}>Cuadro #{selectedCuadro}</h1>
-      <h2 onClick={()=>setActiveSegment('bloques')} style={{ fontSize: '0.875rem', color: '#6B7280' }}>{selectedBloque?.name}</h2>
-      <h1 onClick={()=>setActiveSegment('camas')} style={{ fontWeight: 'bold' }}>Cama #{selectedCama}</h1>
+      <p onClick={()=>setActiveSegment('camas')} style={{ fontWeight: 'bold' }}>Cuadro #{selectedCuadro}</p>
+      <p onClick={()=>setActiveSegment('bloques')} style={{ fontSize: '0.6rem', color: '#6B7280' }}>{selectedBloque?.name}</p>
+      <p onClick={()=>setActiveSegment('camas')} style={{ fontWeight: 'bold' }}>Cama #{selectedCama}</p>
     </div>
   );
 }

@@ -105,13 +105,14 @@ const SegmentMonitoreoCamas = () => {
           <IonLabel>Seleccione numero de cama</IonLabel>
           <br />
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <IonButton fill="clear" onClick={handleDecrement()} size='large'>
+            <IonButton size="large" onClick={handleDecrement()}>
               <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
             </IonButton>
             <IonLabel>{selectedCama}</IonLabel>
-            <IonButton size='large' fill="clear" onClick={handleIncrement()}>
+            <IonButton size="large" onClick={handleIncrement()}>
               <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
             </IonButton>
+
           </div>
           <br />
           <IonLabel>Seleccione el cuadro </IonLabel>
