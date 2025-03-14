@@ -34,17 +34,17 @@ const DiseaseImagesModal: React.FC<Props> = ({ isOpen, onDismiss, disease }) => 
     <IonModal isOpen={isOpen} onDidDismiss={onDismiss}>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>{disease.name}</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={onDismiss}>regresar</IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <IonTitle>{disease.name}</IonTitle>
         <p className='ion-padding'>
           {infoText}
         </p>
-        {disease.images.map((image, index) => (
+        {disease.images?.map((image, index) => (
           <img
             key={index}
             src={`${IMAGES_DISEASE_PATH}/${disease.folderName}/${image.src}`} alt={`${disease.name} ${index + 1}`} style={{ width: '100%', height: 'auto' }} />
