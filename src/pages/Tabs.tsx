@@ -54,22 +54,22 @@ const Tabs: React.FC = () => {
 
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/tabs/home">
-            <IonIcon icon={home} />
+            <IonIcon size='large' icon={home} />
             <IonLabel>Principal</IonLabel>
           </IonTabButton>
 
           <IonTabButton tab="monitoreo" href="/tabs/monitoreo">
-            <IonIcon icon={rose} />
+            <IonIcon size='large' icon={rose} />
             <IonLabel>Monitoreo</IonLabel>
           </IonTabButton>
 
-          <IonTabButton tab="library" href="/tabs/library">
+          {/* <IonTabButton tab="library" href="/tabs/library">
             <IonIcon icon={library} />
             <IonLabel>Library</IonLabel>
-          </IonTabButton>
+          </IonTabButton> */}
 
           <IonTabButton tab="settings" href="/tabs/settings">
-            <IonIcon icon={settings} />
+            <IonIcon size='large' icon={settings} />
             <IonLabel>Configurar</IonLabel>
           </IonTabButton>
         </IonTabBar>
