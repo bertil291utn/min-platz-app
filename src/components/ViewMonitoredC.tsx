@@ -293,16 +293,7 @@ const ViewMonitoredContent: React.FC = () => {
         </IonCard>
 
         <div className="ion-padding">
-          {selectedCuadro.notes && (
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Notas</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                {selectedCuadro.notes}
-              </IonCardContent>
-            </IonCard>
-          )}
+
 
           <IonCard>
             <IonCardHeader>
@@ -321,11 +312,10 @@ const ViewMonitoredContent: React.FC = () => {
                     <IonItem key={disease.id}>
                       <IonLabel>
                         <h2>{disease.name}</h2>
-                        <p>Carpeta: {disease.folderName}</p>
                       </IonLabel>
-                      {disease.level !== undefined && (
+                      {(disease.level !== undefined && disease.level !== 0) && (
                         <IonBadge
-                          color={disease.level > 2 ? "danger" : disease.level > 1 ? "warning" : "success"}
+                          color={'secondary'}
                           slot="end"
                         >
                           Nivel {disease.level}
@@ -337,6 +327,17 @@ const ViewMonitoredContent: React.FC = () => {
               )}
             </IonCardContent>
           </IonCard>
+
+          {selectedCuadro.notes && (
+            <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>Notas</IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                {selectedCuadro.notes}
+              </IonCardContent>
+            </IonCard>
+          )}
         </div>
 
       </>
