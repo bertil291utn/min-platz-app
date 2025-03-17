@@ -53,7 +53,7 @@ const SegmentMonitoreoDiseases = () => {
       <p>Seleccione enfermedad</p>
       <br />
 
-      <div style={{ height: '60vh', overflowY: 'scroll' }}>
+      <div>
         {diseasesArr.map((disease) => (
           expertUser ? (
             <div key={disease.id}>
