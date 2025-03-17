@@ -93,6 +93,7 @@ const LocalModal = ({
       isOpen={IsOpenModal}
       initialBreakpoint={1}
       breakpoints={[0, 1]}
+      onDidDismiss={() => setIsOpenModal(false)}
     >
       <IonHeader>
         <IonToolbar>

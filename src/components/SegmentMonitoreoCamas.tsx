@@ -119,7 +119,7 @@ const SegmentMonitoreoCamas = () => {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <br />
 
-            <div style={{ height: '50vh', overflowY: 'scroll' }}>
+            <div>
               {[...Array(selectedBloque.numCuadrosPerCama)].map((_, index) => (
                 <IonButton
                   key={index}
