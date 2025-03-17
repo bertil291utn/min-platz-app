@@ -39,7 +39,7 @@ const SettingsC = () => {
   return (
     <div>
 
-      <IonAccordionGroup>
+      <IonAccordionGroup value="bloques">
         <IonAccordion value="bloques">
           <IonItem slot="header" color="light">
             <IonLabel>Bloques</IonLabel>
