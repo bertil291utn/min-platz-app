@@ -1,6 +1,6 @@
-import { IonAlert, IonButton, IonIcon, IonItem, IonLabel, IonToast } from '@ionic/react';
+import { IonAlert, IonButton, IonIcon, IonItem, IonLabel, IonPopover, IonToast } from '@ionic/react';
 import { NUMERO_MAX, NUMERO_MIN, STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
-import { addCircle, removeCircle } from 'ionicons/icons';
+import { addCircle, informationCircleOutline, removeCircle } from 'ionicons/icons';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import ReturnButtonC from './ReturnButtonC';
@@ -8,6 +8,7 @@ import LabelMonitoring from './LabelMonitoring';
 import { BloqueMonitored } from '../interfaces/Monitoring';
 import { useEffect, useState } from 'react';
 import { CURRENT_DATE_UTC5, getWeekNumber, sleep } from '../helpers/regularHelper';
+import { useAuth } from '../contexts/AuthContext';
 
 const DISPLAY_TOAST_SECONDS = 3
 
@@ -24,6 +25,7 @@ const SegmentMonitoreoCamas = () => {
     setIsToastSavedOpen,
     IsToastSavedOpen
   } = useMonitoringBloque();
+  const { expertUser } = useAuth();
 
   const [displayAlert, setDisplayAlert] = useState(false);
 
@@ -52,6 +54,7 @@ const SegmentMonitoreoCamas = () => {
     setSelectedCuadro(cuadro);
     const currentWeekNumber = getWeekNumber(CURRENT_DATE_UTC5);
     const existingData = localStorage.getItem(STORE_MONITORED_VAR);
+
 
     if (!existingData) { setActiveSegment('diseases'); return; }
 
@@ -116,6 +119,19 @@ const SegmentMonitoreoCamas = () => {
           </div>
           <br />
           <IonLabel>Seleccione el cuadro </IonLabel>
+          {!expertUser &&
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <IonButton fill="clear" size="small" id="info-tooltip">
+                Que es Entrada y salida?
+              </IonButton>
+              <IonPopover trigger="info-tooltip" triggerAction="click" side='top' alignment='center'>
+                <div className="ion-padding">
+                  <p>Entrada es el lado que está en el camino y salida es el lado contrario, es decir el que no está en el camino.</p>
+                </div>
+              </IonPopover>
+            </div>}
+
+
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <br />
 

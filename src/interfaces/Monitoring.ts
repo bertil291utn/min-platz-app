@@ -2,7 +2,7 @@ export interface DiseaseMonitored {
   id: number;
   name: string;
   folderName: string;
-  level?: number; // Optional for acaros
+  tercio?: number; // Optional for acaros
 }
 
 export interface CuadroMonitored {

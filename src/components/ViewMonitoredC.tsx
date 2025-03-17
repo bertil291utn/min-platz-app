@@ -313,12 +313,12 @@ const ViewMonitoredContent: React.FC = () => {
                       <IonLabel>
                         <h2>{disease.name}</h2>
                       </IonLabel>
-                      {(disease.level !== undefined && disease.level !== 0) && (
+                      {(disease.tercio !== undefined && disease.tercio !== 0) && (
                         <IonBadge
                           color={'secondary'}
                           slot="end"
                         >
-                          Nivel {disease.level}
+                          Tercio {disease.tercio}
                         </IonBadge>
                       )}
                     </IonItem>

@@ -31,7 +31,7 @@ const SegmentMonitoreoOptions = () => {
     setNotes(cuadro?.notes as string)
     setShowTextarea(!!cuadro?.notes)
     const acaros = cuadro.diseases.find(c => c.folderName == 'acaros')
-    setSelectedAcarosLevel(acaros?.level as number)
+    setSelectedAcarosLevel(acaros?.tercio as number)
 
   }, [])
 
@@ -45,7 +45,7 @@ const SegmentMonitoreoOptions = () => {
       diseases: selectedDiseases.map(disease => (
         {
           ...disease,
-          level: disease.folderName === 'acaros' ? selectedAcarosLevel : 0
+          tercio: disease.folderName === 'acaros' ? selectedAcarosLevel : 0
         }
       )),
       notes: notes || undefined
@@ -80,10 +80,10 @@ const SegmentMonitoreoOptions = () => {
         {
           selectedDiseases.some((diseaseArr) => diseaseArr.folderName === 'acaros') &&
           <>
-            <IonLabel>Seleccione el nivel donde se encuentra los acaros</IonLabel>
+            <IonLabel>Seleccione el tercio donde se encuentra los acaros</IonLabel>
             <br />
             <br />
-            {[1, 2, 3].map((level) => (
+            {[3, 2, 1].map((level) => (
               <IonCard
                 onClick={() => setSelectedAcarosLevel(level)}
                 color={selectedAcarosLevel === level ? 'medium' : ''}
@@ -91,7 +91,7 @@ const SegmentMonitoreoOptions = () => {
                 key={level}
               >
                 <IonCardHeader>
-                  <IonCardTitle>Nivel {level}</IonCardTitle>
+                  <IonCardTitle>Tercio {level}</IonCardTitle>
                 </IonCardHeader>
               </IonCard>
             ))}
@@ -122,7 +122,7 @@ const SegmentMonitoreoOptions = () => {
         <ul onClick={() => setActiveSegment('diseases')}>
           {selectedDiseases.map((disease) =>
             <li key={disease.id}>
-              {`${disease.name} ${disease.folderName == 'acaros' ? 'nivel ' + selectedAcarosLevel : ''}`}
+              {`${disease.name} ${disease.folderName == 'acaros' ? `(tercio ${selectedAcarosLevel})` : ''}`}
             </li>
           )}
         </ul>
