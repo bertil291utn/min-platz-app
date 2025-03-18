@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAppDispatch } from '../store/hooks';
+import { setAuthenticated } from '../store/slices/authSlice';
 import {
   IonContent,
   IonPage,
@@ -22,7 +23,7 @@ const LoginComp: React.FC = () => {
   const router = useIonRouter();
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setIsAuthenticated } = useAuth();
+  const dispatch = useAppDispatch();
 
   const storeAuthToken = (userId: string) => {
     const expiryDate = new Date();
@@ -49,7 +50,7 @@ const LoginComp: React.FC = () => {
     try {
       if (isValidPassword(credentials.password)) {
         storeAuthToken(credentials.userId);
-        setIsAuthenticated(true);
+        dispatch(setAuthenticated(true));
       } else {
         setShowToast(true);
       }

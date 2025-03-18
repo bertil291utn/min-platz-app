@@ -1,17 +1,29 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
-import { useBloqueInfo } from '../contexts/BloqueInfoContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { Bloque } from '../interfaces/Bloque';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { setSelectedBloque, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
+import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 import { leafOutline, gridOutline, scanOutline } from 'ionicons/icons';
 import './Monitoring.css';
 
-const BloqueSelectionScreen = () => {
-  const { activeBloques } = useBloqueInfo();
-  const { setSelectedBloque, setActiveSegment } = useMonitoringBloque();
+interface BloqueSelectionScreenProps {
+  onBloqueSelect?: (bloque: Bloque) => void;
+}
+
+const BloqueSelectionScreen = ({ onBloqueSelect }: BloqueSelectionScreenProps) => {
+  const activeBloques = useAppSelector(selectActiveBloques);
+  const dispatch = useAppDispatch();
 
   const handleBloqueSelect = (bloque: Bloque) => {
-    setSelectedBloque(bloque);
-    setActiveSegment('monitoring-options');
+    dispatch(setSelectedBloque(bloque));
+    
+    // If a custom handler is provided, use it
+    if (onBloqueSelect) {
+      onBloqueSelect(bloque);
+    } else {
+      // Otherwise, use the default behavior
+      dispatch(setActiveSegment('monitoring-options'));
+    }
   };
 
   return (
@@ -51,4 +63,4 @@ const BloqueSelectionScreen = () => {
   );
 };
 
-export default BloqueSelectionScreen; 
+export default BloqueSelectionScreen;

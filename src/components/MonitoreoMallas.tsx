@@ -1,26 +1,29 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol, IonButton, IonLabel, IonInput, IonTextarea, IonSelect, IonSelectOption } from '@ionic/react';
 import { useState } from 'react';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import ReturnButtonC from './ReturnButtonC';
 import './Monitoring.css';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 
 const MonitoreoMallas = () => {
-  const { selectedBloque, setActiveSegment } = useMonitoringBloque();
   const [observations, setObservations] = useState('');
   const [meshStatus, setMeshStatus] = useState('');
+  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque)
+  const dispatch = useAppDispatch();
+
 
   const handleSave = () => {
     // TODO: Implement save functionality
     console.log('Saving mallas monitoring data:', { observations, meshStatus });
-    setActiveSegment('monitoring-options');
+    dispatch(setActiveSegment('monitoring-options'));
   };
 
   return (
     <div className="ion-padding">
       <ReturnButtonC segmentReturn="monitoring-options" />
-      
+
       <h2 className="ion-text-center">Monitoreo de Mallas - {selectedBloque?.name}</h2>
-      
+
       <IonGrid>
         <IonRow>
           <IonCol size="12">

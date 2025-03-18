@@ -1,9 +1,11 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { Provider } from 'react-redux';
 import Home from './pages/Home';
 import Tabs from './pages/Tabs';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { store } from './store';
+import { useAppSelector } from './store/hooks';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,12 +38,11 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 import './theme/tabs.css';
 import LoginPages from './pages/LoginPages';
-import { BloqueInfoProvider } from './contexts/BloqueInfoContext';
 
 setupIonicReact();
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
 
   return (
     <IonRouterOutlet>
@@ -60,15 +61,13 @@ const AppRoutes: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <IonApp>
-      <BloqueInfoProvider>
-        <AuthProvider>
-          <IonReactRouter>
-            <AppRoutes />
-          </IonReactRouter>
-        </AuthProvider>
-      </BloqueInfoProvider>
-    </IonApp>
+    <Provider store={store}>
+      <IonApp>
+        <IonReactRouter>
+          <AppRoutes />
+        </IonReactRouter>
+      </IonApp>
+    </Provider>
   );
 };
 

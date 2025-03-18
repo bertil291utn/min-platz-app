@@ -1,5 +1,6 @@
 import { IonHeader, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
-import { MonitoringBloqueProvider, useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchMonitoredBloques, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
 import { SegmentBloque } from '../interfaces/Bloque';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
@@ -10,13 +11,21 @@ import MonitoringOptionsScreen from './MonitoringOptionsScreen';
 import MonitoreoPlacas from './MonitoreoPlacas';
 import MonitoreoMallas from './MonitoreoMallas';
 
-const MonitoreoContent = () => {
-  const { getMonitoredBloques } = useMonitoringBloque();
+const MonitoreoC = () => {
+  const dispatch = useAppDispatch();
+  
   useEffect(() => {
-    getMonitoredBloques();
-  }, [])
+    dispatch(fetchMonitoredBloques());
+  }, [dispatch]);
 
-  const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro, selectedDiseases } = useMonitoringBloque();
+  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
+  const activeSegment = useAppSelector(state => state.monitoringBloque.activeSegment);
+  const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
+  const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
+
+  const handleSegmentChange = (value: string) => {
+    dispatch(setActiveSegment(value as SegmentBloque));
+  };
 
   return (
     <div>
@@ -24,7 +33,7 @@ const MonitoreoContent = () => {
         <IonToolbar>
           <IonSegment
             value={activeSegment}
-            onIonChange={e => setActiveSegment(e.detail.value as SegmentBloque)}
+            onIonChange={e => handleSegmentChange(e.detail.value as string)}
             scrollable
           >
             <IonSegmentButton value="bloques">
@@ -56,14 +65,6 @@ const MonitoreoContent = () => {
         {activeSegment === 'mallas' && <MonitoreoMallas />}
       </div>
     </div>
-  );
-}
-
-const MonitoreoC = () => {
-  return (
-    <MonitoringBloqueProvider>
-      <MonitoreoContent />
-    </MonitoringBloqueProvider>
   );
 }
 

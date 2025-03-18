@@ -1,27 +1,30 @@
 import { IonAccordion, IonActionSheet, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonItem, IonLabel } from '@ionic/react';
-import {  INITIAL_BLOQUE, useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
 import { Bloque } from '../interfaces/Bloque';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { INITIAL_BLOQUE, selectArchivedBloques, unarchiveBloque } from '../store/slices/bloqueInfoSlice';
 
 const ArchivedBloquesSettingsC = () => {
-  const { archivedBloques, unarchiveBloque } = useBloqueInfo();
+  const archivedBloques = useAppSelector(selectArchivedBloques);
+  const dispatch = useAppDispatch();
+  
   const [editingBloque, setEditingBloque] = useState<Bloque>(INITIAL_BLOQUE);
   const [isASheetOpen, setIsASheetOpen] = useState(false);
 
-
   const handleActions = (bloque: Bloque) => () => {
     setEditingBloque(bloque);
-    setIsASheetOpen(true)
+    setIsASheetOpen(true);
   };
 
   const unArchiveBloque = (bloqueId?: number) => {
     if (bloqueId) {
-      unarchiveBloque(bloqueId);
+      dispatch(unarchiveBloque(bloqueId));
       setIsASheetOpen(false);
     }
   };
 
   const IsThereArchivedBloques = archivedBloques.length > 0;
+  
   return (
     <>
       {IsThereArchivedBloques ?
@@ -55,13 +58,11 @@ const ArchivedBloquesSettingsC = () => {
               unArchiveBloque(editingBloque.id);
             }
           },
-
-
         ]}
         onDidDismiss={() => setIsASheetOpen(false)}
       ></IonActionSheet>
     </>
-  )
-}
+  );
+};
 
 export default ArchivedBloquesSettingsC;

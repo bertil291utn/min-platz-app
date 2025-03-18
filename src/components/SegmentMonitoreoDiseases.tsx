@@ -1,33 +1,34 @@
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { useState } from 'react';
 import { DISEASES } from '../helpers/diseases';
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonItemDivider } from '@ionic/react';
 import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
-import { useAuth } from '../contexts/AuthContext';
 import { arrowForward } from 'ionicons/icons';
 import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setActiveSegment, setSelectedDiseases } from '../store/slices/monitoringBloqueSlice';
 
 const SegmentMonitoreoDiseases = () => {
   const [diseasesArr] = useState(DISEASES);
-  const { setSelectedDiseases, selectedDiseases,
-    setActiveSegment,
-  } = useMonitoringBloque();
+  const dispatch = useAppDispatch();
+  const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
-  const { expertUser } = useAuth();
+  const expertUser = useAppSelector(state => state.auth.expertUser);
 
 
 
   const handleSelectDisease = (disease: Disease) => () => {
-    setSelectedDiseases(prev => {
+    const setDisease = () => {
+      const prev = [...selectedDiseases];
       const isSelected = prev.some(d => d.id === disease.id);
       if (isSelected) {
         return prev.filter(d => d.id !== disease.id);
       } else {
         return [...prev, disease];
       }
-    });
+    }
+    dispatch(setSelectedDiseases(setDisease()));
   }
 
   const handleViewDisease = (disease: Disease) => () => {
@@ -42,7 +43,7 @@ const SegmentMonitoreoDiseases = () => {
         />
 
         {selectedDiseases.length > 0 &&
-          <IonButton fill="clear" onClick={() => setActiveSegment('options')}>
+          <IonButton fill="clear" onClick={() => dispatch(setActiveSegment('options'))}>
             <IonIcon slot="end" icon={arrowForward}></IonIcon>
             avanzar
           </IonButton>

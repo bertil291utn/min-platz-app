@@ -1,0 +1,18 @@
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice';
+import bloqueInfoReducer from './slices/bloqueInfoSlice';
+import monitoringBloqueReducer from './slices/monitoringBloqueSlice';
+import viewMonitoredReducer from './slices/viewMonitoredSlice';
+
+export const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    bloqueInfo: bloqueInfoReducer,
+    monitoringBloque: monitoringBloqueReducer,
+    viewMonitored: viewMonitoredReducer
+  }
+});
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

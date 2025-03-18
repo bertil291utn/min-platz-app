@@ -1,19 +1,35 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonGrid, IonRow, IonCol, IonButton } from '@ionic/react';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 import { bedOutline, gridOutline, scanOutline } from 'ionicons/icons';
 import ReturnButtonC from './ReturnButtonC';
 import './Monitoring.css';
 
-const MonitoringOptionsScreen = () => {
-  const { setActiveSegment, selectedBloque } = useMonitoringBloque();
+interface MonitoringOptionsScreenProps {
+  onOptionSelect?: (option: 'camas' | 'placas' | 'mallas') => void;
+  showReturnButton?: boolean;
+}
+
+const MonitoringOptionsScreen = ({ 
+  onOptionSelect, 
+  showReturnButton = true 
+}: MonitoringOptionsScreenProps) => {
+  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
+  const dispatch = useAppDispatch();
 
   const handleOptionSelect = (option: 'camas' | 'placas' | 'mallas') => {
-    setActiveSegment(option);
+    // If a custom handler is provided, use it
+    if (onOptionSelect) {
+      onOptionSelect(option);
+    } else {
+      // Otherwise, use the default behavior
+      dispatch(setActiveSegment(option));
+    }
   };
 
   return (
     <div className="ion-padding">
-      <ReturnButtonC segmentReturn="bloques" />
+      {showReturnButton && <ReturnButtonC segmentReturn="bloques" />}
       
       <h2 className="ion-text-center">Monitoreo de {selectedBloque?.name}</h2>
       
@@ -78,4 +94,4 @@ const MonitoringOptionsScreen = () => {
   );
 };
 
-export default MonitoringOptionsScreen; 
+export default MonitoringOptionsScreen;

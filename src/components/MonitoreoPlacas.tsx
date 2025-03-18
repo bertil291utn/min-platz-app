@@ -1,25 +1,27 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonGrid, IonRow, IonCol, IonButton, IonLabel, IonInput, IonTextarea } from '@ionic/react';
 import { useState } from 'react';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import ReturnButtonC from './ReturnButtonC';
 import './Monitoring.css';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 
 const MonitoreoPlacas = () => {
-  const { selectedBloque, setActiveSegment } = useMonitoringBloque();
+  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque)
+  const dispatch = useAppDispatch();
   const [observations, setObservations] = useState('');
 
   const handleSave = () => {
     // TODO: Implement save functionality
     console.log('Saving placas monitoring data:', observations);
-    setActiveSegment('monitoring-options');
+    dispatch(setActiveSegment('monitoring-options'));
   };
 
   return (
     <div className="ion-padding">
       <ReturnButtonC segmentReturn="monitoring-options" />
-      
+
       <h2 className="ion-text-center">Monitoreo de Placas - {selectedBloque?.name}</h2>
-      
+
       <IonGrid>
         <IonRow>
           <IonCol size="12">

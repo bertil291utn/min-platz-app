@@ -24,33 +24,35 @@ import {
   homeOutline,
   scanOutline,
 } from 'ionicons/icons';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
-import { useViewMonitored, ViewMonitoredProvider } from '../contexts/ViewMonitoredContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchMonitoredBloques } from '../store/slices/monitoringBloqueSlice';
+import { 
+  setActiveViewSegment, 
+  setSelectedBloque, 
+  setSelectedCama, 
+  setSelectedCuadro 
+} from '../store/slices/viewMonitoredSlice';
 import { SegmentViewBloque } from '../interfaces/Bloque';
 
-const ViewMonitoredContent: React.FC = () => {
-  const {
-    activeViewSegment,
-    setActiveViewSegment,
-    selectedBloque,
-    setSelectedBloque,
-    selectedCama,
-    setSelectedCama,
-    selectedCuadro,
-    setSelectedCuadro
-  } = useViewMonitored();
-
-  const {
-    bloquesMonitored,
-    getMonitoredBloques,
-  } = useMonitoringBloque();
+const ViewMonitoredC: React.FC = () => {
+  const dispatch = useAppDispatch();
+  
+  const activeViewSegment = useAppSelector(state => state.viewMonitored.activeViewSegment);
+  const selectedBloque = useAppSelector(state => state.viewMonitored.selectedBloque);
+  const selectedCama = useAppSelector(state => state.viewMonitored.selectedCama);
+  const selectedCuadro = useAppSelector(state => state.viewMonitored.selectedCuadro);
+  const bloquesMonitored = useAppSelector(state => state.monitoringBloque.bloquesMonitored);
 
   const [searchText, setSearchText] = useState('');
   const [dateFilter, setDateFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    getMonitoredBloques();
-  }, []);
+    dispatch(fetchMonitoredBloques());
+  }, [dispatch]);
+
+  const handleSegmentChange = (value: string) => {
+    dispatch(setActiveViewSegment(value as SegmentViewBloque));
+  };
 
   // Filter bloques by search text and date
   const filteredBloques = bloquesMonitored.filter(bloque => {
@@ -62,7 +64,6 @@ const ViewMonitoredContent: React.FC = () => {
 
     return matchesSearch && matchesDate;
   });
-
 
   // Format date for display
   const formatDate = (dateString: string) => {
@@ -85,7 +86,7 @@ const ViewMonitoredContent: React.FC = () => {
       acc[week].push(bloque);
       return acc;
     }, {} as { [key: number]: typeof bloquesMonitored })
-  ).sort(([weekA], [weekB]) => Number(weekB) - Number(weekA))
+  ).sort(([weekA], [weekB]) => Number(weekB) - Number(weekA));
 
   // Render the list of bloques
   const renderBloquesList = () => (
@@ -117,9 +118,8 @@ const ViewMonitoredContent: React.FC = () => {
                     button
                     detail
                     onClick={() => {
-                      setSelectedBloque(bloque);
-                      setActiveViewSegment('camas');
-                      setSelectedBloque(bloque);
+                      dispatch(setSelectedBloque(bloque));
+                      dispatch(setActiveViewSegment('camas'));
                     }}
                   >
                     <IonLabel>
@@ -146,7 +146,6 @@ const ViewMonitoredContent: React.FC = () => {
 
     return (
       <>
-
         <IonList>
           <IonCard>
             <IonCardContent>
@@ -154,14 +153,13 @@ const ViewMonitoredContent: React.FC = () => {
                 <IonChip
                   color="secondary"
                   onClick={() => {
-                    setActiveViewSegment('bloques');
-                    setSelectedBloque(null);
+                    dispatch(setActiveViewSegment('bloques'));
+                    dispatch(setSelectedBloque(null));
                   }}
                 >
                   <IonIcon icon={homeOutline} />
                   <IonLabel>{selectedBloque?.name}</IonLabel>
                 </IonChip>
-
               </div>
             </IonCardContent>
           </IonCard>
@@ -170,9 +168,8 @@ const ViewMonitoredContent: React.FC = () => {
               key={cama.id}
               button
               onClick={() => {
-                setSelectedCama(cama);
-                setActiveViewSegment('cuadros');
-                setSelectedCama(cama)
+                dispatch(setSelectedCama(cama));
+                dispatch(setActiveViewSegment('cuadros'));
               }}
             >
               <IonLabel>
@@ -202,10 +199,10 @@ const ViewMonitoredContent: React.FC = () => {
                 <IonChip
                   color="secondary"
                   onClick={() => {
-                    setActiveViewSegment('bloques');
-                    setSelectedBloque(null);
-                    setSelectedCuadro(null);
-                    setSelectedCama(null);
+                    dispatch(setActiveViewSegment('bloques'));
+                    dispatch(setSelectedBloque(null));
+                    dispatch(setSelectedCuadro(null));
+                    dispatch(setSelectedCama(null));
                   }}
                 >
                   <IonIcon icon={homeOutline} />
@@ -213,9 +210,9 @@ const ViewMonitoredContent: React.FC = () => {
                 </IonChip>
                 <IonChip color="secondary"
                   onClick={() => {
-                    setActiveViewSegment('camas');
-                    setSelectedCuadro(null);
-                    setSelectedCama(null);
+                    dispatch(setActiveViewSegment('camas'));
+                    dispatch(setSelectedCuadro(null));
+                    dispatch(setSelectedCama(null));
                   }}
                 >
                   <IonIcon icon={scanOutline} />
@@ -229,7 +226,10 @@ const ViewMonitoredContent: React.FC = () => {
             <IonItem
               key={cuadro.id}
               button
-              onClick={() => { setSelectedCuadro(cuadro); setActiveViewSegment('details') }}
+              onClick={() => { 
+                dispatch(setSelectedCuadro(cuadro)); 
+                dispatch(setActiveViewSegment('details')); 
+              }}
             >
               <IonLabel>
                 <h2>{cuadro.name}</h2>
@@ -251,17 +251,16 @@ const ViewMonitoredContent: React.FC = () => {
 
     return (
       <>
-
         <IonCard>
           <IonCardContent>
             <div>
               <IonChip
                 color="secondary"
                 onClick={() => {
-                  setActiveViewSegment('bloques');
-                  setSelectedBloque(null);
-                  setSelectedCuadro(null);
-                  setSelectedCama(null);
+                  dispatch(setActiveViewSegment('bloques'));
+                  dispatch(setSelectedBloque(null));
+                  dispatch(setSelectedCuadro(null));
+                  dispatch(setSelectedCama(null));
                 }}
               >
                 <IonIcon icon={homeOutline} />
@@ -271,9 +270,9 @@ const ViewMonitoredContent: React.FC = () => {
               <IonChip
                 color="secondary"
                 onClick={() => {
-                  setActiveViewSegment('camas');
-                  setSelectedCuadro(null);
-                  setSelectedCama(null);
+                  dispatch(setActiveViewSegment('camas'));
+                  dispatch(setSelectedCuadro(null));
+                  dispatch(setSelectedCama(null));
                 }}
               >
                 <IonIcon icon={scanOutline} />
@@ -281,8 +280,8 @@ const ViewMonitoredContent: React.FC = () => {
               </IonChip>
               <IonChip color="secondary"
                 onClick={() => {
-                  setActiveViewSegment('cuadros');
-                  setSelectedCuadro(null);
+                  dispatch(setActiveViewSegment('cuadros'));
+                  dispatch(setSelectedCuadro(null));
                 }}
               >
                 <IonIcon icon={leafOutline} />
@@ -293,8 +292,6 @@ const ViewMonitoredContent: React.FC = () => {
         </IonCard>
 
         <div className="ion-padding">
-
-
           <IonCard>
             <IonCardHeader>
               <IonCardTitle>
@@ -339,7 +336,6 @@ const ViewMonitoredContent: React.FC = () => {
             </IonCard>
           )}
         </div>
-
       </>
     );
   };
@@ -350,7 +346,7 @@ const ViewMonitoredContent: React.FC = () => {
         <IonToolbar>
           <IonSegment
             value={activeViewSegment}
-            onIonChange={e => setActiveViewSegment(e.detail.value as SegmentViewBloque)}
+            onIonChange={e => handleSegmentChange(e.detail.value as string)}
             scrollable
           >
             <IonSegmentButton value="bloques">
@@ -377,15 +373,6 @@ const ViewMonitoredContent: React.FC = () => {
       </div>
     </div>
   );
-};
-
-const ViewMonitoredC: React.FC = () => {
-  return (
-    <ViewMonitoredProvider>
-      <ViewMonitoredContent />
-    </ViewMonitoredProvider>
-  )
-    ;
 };
 
 export default ViewMonitoredC;

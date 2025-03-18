@@ -10,21 +10,21 @@ import {
   IonPage,
 } from '@ionic/react';
 import { library, home, settings, rose } from 'ionicons/icons';
-import { useAuth } from '../contexts/AuthContext';
-import { useBloqueInfo } from '../contexts/BloqueInfoContext';
 
 // Import tab pages
 import TabHome from './TabHome';
 import TabMonitoreo from './TabMonitoreo';
 import TabLibrary from './TabLibrary';
 import TabSettings from './TabSettings';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { logout } from '../store/slices/authSlice';
 
 const Tabs: React.FC = () => {
-  const { isAuthenticated, logout } = useAuth();
-  const { getBloques } = useBloqueInfo();
+  // const { isAuthenticated, logout } = useAuth();
+  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getBloques();
   }, []);
 
   if (!isAuthenticated) {
@@ -36,7 +36,7 @@ const Tabs: React.FC = () => {
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tabs/home">
-            <TabHome logout={logout} />
+            <TabHome logout={()=>dispatch(logout())} />
           </Route>
           <Route exact path="/tabs/monitoreo">
             <TabMonitoreo />

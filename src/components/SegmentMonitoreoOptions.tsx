@@ -2,26 +2,25 @@ import ReturnButtonC from './ReturnButtonC';
 import { IonCard, IonCardHeader, IonCardTitle, IonTextarea, IonLabel, IonButton, IonToast, IonSpinner } from '@ionic/react';
 import { useState, useEffect } from 'react';
 import LabelMonitoring from './LabelMonitoring';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import { CuadroMonitored } from '../interfaces/Monitoring';
 import { sleep } from '../helpers/regularHelper';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setActiveSegment, setIsToastSavedOpen, setSelectedDiseases, updateMonitoringData } from '../store/slices/monitoringBloqueSlice';
 
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
   const [notes, setNotes] = useState<string>('');
   const [showTextarea, setShowTextarea] = useState<boolean>(false);
   const [loadingForm, setLoadingForm] = useState<boolean>(false);
-  const {
-    selectedDiseases,
-    selectedCuadro,
-    setActiveSegment,
-    selectedBloque,
-    selectedCama,
-    updateMonitoring,
-    setSelectedDiseases,
-    selectedCuadros,
-    setIsToastSavedOpen
-  } = useMonitoringBloque();
+
+  const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
+  const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
+  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
+  const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
+  const selectedCuadros = useAppSelector(state => state.monitoringBloque.selectedCuadros);
+  const loading = useAppSelector(state => state.monitoringBloque.loading);
+  const error = useAppSelector(state => state.monitoringBloque.error);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (selectedCuadros.length == 0) return
@@ -38,33 +37,30 @@ const SegmentMonitoreoOptions = () => {
 
 
   const handleSubmitCuadro = async () => {
-    setLoadingForm(true)
     const newCuadro: CuadroMonitored = {
       id: selectedCuadro || 1,
       name: `Cuadro ${selectedCuadro}`,
-      diseases: selectedDiseases.map(disease => (
-        {
-          ...disease,
-          tercio: disease.folderName === 'acaros' ? selectedAcarosLevel : 0
-        }
-      )),
+      diseases: selectedDiseases.map(disease => ({
+        ...disease,
+        tercio: disease.folderName === 'acaros' ? selectedAcarosLevel : 0
+      })),
       notes: notes || undefined
     };
 
     try {
-      await updateMonitoring(selectedBloque?.id as number, selectedCama, newCuadro);
-      await sleep(1.5);
-      setActiveSegment('camas');
-      setIsToastSavedOpen(true);
-      setSelectedDiseases([]);
+      await dispatch(updateMonitoringData({ 
+        bloqueId: selectedBloque?.id as number, 
+        camaId: selectedCama, 
+        newCuadro 
+      })).unwrap();
       
+      // Only proceed if the update was successful
+      dispatch(setActiveSegment('camas'));
+      dispatch(setSelectedDiseases([]));
+      // No need to manually set IsToastSavedOpen as it's handled in the reducer
     } catch (error) {
-      setLoadingForm(false)
+      console.error('Failed to update monitoring data:', error);
     }
-    finally {
-      setLoadingForm(false)
-    }
-
   }
 
   return (
@@ -126,8 +122,8 @@ const SegmentMonitoreoOptions = () => {
             </li>
           )}
         </ul>
-        <IonButton expand="block" onClick={handleSubmitCuadro} disabled={loadingForm}>
-          {!loadingForm ?
+        <IonButton expand="block" onClick={handleSubmitCuadro} disabled={loading}>
+          {!loading ?
             <IonLabel>
               guardar enfermedad{selectedDiseases.length > 1 ? 'es' : ''}
             </IonLabel>
@@ -137,8 +133,13 @@ const SegmentMonitoreoOptions = () => {
             </>
           }
         </IonButton>
+        {error && (
+          <div style={{ color: 'red', marginTop: '1rem' }}>
+            {error}
+          </div>
+        )}
       </div>
-      
+
     </>
   );
 }

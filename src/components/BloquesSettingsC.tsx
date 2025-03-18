@@ -1,12 +1,14 @@
 import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonLabel, IonToast } from '@ionic/react';
-import {  useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
-import { INITIAL_BLOQUE } from '../contexts/BloqueInfoContext';
 import { Bloque } from '../interfaces/Bloque';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { INITIAL_BLOQUE, editBloque, removeBloque, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 
 const BloquesSettingsC = () => {
-  const {  editBloque, removeBloque,activeBloques } = useBloqueInfo();
+  const activeBloques = useAppSelector(selectActiveBloques);
+  const dispatch = useAppDispatch();
+  
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingBloque, setEditingBloque] = useState<Bloque>(INITIAL_BLOQUE);
   const [isASheetOpen, setIsASheetOpen] = useState(false);
@@ -14,20 +16,20 @@ const BloquesSettingsC = () => {
 
   const handleActions = (bloque: Bloque) => () => {
     setEditingBloque(bloque);
-    setIsASheetOpen(true)
+    setIsASheetOpen(true);
   };
 
   // coming from modal
   const handleEdit = () => {
     if (editingBloque.id) {
-      editBloque(editingBloque.id, editingBloque);
+      dispatch(editBloque({ id: editingBloque.id, updatedBloque: editingBloque }));
     }
     setIsEditModalOpen(false);
   };
 
   const handleDelete = (bloqueId?: number) => {
     if (bloqueId) {
-      removeBloque(bloqueId);
+      dispatch(removeBloque(bloqueId));
       setIsASheetOpen(false);
     }
   };
@@ -73,7 +75,6 @@ const BloquesSettingsC = () => {
               setIsDeleteToastOpen(true);
             }
           },
-
         ]}
         onDidDismiss={() => setIsASheetOpen(false)}
       ></IonActionSheet>
@@ -94,6 +95,6 @@ const BloquesSettingsC = () => {
       ></IonAlert>
     </div>
   );
-}
+};
 
 export default BloquesSettingsC;

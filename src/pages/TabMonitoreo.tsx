@@ -20,8 +20,8 @@ import {
 import { clipboardOutline, eyeOutline, closeOutline } from 'ionicons/icons';
 import MonitoreoC from '../components/MonitoreoC';
 import ViewMonitoredC from '../components/ViewMonitoredC';
-import { MonitoringBloqueProvider } from '../contexts/MonitoringBloqueContext';
-import { useBloqueInfo } from '../contexts/BloqueInfoContext';
+import { useAppSelector } from '../store/hooks';
+import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 
 type modal = 'monitorear' | 'view'
 
@@ -29,7 +29,7 @@ const TabMonitoreo: React.FC = () => {
   const [IsOpenModal, setIsOpenModal] = useState(false)
   const [currentModal, setCurrentModal] = useState<modal>();
 
-  const { activeBloques } = useBloqueInfo();
+  const activeBloques = useAppSelector(selectActiveBloques);
 
   const handleModal = (kind: modal) => () => {
     setCurrentModal(kind);
@@ -75,10 +75,7 @@ const TabMonitoreo: React.FC = () => {
           IsOpenModal={IsOpenModal}
         >
           <>
-            {currentModal == 'view' &&
-              <MonitoringBloqueProvider>
-                <ViewMonitoredC />
-              </MonitoringBloqueProvider>}
+            {currentModal == 'view' && <ViewMonitoredC />}
 
             {currentModal == 'monitorear' && <MonitoreoC />}
           </>

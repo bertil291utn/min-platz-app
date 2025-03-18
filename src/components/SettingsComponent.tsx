@@ -1,10 +1,6 @@
 import {
   IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
 } from '@ionic/react';
-import {
-
-  INITIAL_BLOQUE, useBloqueInfo
-} from '../contexts/BloqueInfoContext';
 import BloquesSettingsC from './BloquesSettingsC';
 import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
@@ -12,12 +8,16 @@ import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
 import ArchivedBloquesSettingsC from './ArchivedBloquesSettingsC';
 import { Bloque } from '../interfaces/Bloque';
 import TipoUserSettingsC from './TipoUserSettingsC';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { addBloque, INITIAL_BLOQUE, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 
 
 const SettingsC = () => {
-  const { bloques, addBloque, activeBloques } = useBloqueInfo();
+  const activeBloques = useAppSelector(selectActiveBloques);
+  const bloques = useAppSelector(state=>state.bloqueInfo.bloques);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setBloqueForm(prev => ({
@@ -28,7 +28,7 @@ const SettingsC = () => {
   }, [isOpenModal]);
 
   const handleConfirm = () => {
-    addBloque(bloqueForm);
+    dispatch(addBloque(bloqueForm));
     setIsOpenModal(false);
     setBloqueForm(INITIAL_BLOQUE);
   };

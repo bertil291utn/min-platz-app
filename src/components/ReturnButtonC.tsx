@@ -1,25 +1,21 @@
 import { IonButton, IonIcon } from '@ionic/react';
 import { arrowBack } from 'ionicons/icons';
 import { SegmentBloque } from '../interfaces/Bloque';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { useAppDispatch } from '../store/hooks';
+import { setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 
 const ReturnButtonC = (
   { segmentReturn }: {
     segmentReturn: SegmentBloque
   }
-
 ) => {
-  const {
-    setActiveSegment
-  } = useMonitoringBloque();
-
+  const dispatch = useAppDispatch();
   
   const handleArrowBack = (segmentReturn: SegmentBloque) => () => {
-    setActiveSegment(segmentReturn)
+    dispatch(setActiveSegment(segmentReturn));
   }
 
   return (
-
     <IonButton fill="clear" onClick={handleArrowBack(segmentReturn)}>
       <IonIcon slot="start" icon={arrowBack}></IonIcon>
       regresar

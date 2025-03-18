@@ -1,14 +1,14 @@
 import { IonItem, IonLabel, IonToggle } from '@ionic/react';
-import { useAuth } from '../contexts/AuthContext';
-import { EXPERT_USER } from '../helpers/AuthConst';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setExpertUser } from '../store/slices/authSlice';
 
 const TipoUserSettingsC = () => {
-  const { expertUser, setExpertUser } = useAuth();
+  const expertUser = useAppSelector(state => state.auth.expertUser);
+  const dispatch = useAppDispatch();
 
   const handleToggleChange = (e: CustomEvent) => {
     const newValue = e.detail.checked;
-    setExpertUser(newValue);
-    localStorage.setItem(EXPERT_USER, JSON.stringify(newValue));
+    dispatch(setExpertUser(newValue));
   };
 
   return (

@@ -1,27 +1,22 @@
 import { IonCard, IonCardHeader, IonCardTitle, IonLabel } from '@ionic/react';
-import { useBloqueInfo } from '../contexts/BloqueInfoContext';
 import { Bloque } from '../interfaces/Bloque';
-import { useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
+import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setSelectedCama, setSelectedBloque, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 
 const SegmentMonitoreoBloques = () => {
-  const {
-    selectedBloque,
-    setSelectedBloque,
-    setActiveSegment,
-    setSelectedDiseases,
-    setSelectedCuadros,
-    setSelectedCuadro,
-    setSelectedCama
-  } = useMonitoringBloque();
-  const { activeBloques } = useBloqueInfo();
+
+  const activeBloques = useAppSelector(selectActiveBloques);
+  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
+  const dispatch = useAppDispatch();
 
   const handleChangeSegment = (bloque: Bloque) => () => {
-    setSelectedDiseases([]);
-    setSelectedCuadros([]);
-    setSelectedCuadro(undefined);
-    setSelectedCama(1)
-    setSelectedBloque(bloque);
-    setActiveSegment('camas');
+    dispatch(setSelectedDiseases([]));
+    dispatch(setSelectedCuadros([]));
+    dispatch(setSelectedCuadro(undefined));
+    dispatch(setSelectedCama(1))
+    dispatch(setSelectedBloque(bloque));
+    dispatch(setActiveSegment('camas'));
   }
 
   return (
