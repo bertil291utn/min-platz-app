@@ -23,10 +23,10 @@ interface MonitoringBloqueState {
 const initialState: MonitoringBloqueState = {
   selectedBloque: undefined,
   selectedCuadro: undefined,
-  selectedCama: 1,
+  selectedCama: 0,
   selectedDiseases: [],
   selectedCuadros: [],
-  activeSegment: 'bloques',
+  activeSegment: 'camas',
   activeViewSegment: 'bloques',
   isOnline: navigator.onLine,
   bloquesMonitored: [],

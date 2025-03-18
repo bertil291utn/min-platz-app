@@ -39,7 +39,7 @@ const SegmentMonitoreoDiseases = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <ReturnButtonC
-          segmentReturn={'camas'}
+          segmentReturn={'cuadros'}
         />
 
         {selectedDiseases.length > 0 &&
@@ -50,7 +50,6 @@ const SegmentMonitoreoDiseases = () => {
         }
       </div>
 
-      <LabelMonitoring />
       <p>Seleccione enfermedad</p>
       <br />
 

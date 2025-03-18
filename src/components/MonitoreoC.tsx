@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import MonitoreoPlacas from './MonitoreoPlacas';
 import MonitoreoMallas from './MonitoreoMallas';
 import { homeOutline } from 'ionicons/icons';
+import SegmentMonitoreoCuadros from './SegmentMonitoreoCuadros';
 
 const MonitoreoC = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,7 @@ const MonitoreoC = () => {
 
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
   const activeSegment = useAppSelector(state => state.monitoringBloque.activeSegment);
+  const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
   const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
   const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
 
@@ -28,50 +30,58 @@ const MonitoreoC = () => {
 
   return (
     <div>
-      <IonCard>
-        <IonCardContent>
+      <div className="sticky-header" style={{ position: 'sticky', top: 0, zIndex: 100, background: 'white' }}>
+        <IonCard>
+          <IonCardContent>
             <IonChip
-             
+
               color="secondary"
               onClick={() => {
                 dispatch(setActiveSegment('camas'));
               }}
             >
-              <IonIcon icon={homeOutline} />
+              <IonIcon size='large' icon={homeOutline} />
               <IonLabel></IonLabel>
             </IonChip>
 
             {selectedBloque && (
               <>
-                <IonIcon icon="chevron-forward-outline" />
                 <IonChip color="secondary">
                   <IonLabel>{selectedBloque.name}</IonLabel>
                 </IonChip>
               </>
             )}
 
+            {selectedCama && (
+              <>
+                <IonChip color="secondary"
+                  onClick={() => {
+                    dispatch(setActiveSegment('camas'));
+                  }}
+                >
+                  <IonLabel>{`Cama ${selectedCama}`}</IonLabel>
+                </IonChip>
+              </>
+            )}
             {selectedCuadro && (
               <>
-                <IonIcon icon="chevron-forward-outline" />
-                <IonChip color="secondary">
+                <IonChip color="secondary"
+                  onClick={() => {
+                    dispatch(setActiveSegment('cuadros'));
+                  }}
+                >
                   <IonLabel>{`Cuadro ${selectedCuadro}`}</IonLabel>
                 </IonChip>
               </>
             )}
 
-            {selectedDiseases.length > 0 && (
-              <>
-                <IonIcon icon="chevron-forward-outline" />
-                <IonChip color="secondary">
-                  <IonLabel>Enfermedades</IonLabel>
-                </IonChip>
-              </>
-            )}
-        </IonCardContent>
-      </IonCard>
+          </IonCardContent>
+        </IonCard>
+      </div>
 
       <div className="ion-padding">
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
+        {activeSegment === 'cuadros' && <SegmentMonitoreoCuadros />}
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}
 

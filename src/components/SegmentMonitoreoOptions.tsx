@@ -70,7 +70,6 @@ const SegmentMonitoreoOptions = () => {
       />
 
 
-      <LabelMonitoring />
       {/* content */}
       <div style={{ margin: '1rem 0' }}>
         {
