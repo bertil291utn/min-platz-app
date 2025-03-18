@@ -44,15 +44,15 @@ const MonitoreoC = () => {
               <IonLabel></IonLabel>
             </IonChip>
 
-            {selectedBloque && (
+            {selectedBloque ? (
               <>
                 <IonChip color="secondary">
                   <IonLabel>{selectedBloque.name}</IonLabel>
                 </IonChip>
               </>
-            )}
+            ) : null}
 
-            {selectedCama && (
+            {selectedCama ? (
               <>
                 <IonChip color="secondary"
                   onClick={() => {
@@ -62,8 +62,8 @@ const MonitoreoC = () => {
                   <IonLabel>{`Cama ${selectedCama}`}</IonLabel>
                 </IonChip>
               </>
-            )}
-            {selectedCuadro && (
+            ) : null}
+            {selectedCuadro ? (
               <>
                 <IonChip color="secondary"
                   onClick={() => {
@@ -73,7 +73,7 @@ const MonitoreoC = () => {
                   <IonLabel>{`Cuadro ${selectedCuadro}`}</IonLabel>
                 </IonChip>
               </>
-            )}
+            ) : null}
 
           </IonCardContent>
         </IonCard>
@@ -85,8 +85,7 @@ const MonitoreoC = () => {
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}
 
-        {/* {activeSegment === 'placas' && <MonitoreoPlacas />}
-        {activeSegment === 'mallas' && <MonitoreoMallas />} */}
+        
       </div>
     </div>
   );

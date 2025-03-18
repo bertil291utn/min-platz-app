@@ -4,9 +4,10 @@ import { setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 import { bedOutline, gridOutline, scanOutline } from 'ionicons/icons';
 import ReturnButtonC from './ReturnButtonC';
 import './Monitoring.css';
+import { MonitoringModal } from '../interfaces/Monitoring';
 
 interface MonitoringOptionsScreenProps {
-  onOptionSelect?: (option: 'camas' | 'placas' | 'mallas') => void;
+  onOptionSelect?: (option: MonitoringModal) => void;
   showReturnButton?: boolean;
 }
 
@@ -17,26 +18,25 @@ const MonitoringOptionsScreen = ({
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
   const dispatch = useAppDispatch();
 
-  const handleOptionSelect = (option: 'camas' | 'placas' | 'mallas') => {
+  const handleOptionSelect = (option: MonitoringModal) => {
     // If a custom handler is provided, use it
     if (onOptionSelect) {
       onOptionSelect(option);
     } else {
       // Otherwise, use the default behavior
-      dispatch(setActiveSegment(option));
+      // dispatch(setActiveSegment(option));
     }
   };
 
   return (
     <div className="ion-padding">
-      {showReturnButton && <ReturnButtonC segmentReturn="bloques" />}
       
       <IonGrid>
         <IonRow>
           <IonCol size="12" sizeMd="4">
             <IonCard 
               button 
-              onClick={() => handleOptionSelect('camas')}
+              onClick={() => handleOptionSelect('monitorear-camas')}
               className="monitoring-option-card"
             >
               <IonCardHeader>
@@ -54,7 +54,7 @@ const MonitoringOptionsScreen = ({
           <IonCol size="12" sizeMd="4">
             <IonCard 
               button 
-              onClick={() => handleOptionSelect('placas')}
+              onClick={() => handleOptionSelect('monitorear-placas')}
               className="monitoring-option-card"
             >
               <IonCardHeader>
@@ -72,7 +72,7 @@ const MonitoringOptionsScreen = ({
           <IonCol size="12" sizeMd="4">
             <IonCard 
               button 
-              onClick={() => handleOptionSelect('mallas')}
+              onClick={() => handleOptionSelect('monitorear-mallas')}
               className="monitoring-option-card"
             >
               <IonCardHeader>

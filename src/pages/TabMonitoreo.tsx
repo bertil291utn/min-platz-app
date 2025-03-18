@@ -30,19 +30,22 @@ import {
   setActiveSegment as setMonitoringSegment,
   setSelectedBloque as setMonitoringBloque
 } from '../store/slices/monitoringBloqueSlice';
+import MonitoreoPlacas from '../components/MonitoreoPlacas';
+import MonitoreoMallas from '../components/MonitoreoMallas';
+import { MonitoringModal } from '../interfaces/Monitoring';
 
-type modal = 'monitorear' | 'view';
+
 type SegmentType = 'monitorear' | 'historial';
 
 const TabMonitoreo: React.FC = () => {
   const [IsOpenModal, setIsOpenModal] = useState(false);
-  const [currentModal, setCurrentModal] = useState<modal>();
+  const [currentModal, setCurrentModal] = useState<MonitoringModal>();
   const [activeSegment, setActiveSegment] = useState<SegmentType>('monitorear');
 
   const dispatch = useAppDispatch();
   const activeBloques = useAppSelector(selectActiveBloques);
 
-  const handleModal = (kind: modal) => () => {
+  const handleModal = (kind: MonitoringModal) => () => {
     setCurrentModal(kind);
     setIsOpenModal(true);
   };
@@ -54,15 +57,14 @@ const TabMonitoreo: React.FC = () => {
     }
   };
 
-  const handleOptionSelect = (option: 'camas' | 'placas' | 'mallas', bloqueId: number) => {
+  const handleOptionSelect = (option: MonitoringModal, bloqueId: number) => {
     const selectedBloque = activeBloques.find(b => b.id === bloqueId);
     if (selectedBloque) {
       dispatch(setMonitoringBloque(selectedBloque));
-      if (option === 'camas') {
+      if (option === 'monitorear-camas') {
         dispatch(setMonitoringSegment('camas'));
-        handleModal('monitorear')();
       }
-      handleModal('monitorear')();
+      handleModal(option)();
     }
   };
 
@@ -132,7 +134,9 @@ const TabMonitoreo: React.FC = () => {
         >
           <>
             {currentModal === 'view' && <ViewMonitoredC />}
-            {currentModal === 'monitorear' && <MonitoreoC />}
+            {currentModal === 'monitorear-camas' && <MonitoreoC />}
+            {currentModal === 'monitorear-placas' && <MonitoreoPlacas />}
+            {currentModal === 'monitorear-mallas' && <MonitoreoMallas />}
           </>
         </LocalModal>
       </IonContent>

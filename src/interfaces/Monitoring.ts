@@ -25,3 +25,6 @@ export interface BloqueMonitored {
   weekNumber: number;
   camas: CamaMonitored[];
 }
+
+
+export type MonitoringModal = 'monitorear-camas' | 'view' | 'monitorear-placas' | 'monitorear-mallas';
