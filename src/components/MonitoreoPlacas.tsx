@@ -13,12 +13,11 @@ const MonitoreoPlacas = () => {
   const handleSave = () => {
     // TODO: Implement save functionality
     console.log('Saving placas monitoring data:', observations);
-    dispatch(setActiveSegment('monitoring-options'));
+    // dispatch(setActiveSegment('monitoring-options'));
   };
 
   return (
     <div className="ion-padding">
-      <ReturnButtonC segmentReturn="monitoring-options" />
 
       <h2 className="ion-text-center">Monitoreo de Placas - {selectedBloque?.name}</h2>
 

@@ -22,7 +22,7 @@ const BloqueSelectionScreen = ({ onBloqueSelect }: BloqueSelectionScreenProps) =
       onBloqueSelect(bloque);
     } else {
       // Otherwise, use the default behavior
-      dispatch(setActiveSegment('monitoring-options'));
+      // dispatch(setActiveSegment('monitoring-options'));
     }
   };
 

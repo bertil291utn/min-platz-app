@@ -15,12 +15,11 @@ const MonitoreoMallas = () => {
   const handleSave = () => {
     // TODO: Implement save functionality
     console.log('Saving mallas monitoring data:', { observations, meshStatus });
-    dispatch(setActiveSegment('monitoring-options'));
+    // dispatch(setActiveSegment('monitoring-options'));
   };
 
   return (
     <div className="ion-padding">
-      <ReturnButtonC segmentReturn="monitoring-options" />
 
       <h2 className="ion-text-center">Monitoreo de Mallas - {selectedBloque?.name}</h2>
 
