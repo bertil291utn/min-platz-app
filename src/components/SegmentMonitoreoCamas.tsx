@@ -94,9 +94,6 @@ const SegmentMonitoreoCamas = () => {
       {selectedBloque
         ?
         <div>
-          <ReturnButtonC
-            segmentReturn={'bloques'}
-          />
           <LabelMonitoring />
 
           <br />

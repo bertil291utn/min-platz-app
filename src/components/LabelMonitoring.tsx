@@ -18,7 +18,7 @@ const LabelMonitoring = () => {
         marginBottom: '1rem'
       }}>
         <p onClick={() => dispatch(setActiveSegment('camas'))} style={{ fontWeight: 'bold' }}>Cuadro #{selectedCuadro}</p>
-        <p onClick={() => dispatch(setActiveSegment('bloques'))} style={{ fontSize: '0.6rem', color: '#6B7280' }}>{selectedBloque?.name}</p>
+        <p style={{ fontSize: '0.6rem', color: '#6B7280' }}>{selectedBloque?.name}</p>
         <p onClick={() => dispatch(setActiveSegment('camas'))} style={{ fontWeight: 'bold' }}>Cama #{selectedCama}</p>
       </div>
     </div>
