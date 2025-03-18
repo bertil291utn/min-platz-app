@@ -1,20 +1,22 @@
 import { IonHeader, IonLabel, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
 import { MonitoringBloqueProvider, useMonitoringBloque } from '../contexts/MonitoringBloqueContext';
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
-import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import { SegmentBloque } from '../interfaces/Bloque';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
 import { useEffect } from 'react';
+import BloqueSelectionScreen from './BloqueSelectionScreen';
+import MonitoringOptionsScreen from './MonitoringOptionsScreen';
+import MonitoreoPlacas from './MonitoreoPlacas';
+import MonitoreoMallas from './MonitoreoMallas';
 
 const MonitoreoContent = () => {
- const { getMonitoredBloques } = useMonitoringBloque();
+  const { getMonitoredBloques } = useMonitoringBloque();
   useEffect(() => {
-      getMonitoredBloques();
-    }, [])
+    getMonitoredBloques();
+  }, [])
 
   const { selectedBloque, activeSegment, setActiveSegment, selectedCuadro, selectedDiseases } = useMonitoringBloque();
-
 
   return (
     <div>
@@ -28,24 +30,30 @@ const MonitoreoContent = () => {
             <IonSegmentButton value="bloques">
               <IonLabel>Bloques</IonLabel>
             </IonSegmentButton>
-            {selectedBloque && <IonSegmentButton value="camas">
+            {selectedBloque && <IonSegmentButton value="monitoring-options">
+              <IonLabel>Opciones</IonLabel>
+            </IonSegmentButton>}
+            {activeSegment === 'camas' && <IonSegmentButton value="camas">
               <IonLabel>Camas</IonLabel>
             </IonSegmentButton>}
             {selectedCuadro && <IonSegmentButton value="diseases">
-              <IonLabel>enfermedad</IonLabel>
+              <IonLabel>Enfermedad</IonLabel>
             </IonSegmentButton>}
             {selectedDiseases.length > 0 && <IonSegmentButton value="options">
-              <IonLabel>opciones</IonLabel>
+              <IonLabel>Opciones</IonLabel>
             </IonSegmentButton>}
           </IonSegment>
         </IonToolbar>
       </IonHeader>
 
       <div className="ion-padding">
-        {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
+        {activeSegment === 'bloques' && <BloqueSelectionScreen />}
+        {activeSegment === 'monitoring-options' && <MonitoringOptionsScreen />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}
+        {activeSegment === 'placas' && <MonitoreoPlacas />}
+        {activeSegment === 'mallas' && <MonitoreoMallas />}
       </div>
     </div>
   );

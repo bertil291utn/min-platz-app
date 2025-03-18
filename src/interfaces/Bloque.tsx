@@ -9,6 +9,5 @@ export interface Bloque {
   archived?: boolean;
 }
 
-
-export type SegmentBloque = 'bloques' | 'camas' | 'diseases' | 'options';
+export type SegmentBloque = 'bloques' | 'monitoring-options' | 'camas' | 'diseases' | 'options' | 'placas' | 'mallas';
 export type SegmentViewBloque = 'bloques' | 'camas' | 'cuadros' | 'details';

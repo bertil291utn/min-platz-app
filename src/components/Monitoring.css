@@ -1,0 +1,70 @@
+.bloque-card {
+  margin: 1rem 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+.bloque-card:hover {
+  transform: translateY(-2px);
+}
+
+.bloque-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bloque-info p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--ion-color-medium);
+}
+
+.monitoring-option-card {
+  margin: 1rem 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+.monitoring-option-card:hover {
+  transform: translateY(-2px);
+}
+
+.monitoring-option-card ion-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.monitoring-option-card ion-card-content {
+  color: var(--ion-color-medium);
+}
+
+/* Add some spacing between cards */
+ion-card {
+  margin: 1rem 0;
+}
+
+/* Make the header text more prominent */
+h2.ion-text-center {
+  margin: 1.5rem 0;
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+/* Style the return button */
+ion-button[fill="clear"] {
+  margin-bottom: 1rem;
+}
+
+/* Add some padding to the content area */
+.ion-padding {
+  padding: 1rem;
+}
+
+/* Make the segment buttons more prominent */
+ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  --color-checked: var(--ion-color-primary);
+  --color: var(--ion-color-medium);
+} 
