@@ -13,7 +13,7 @@ import MonitoreoMallas from './MonitoreoMallas';
 
 const MonitoreoC = () => {
   const dispatch = useAppDispatch();
-  
+
   useEffect(() => {
     dispatch(fetchMonitoredBloques());
   }, [dispatch]);
@@ -36,15 +36,9 @@ const MonitoreoC = () => {
             onIonChange={e => handleSegmentChange(e.detail.value as string)}
             scrollable
           >
-            <IonSegmentButton value="bloques">
-              <IonLabel>Bloques</IonLabel>
-            </IonSegmentButton>
-            {selectedBloque && <IonSegmentButton value="monitoring-options">
-              <IonLabel>Opciones</IonLabel>
-            </IonSegmentButton>}
-            {activeSegment === 'camas' && <IonSegmentButton value="camas">
+            <IonSegmentButton value="camas">
               <IonLabel>Camas</IonLabel>
-            </IonSegmentButton>}
+            </IonSegmentButton>
             {selectedCuadro && <IonSegmentButton value="diseases">
               <IonLabel>Enfermedad</IonLabel>
             </IonSegmentButton>}
@@ -56,8 +50,6 @@ const MonitoreoC = () => {
       </IonHeader>
 
       <div className="ion-padding">
-        {activeSegment === 'bloques' && <BloqueSelectionScreen />}
-        {activeSegment === 'monitoring-options' && <MonitoringOptionsScreen />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}

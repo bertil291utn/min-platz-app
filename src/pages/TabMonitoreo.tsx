@@ -1,10 +1,10 @@
-import React, { Dispatch, ReactNode, SetStateAction, useRef, useState } from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import MonitoringOptionsScreen from '../components/MonitoringOptionsScreen';
+import MonitoreoC from '../components/MonitoreoC';
+import ViewMonitoredC from '../components/ViewMonitoredC';
 import {
   IonContent,
   IonPage,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonCard,
   IonCardHeader,
   IonCardTitle,
@@ -13,93 +13,138 @@ import {
   IonModal,
   IonHeader,
   IonToolbar,
-  IonTitle,
   IonButtons,
-  IonButton
+  IonButton,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonAccordionGroup,
+  IonAccordion,
+  IonItem
 } from '@ionic/react';
-import { clipboardOutline, eyeOutline, closeOutline } from 'ionicons/icons';
-import MonitoreoC from '../components/MonitoreoC';
-import ViewMonitoredC from '../components/ViewMonitoredC';
-import { useAppSelector } from '../store/hooks';
+import { clipboardOutline, eyeOutline } from 'ionicons/icons';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
+import { Bloque } from '../interfaces/Bloque';
+import {
+  setActiveSegment as setMonitoringSegment,
+  setSelectedBloque as setMonitoringBloque
+} from '../store/slices/monitoringBloqueSlice';
 
-type modal = 'monitorear' | 'view'
+type modal = 'monitorear' | 'view';
+type SegmentType = 'monitorear' | 'historial';
 
 const TabMonitoreo: React.FC = () => {
-  const [IsOpenModal, setIsOpenModal] = useState(false)
+  const [IsOpenModal, setIsOpenModal] = useState(false);
   const [currentModal, setCurrentModal] = useState<modal>();
+  const [activeSegment, setActiveSegment] = useState<SegmentType>('monitorear');
 
+  const dispatch = useAppDispatch();
   const activeBloques = useAppSelector(selectActiveBloques);
 
   const handleModal = (kind: modal) => () => {
     setCurrentModal(kind);
     setIsOpenModal(true);
-  }
+  };
+
+  const handleSegmentChange = (value: any) => {
+    const segmentValue = value?.toString();
+    if (segmentValue === 'monitorear' || segmentValue === 'historial') {
+      setActiveSegment(segmentValue);
+    }
+  };
+
+  const handleOptionSelect = (option: 'camas' | 'placas' | 'mallas', bloqueId: number) => {
+    const selectedBloque = activeBloques.find(b => b.id === bloqueId);
+    if (selectedBloque) {
+      dispatch(setMonitoringBloque(selectedBloque));
+      if (option === 'camas') {
+        dispatch(setMonitoringSegment('camas'));
+        handleModal('monitorear')();
+      }
+      handleModal('monitorear')();
+    }
+  };
 
   const IsThereActiveBloques = activeBloques.length > 0;
 
   return (
     <IonPage>
       <IonContent fullscreen>
-        {IsThereActiveBloques ?
+        {IsThereActiveBloques ? (
           <>
-            <IonCard onClick={handleModal('monitorear')}>
-              <IonCardHeader>
-                <IonIcon icon={clipboardOutline} size="large" color="secondary" />
-                <IonCardTitle>Monitorear</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                Iniciar nuevo monitoreo de bloques, camas y enfermedades
-              </IonCardContent>
-            </IonCard>
-            <IonCard onClick={handleModal('view')}>
-              <IonCardHeader>
-                <IonIcon icon={eyeOutline} size="large" color="secondary" />
-                <IonCardTitle>Ver Monitoreo</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                Ver historial de monitoreos realizados anteriormente
-              </IonCardContent>
-            </IonCard>
+            <IonSegment value={activeSegment} onIonChange={e => handleSegmentChange(e.detail.value)}>
+              <IonSegmentButton value="monitorear">
+                <IonLabel>Monitorear</IonLabel>
+              </IonSegmentButton>
+              <IonSegmentButton value="historial">
+                <IonLabel>Ver Monitoreo</IonLabel>
+              </IonSegmentButton>
+            </IonSegment>
+
+
+            <div className="ion-padding">
+              {activeSegment === 'monitorear' && (
+                <IonAccordionGroup>
+                  {activeBloques.map((bloque) => (
+                    <IonAccordion
+                      key={bloque.id?.toString()}
+                      value={bloque.id?.toString()}
+                    >
+                      <IonItem slot="header">
+                        <IonLabel>{bloque.name}</IonLabel>
+                      </IonItem>
+                      <div slot="content" className="ion-padding">
+                        <MonitoringOptionsScreen
+                          showReturnButton={false}
+                          onOptionSelect={(option) => bloque.id && handleOptionSelect(option, bloque.id)}
+                        />
+                      </div>
+                    </IonAccordion>
+                  ))}
+
+                </IonAccordionGroup>
+              )}
+
+              {activeSegment === 'historial' && (
+                <IonCard onClick={handleModal('view')}>
+                  <IonCardHeader>
+                    <IonIcon icon={eyeOutline} size="large" color="secondary" />
+                    <IonCardTitle>Ver Monitoreo</IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    Ver historial de monitoreos realizados anteriormente
+                  </IonCardContent>
+                </IonCard>
+              )}
+            </div>
           </>
-          :
-          <div className='ion-padding'>
+        ) : (
+          <div className="ion-padding">
             <p>No hay bloques activos</p>
-            <IonButton routerLink='/tabs/settings'>
-              Añadir bloques
-            </IonButton>
-          </div>}
+            <IonButton routerLink="/tabs/settings">Añadir bloques</IonButton>
+          </div>
+        )}
 
         <LocalModal
           setIsOpenModal={setIsOpenModal}
           IsOpenModal={IsOpenModal}
         >
           <>
-            {currentModal == 'view' && <ViewMonitoredC />}
-
-            {currentModal == 'monitorear' && <MonitoreoC />}
+            {currentModal === 'view' && <ViewMonitoredC />}
+            {currentModal === 'monitorear' && <MonitoreoC />}
           </>
-
         </LocalModal>
-
       </IonContent>
     </IonPage>
   );
 };
 
-export default TabMonitoreo;
-
-
-const LocalModal = ({
-  IsOpenModal,
-  setIsOpenModal,
-  children
-}: {
+const LocalModal: React.FC<{
   IsOpenModal: boolean;
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
   children: ReactNode;
-}
-) => {
+}> = ({ IsOpenModal, setIsOpenModal, children }) => {
   return (
     <IonModal
       isOpen={IsOpenModal}
@@ -120,5 +165,7 @@ const LocalModal = ({
         {children}
       </IonContent>
     </IonModal>
-  )
-}
+  );
+};
+
+export default TabMonitoreo;
