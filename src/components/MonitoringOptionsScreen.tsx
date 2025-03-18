@@ -31,8 +31,6 @@ const MonitoringOptionsScreen = ({
     <div className="ion-padding">
       {showReturnButton && <ReturnButtonC segmentReturn="bloques" />}
       
-      {/* <h2 className="ion-text-center">Monitoreo de {selectedBloque?.name}</h2> */}
-      
       <IonGrid>
         <IonRow>
           <IonCol size="12" sizeMd="4">

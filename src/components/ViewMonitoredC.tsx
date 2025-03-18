@@ -23,20 +23,21 @@ import {
   leafOutline,
   homeOutline,
   scanOutline,
+  squareOutline,
 } from 'ionicons/icons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchMonitoredBloques } from '../store/slices/monitoringBloqueSlice';
-import { 
-  setActiveViewSegment, 
-  setSelectedBloque, 
-  setSelectedCama, 
-  setSelectedCuadro 
+import {
+  setActiveViewSegment,
+  setSelectedBloque,
+  setSelectedCama,
+  setSelectedCuadro
 } from '../store/slices/viewMonitoredSlice';
 import { SegmentViewBloque } from '../interfaces/Bloque';
 
 const ViewMonitoredC: React.FC = () => {
   const dispatch = useAppDispatch();
-  
+
   const activeViewSegment = useAppSelector(state => state.viewMonitored.activeViewSegment);
   const selectedBloque = useAppSelector(state => state.viewMonitored.selectedBloque);
   const selectedCama = useAppSelector(state => state.viewMonitored.selectedCama);
@@ -147,22 +148,6 @@ const ViewMonitoredC: React.FC = () => {
     return (
       <>
         <IonList>
-          <IonCard>
-            <IonCardContent>
-              <div>
-                <IonChip
-                  color="secondary"
-                  onClick={() => {
-                    dispatch(setActiveViewSegment('bloques'));
-                    dispatch(setSelectedBloque(null));
-                  }}
-                >
-                  <IonIcon icon={homeOutline} />
-                  <IonLabel>{selectedBloque?.name}</IonLabel>
-                </IonChip>
-              </div>
-            </IonCardContent>
-          </IonCard>
           {selectedBloque.camas.map(cama => (
             <IonItem
               key={cama.id}
@@ -193,42 +178,14 @@ const ViewMonitoredC: React.FC = () => {
     return (
       <>
         <IonList>
-          <IonCard>
-            <IonCardContent>
-              <div>
-                <IonChip
-                  color="secondary"
-                  onClick={() => {
-                    dispatch(setActiveViewSegment('bloques'));
-                    dispatch(setSelectedBloque(null));
-                    dispatch(setSelectedCuadro(null));
-                    dispatch(setSelectedCama(null));
-                  }}
-                >
-                  <IonIcon icon={homeOutline} />
-                  <IonLabel>{selectedBloque?.name}</IonLabel>
-                </IonChip>
-                <IonChip color="secondary"
-                  onClick={() => {
-                    dispatch(setActiveViewSegment('camas'));
-                    dispatch(setSelectedCuadro(null));
-                    dispatch(setSelectedCama(null));
-                  }}
-                >
-                  <IonIcon icon={scanOutline} />
-                  <IonLabel>{selectedCama?.name}</IonLabel>
-                </IonChip>
-              </div>
-            </IonCardContent>
-          </IonCard>
 
           {selectedCama.cuadros.map(cuadro => (
             <IonItem
               key={cuadro.id}
               button
-              onClick={() => { 
-                dispatch(setSelectedCuadro(cuadro)); 
-                dispatch(setActiveViewSegment('details')); 
+              onClick={() => {
+                dispatch(setSelectedCuadro(cuadro));
+                dispatch(setActiveViewSegment('details'));
               }}
             >
               <IonLabel>
@@ -250,120 +207,115 @@ const ViewMonitoredC: React.FC = () => {
     if (!selectedCuadro) return null;
 
     return (
-      <>
+      <div className="ion-padding">
         <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>
+              <IonIcon icon={leafOutline} /> Enfermedades Detectadas
+            </IonCardTitle>
+          </IonCardHeader>
           <IonCardContent>
-            <div>
-              <IonChip
-                color="secondary"
-                onClick={() => {
-                  dispatch(setActiveViewSegment('bloques'));
-                  dispatch(setSelectedBloque(null));
-                  dispatch(setSelectedCuadro(null));
-                  dispatch(setSelectedCama(null));
-                }}
-              >
-                <IonIcon icon={homeOutline} />
-                <IonLabel>{selectedBloque?.name}</IonLabel>
-              </IonChip>
-              <IonIcon icon="chevron-forward-outline" />
-              <IonChip
-                color="secondary"
-                onClick={() => {
-                  dispatch(setActiveViewSegment('camas'));
-                  dispatch(setSelectedCuadro(null));
-                  dispatch(setSelectedCama(null));
-                }}
-              >
-                <IonIcon icon={scanOutline} />
-                <IonLabel>{selectedCama?.name}</IonLabel>
-              </IonChip>
-              <IonChip color="secondary"
-                onClick={() => {
-                  dispatch(setActiveViewSegment('cuadros'));
-                  dispatch(setSelectedCuadro(null));
-                }}
-              >
-                <IonIcon icon={leafOutline} />
-                <IonLabel>{selectedCuadro.name}</IonLabel>
-              </IonChip>
-            </div>
+            {selectedCuadro.diseases.length === 0 ? (
+              <IonText color="success">
+                <p>No se detectaron enfermedades en este cuadro.</p>
+              </IonText>
+            ) : (
+              <IonList>
+                {selectedCuadro.diseases.map(disease => (
+                  <IonItem key={disease.id}>
+                    <IonLabel>
+                      <h2>{disease.name}</h2>
+                    </IonLabel>
+                    {(disease.tercio !== undefined && disease.tercio !== 0) && (
+                      <IonBadge
+                        color={'secondary'}
+                        slot="end"
+                      >
+                        Tercio {disease.tercio}
+                      </IonBadge>
+                    )}
+                  </IonItem>
+                ))}
+              </IonList>
+            )}
           </IonCardContent>
         </IonCard>
 
-        <div className="ion-padding">
+        {selectedCuadro.notes && (
           <IonCard>
             <IonCardHeader>
-              <IonCardTitle>
-                <IonIcon icon={leafOutline} /> Enfermedades Detectadas
-              </IonCardTitle>
+              <IonCardTitle>Notas</IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
-              {selectedCuadro.diseases.length === 0 ? (
-                <IonText color="success">
-                  <p>No se detectaron enfermedades en este cuadro.</p>
-                </IonText>
-              ) : (
-                <IonList>
-                  {selectedCuadro.diseases.map(disease => (
-                    <IonItem key={disease.id}>
-                      <IonLabel>
-                        <h2>{disease.name}</h2>
-                      </IonLabel>
-                      {(disease.tercio !== undefined && disease.tercio !== 0) && (
-                        <IonBadge
-                          color={'secondary'}
-                          slot="end"
-                        >
-                          Tercio {disease.tercio}
-                        </IonBadge>
-                      )}
-                    </IonItem>
-                  ))}
-                </IonList>
-              )}
+              {selectedCuadro.notes}
             </IonCardContent>
           </IonCard>
-
-          {selectedCuadro.notes && (
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Notas</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                {selectedCuadro.notes}
-              </IonCardContent>
-            </IonCard>
-          )}
-        </div>
-      </>
+        )}
+      </div>
     );
   };
 
   return (
-    <div>
-      <IonHeader>
-        <IonToolbar>
-          <IonSegment
-            value={activeViewSegment}
-            onIonChange={e => handleSegmentChange(e.detail.value as string)}
-            scrollable
-          >
-            <IonSegmentButton value="bloques">
-              <IonLabel>Semanas</IonLabel>
-            </IonSegmentButton>
-            {selectedBloque && <IonSegmentButton value="camas">
-              <IonLabel>Camas</IonLabel>
-            </IonSegmentButton>}
-            {selectedCama && <IonSegmentButton value="cuadros">
-              <IonLabel>Cuadros</IonLabel>
-            </IonSegmentButton>}
-            {selectedCuadro && <IonSegmentButton value="details">
-              <IonLabel>Detalles</IonLabel>
-            </IonSegmentButton>}
-          </IonSegment>
-        </IonToolbar>
-      </IonHeader>
+    <>
+      <IonCard>
+        <IonCardContent>
+          <div>
+            <IonChip
+            
+              color="secondary"
+              onClick={() => {
+                dispatch(setActiveViewSegment('bloques'));
+                dispatch(setSelectedBloque(null));
+                dispatch(setSelectedCama(null));
+                dispatch(setSelectedCuadro(null));
+              }}
+            >
+              <IonIcon icon={homeOutline} />
+              <IonLabel></IonLabel>
+            </IonChip>
+
+            {selectedBloque && (
+              <>
+                <IonIcon icon="chevron-forward-outline" />
+                <IonChip
+                  color="secondary"
+                  onClick={() => {
+                    dispatch(setActiveViewSegment('camas'));
+                    dispatch(setSelectedCama(null));
+                    dispatch(setSelectedCuadro(null));
+                    }}
+                  >
+                  <IonLabel>{selectedBloque.name}</IonLabel>
+                </IonChip>
+              </>
+            )}
+
+            {selectedCama && (
+              <>
+                <IonIcon icon="chevron-forward-outline" />
+                <IonChip
+                  color="secondary"
+                  onClick={() => {
+                    dispatch(setActiveViewSegment('cuadros'));
+                    dispatch(setSelectedCuadro(null));
+                  }}
+                >
+                  <IonLabel>{selectedCama.name}</IonLabel>
+                </IonChip>
+              </>
+            )}
+
+            {selectedCuadro && (
+              <>
+                <IonIcon icon="chevron-forward-outline" />
+                <IonChip color="secondary">
+                  <IonLabel>{selectedCuadro.name}</IonLabel>
+                </IonChip>
+              </>
+            )}
+          </div>
+        </IonCardContent>
+      </IonCard>
 
       <div className="ion-padding">
         {activeViewSegment === 'bloques' && renderBloquesList()}
@@ -371,7 +323,7 @@ const ViewMonitoredC: React.FC = () => {
         {activeViewSegment === 'cuadros' && renderCuadroDetails()}
         {activeViewSegment === 'details' && renderDetails()}
       </div>
-    </div>
+    </>
   );
 };
 
