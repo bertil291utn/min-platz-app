@@ -26,6 +26,7 @@ const TipoUserSettingsC = () => {
           slot="end"
         />
       </IonItem>
+      {/* remove this component just for test, this value hs to coming from database and set in main component */}
       <IonItem>
         <IonLabel>Usuario premium</IonLabel>
         <IonToggle

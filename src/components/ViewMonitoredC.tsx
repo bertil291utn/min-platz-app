@@ -34,6 +34,7 @@ import {
   setSelectedCuadro
 } from '../store/slices/viewMonitoredSlice';
 import { SegmentViewBloque } from '../interfaces/Bloque';
+import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 
 const ViewMonitoredC: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -43,6 +44,8 @@ const ViewMonitoredC: React.FC = () => {
   const selectedCama = useAppSelector(state => state.viewMonitored.selectedCama);
   const selectedCuadro = useAppSelector(state => state.viewMonitored.selectedCuadro);
   const bloquesMonitored = useAppSelector(state => state.monitoringBloque.bloquesMonitored);
+  const user = useAppSelector((state) => state.userLogged.user);
+
 
   const [searchText, setSearchText] = useState('');
   const [dateFilter, setDateFilter] = useState<string | null>(null);
@@ -78,8 +81,15 @@ const ViewMonitoredC: React.FC = () => {
     });
   };
 
+  const filteredBloquesByPremium = user?.premium
+    ? bloquesMonitored
+    : bloquesMonitored.filter(bloque => {
+      const weekDifference = CURRENT_WEEK_NUMBER - (bloque.weekNumber || 0);
+      return weekDifference <= 4; // Show only last 4 weeks for non-premium users
+    });
+
   const groupedByWeek = Object.entries(
-    bloquesMonitored.reduce((acc, bloque) => {
+    filteredBloquesByPremium.reduce((acc, bloque) => {
       const week = bloque.weekNumber || 0;
       if (!acc[week]) {
         acc[week] = [];
@@ -91,6 +101,7 @@ const ViewMonitoredC: React.FC = () => {
 
   // Render the list of bloques
   const renderBloquesList = () => (
+
     <>
       {bloquesMonitored.length === 0 ? (
         <div className="ion-padding ion-text-center">
