@@ -13,6 +13,7 @@ import {
   InputCustomEvent
 } from '@ionic/react';
 import { USER_AUTH } from '../helpers/AuthConst';
+import { setUser } from '../store/slices/userSlice';
 
 const LoginComp: React.FC = () => {
   const [credentials, setCredentials] = useState({
@@ -43,6 +44,17 @@ const LoginComp: React.FC = () => {
     return password === '123456';
   };
 
+  const setUsuario = () => {
+    dispatch(setUser({
+      id: '123',
+      email: 'user@example.com',
+      name: 'John',
+      fullName: 'John Doe',
+      premium: false,
+      expert: false,
+    }));
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -51,6 +63,15 @@ const LoginComp: React.FC = () => {
       if (isValidPassword(credentials.password)) {
         storeAuthToken(credentials.userId);
         dispatch(setAuthenticated(true));
+        // setUsuario();
+        dispatch(setUser({
+          id: '123',
+          email: 'user@example.com',
+          name: 'John',
+          fullName: 'John Doe',
+          premium: false,
+          expert: false,
+        }));
       } else {
         setShowToast(true);
       }

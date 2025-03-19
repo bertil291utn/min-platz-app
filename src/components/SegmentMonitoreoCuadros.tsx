@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 import LabelMonitoring from './LabelMonitoring';
 import ReturnButtonC from './ReturnButtonC';
+import { User } from '../interfaces/User';
 
 const SegmentMonitoreoCuadros = () => {
 
@@ -16,9 +17,8 @@ const SegmentMonitoreoCuadros = () => {
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
   const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
   const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
-  const expertUser = useAppSelector(state => state.auth.expertUser);
   const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
-
+  const user = useAppSelector((state) => state.userLogged.user);
 
 
   const [displayAlert, setDisplayAlert] = useState(false);
@@ -64,7 +64,7 @@ const SegmentMonitoreoCuadros = () => {
       />
       <br />
       <IonLabel>Seleccione el cuadro </IonLabel>
-      {!expertUser &&
+      {!user?.expert &&
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <IonButton fill="clear" size="small" id="info-tooltip">
             Que es Entrada y salida?

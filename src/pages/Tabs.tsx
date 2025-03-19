@@ -18,11 +18,12 @@ import TabLibrary from './TabLibrary';
 import TabSettings from './TabSettings';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logout } from '../store/slices/authSlice';
+import { cleanUser } from '../store/slices/userSlice';
 
 const Tabs: React.FC = () => {
   // const { isAuthenticated, logout } = useAuth();
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
-const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
   }, []);
@@ -31,12 +32,17 @@ const dispatch = useAppDispatch();
     return <Redirect to="/login" />;
   }
 
+  const handleLogOut = () => () => {
+    dispatch(logout());
+    dispatch(cleanUser())
+  }
+
   return (
     <IonPage>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tabs/home">
-            <TabHome logout={()=>dispatch(logout())} />
+            <TabHome logout={handleLogOut()} />
           </Route>
           <Route exact path="/tabs/monitoreo">
             <TabMonitoreo />

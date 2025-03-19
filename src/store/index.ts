@@ -3,13 +3,15 @@ import authReducer from './slices/authSlice';
 import bloqueInfoReducer from './slices/bloqueInfoSlice';
 import monitoringBloqueReducer from './slices/monitoringBloqueSlice';
 import viewMonitoredReducer from './slices/viewMonitoredSlice';
+import userReducer from './slices/userSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     bloqueInfo: bloqueInfoReducer,
     monitoringBloque: monitoringBloqueReducer,
-    viewMonitored: viewMonitoredReducer
+    viewMonitored: viewMonitoredReducer,
+    userLogged: userReducer
   }
 });
 

@@ -14,7 +14,7 @@ const SegmentMonitoreoDiseases = () => {
   const dispatch = useAppDispatch();
   const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
-  const expertUser = useAppSelector(state => state.auth.expertUser);
+  const user = useAppSelector((state) => state.userLogged.user);
 
 
 
@@ -67,7 +67,7 @@ const SegmentMonitoreoDiseases = () => {
 
       <div style={{ paddingBottom: '5rem' }}>
         {diseasesArr.map((disease) => (
-          expertUser ? (
+          user?.expert ? (
             <div key={disease.id}>
               <DiseaseCard
                 disease={disease}

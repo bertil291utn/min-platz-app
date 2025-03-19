@@ -260,19 +260,20 @@ const ViewMonitoredC: React.FC = () => {
       <IonCard>
         <IonCardContent>
           <div>
-            <IonChip
-            
-              color="secondary"
-              onClick={() => {
-                dispatch(setActiveViewSegment('bloques'));
-                dispatch(setSelectedBloque(null));
-                dispatch(setSelectedCama(null));
-                dispatch(setSelectedCuadro(null));
-              }}
-            >
-              <IonIcon icon={homeOutline} />
-              <IonLabel></IonLabel>
-            </IonChip>
+            {selectedBloque &&
+              <IonChip
+
+                color="secondary"
+                onClick={() => {
+                  dispatch(setActiveViewSegment('bloques'));
+                  dispatch(setSelectedBloque(null));
+                  dispatch(setSelectedCama(null));
+                  dispatch(setSelectedCuadro(null));
+                }}
+              >
+                <IonLabel>{`Semana ${selectedBloque.weekNumber}`}</IonLabel>
+              </IonChip>
+            }
 
             {selectedBloque && (
               <>
@@ -283,8 +284,8 @@ const ViewMonitoredC: React.FC = () => {
                     dispatch(setActiveViewSegment('camas'));
                     dispatch(setSelectedCama(null));
                     dispatch(setSelectedCuadro(null));
-                    }}
-                  >
+                  }}
+                >
                   <IonLabel>{selectedBloque.name}</IonLabel>
                 </IonChip>
               </>

@@ -1,22 +1,36 @@
 import { IonItem, IonLabel, IonToggle } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setExpertUser } from '../store/slices/authSlice';
+import { updateUser } from '../store/slices/userSlice';
+import { User } from '../interfaces/User';
+import { useEffect } from 'react';
 
 const TipoUserSettingsC = () => {
-  const expertUser = useAppSelector(state => state.auth.expertUser);
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.userLogged.user);
+  console.log(user)
 
   const handleToggleChange = (e: CustomEvent) => {
     const newValue = e.detail.checked;
-    dispatch(setExpertUser(newValue));
+    const name = (e.target as HTMLIonToggleElement)?.name;
+    dispatch(updateUser({ [name]: newValue }));
   };
 
   return (
     <>
       <IonItem>
-        <IonLabel>{expertUser ? 'Desactivar de' : 'Activar a'}  usuario experto</IonLabel>
+        <IonLabel>{user?.expert ? 'Desactivar de' : 'Activar a'}  usuario experto</IonLabel>
         <IonToggle
-          checked={expertUser}
+          name='expert'
+          checked={user?.expert}
+          onIonChange={handleToggleChange}
+          slot="end"
+        />
+      </IonItem>
+      <IonItem>
+        <IonLabel>Usuario premium</IonLabel>
+        <IonToggle
+          name='premium'
+          checked={user?.premium}
           onIonChange={handleToggleChange}
           slot="end"
         />
