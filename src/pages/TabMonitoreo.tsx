@@ -1,4 +1,4 @@
-import React, { Dispatch, ReactNode, SetStateAction, useState } from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useState } from 'react';
 import MonitoringOptionsScreen from '../components/MonitoringOptionsScreen';
 import MonitoreoC from '../components/MonitoreoC';
 import ViewMonitoredC from '../components/ViewMonitoredC';
@@ -20,7 +20,8 @@ import {
   IonLabel,
   IonAccordionGroup,
   IonAccordion,
-  IonItem
+  IonItem,
+  IonTitle
 } from '@ionic/react';
 import { clipboardOutline, eyeOutline } from 'ionicons/icons';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
@@ -41,6 +42,7 @@ const TabMonitoreo: React.FC = () => {
   const [IsOpenModal, setIsOpenModal] = useState(false);
   const [currentModal, setCurrentModal] = useState<MonitoringModal>();
   const [activeSegment, setActiveSegment] = useState<SegmentType>('monitorear');
+  const [headerText, setHeaderText] = useState('');
 
   const dispatch = useAppDispatch();
   const activeBloques = useAppSelector(selectActiveBloques);
@@ -66,6 +68,28 @@ const TabMonitoreo: React.FC = () => {
   };
 
   const IsThereActiveBloques = activeBloques.length > 0;
+
+
+  useEffect(() => {
+    switch (currentModal) {
+      case 'view':
+        setHeaderText('Ver Monitoreo');
+        break;
+      case 'monitorear-camas':
+        setHeaderText('Monitoreo de Camas');
+        break;
+      case 'monitorear-placas':
+        setHeaderText('Monitoreo de Placas');
+        break;
+      case 'monitorear-mallas':
+        setHeaderText('Monitoreo de Mallas');
+        break;
+      default:
+        setHeaderText('');
+        break;
+    }
+
+  }, [currentModal])
 
   return (
     <IonPage>
@@ -115,6 +139,7 @@ const TabMonitoreo: React.FC = () => {
         <LocalModal
           setIsOpenModal={setIsOpenModal}
           IsOpenModal={IsOpenModal}
+          headerText={headerText}
         >
           <>
             {currentModal === 'view' && <ViewMonitoredC />}
@@ -132,7 +157,8 @@ const LocalModal: React.FC<{
   IsOpenModal: boolean;
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
   children: ReactNode;
-}> = ({ IsOpenModal, setIsOpenModal, children }) => {
+  headerText: string;
+}> = ({ IsOpenModal, setIsOpenModal, headerText, children }) => {
   return (
     <IonModal
       isOpen={IsOpenModal}
@@ -142,6 +168,7 @@ const LocalModal: React.FC<{
     >
       <IonHeader>
         <IonToolbar>
+          <IonTitle>{headerText}</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={() => setIsOpenModal(false)}>
               salir

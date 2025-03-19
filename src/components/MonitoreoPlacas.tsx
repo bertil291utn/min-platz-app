@@ -19,7 +19,6 @@ const MonitoreoPlacas = () => {
   return (
     <div className="ion-padding">
 
-      <h2 className="ion-text-center">Monitoreo de Placas - {selectedBloque?.name}</h2>
 
       <IonGrid>
         <IonRow>

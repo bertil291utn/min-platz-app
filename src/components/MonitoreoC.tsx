@@ -80,7 +80,6 @@ const MonitoreoC = () => {
         </IonCard>
       </div>
 
-      <h2 className="ion-text-center">Monitoreo de Camas - {selectedBloque?.name}</h2>
 
       <div className="ion-padding">
         {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
