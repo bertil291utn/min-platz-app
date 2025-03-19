@@ -30,35 +30,33 @@ const MonitoreoC = () => {
   const handleSegmentChange = (value: string) => {
     dispatch(setActiveSegment(value as SegmentBloque));
   };
-
+console.log(selectedWeek)
 
   return (
     <div>
       <div className="sticky-header" style={{ position: 'sticky', top: 0, zIndex: 100, background: 'white' }}>
         <IonCard>
           <IonCardContent>
-            <IonChip
-
-              color="secondary"
-              onClick={() => {
-                dispatch(setActiveSegment('bloques'));
-              }}
-            >
-              <IonIcon size='large' icon={homeOutline} />
-              <IonLabel></IonLabel>
-            </IonChip>
-
-            <IonChip color="secondary">
-              <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
-            </IonChip>
 
             {selectedBloque ? (
               <>
-                <IonChip color="secondary">
+                <IonChip color="secondary"
+                  onClick={() => {
+                    dispatch(setActiveSegment('bloques'));
+                  }}
+                >
                   <IonLabel>{selectedBloque.name}</IonLabel>
                 </IonChip>
               </>
             ) : null}
+
+            <IonChip color="secondary"
+              onClick={() => {
+                dispatch(setActiveSegment('camas'));
+              }}
+            >
+              <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
+            </IonChip>
 
             {selectedCama ? (
               <>

@@ -82,8 +82,7 @@ const SegmentMonitoreoCamas = () => {
             <div style={{ marginBottom: '2rem' }}>
               < IonSelect label="Seleccione semana" labelPlacement="floating" fill="outline"
                 onIonChange={(e) => handleSelector(e.detail.value)} value={selectedWeek || CURRENT_WEEK_NUMBER}>
-
-                {Array.from({ length: 52 }, (_, index) => (
+                {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, index) => (
                   <IonSelectOption key={index + 1} value={index + 1}>
                     Semana {index + 1}
                   </IonSelectOption>
