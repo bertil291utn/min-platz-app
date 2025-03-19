@@ -21,9 +21,6 @@ const SegmentMonitoreoBloques = () => {
 
   return (
     <>
-      <p>{selectedBloque ? 'El bloque seleccionado es' : 'Seleccione un bloque'}</p>
-      <h1>{selectedBloque ? `${selectedBloque.name}` : ''}</h1>
-      <br />
       {activeBloques.map((bloque: Bloque) => (
         <IonCard key={bloque.id} onClick={handleChangeSegment(bloque)} color={selectedBloque?.id == bloque.id ? 'primary' : ''}>
           <IonCardHeader>

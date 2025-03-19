@@ -10,6 +10,7 @@ import MonitoreoPlacas from './MonitoreoPlacas';
 import MonitoreoMallas from './MonitoreoMallas';
 import { homeOutline } from 'ionicons/icons';
 import SegmentMonitoreoCuadros from './SegmentMonitoreoCuadros';
+import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 
 const MonitoreoC = () => {
   const dispatch = useAppDispatch();
@@ -37,7 +38,7 @@ const MonitoreoC = () => {
 
               color="secondary"
               onClick={() => {
-                dispatch(setActiveSegment('camas'));
+                dispatch(setActiveSegment('bloques'));
               }}
             >
               <IonIcon size='large' icon={homeOutline} />
@@ -79,7 +80,10 @@ const MonitoreoC = () => {
         </IonCard>
       </div>
 
+      <h2 className="ion-text-center">Monitoreo de Camas - {selectedBloque?.name}</h2>
+
       <div className="ion-padding">
+        {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
         {activeSegment === 'cuadros' && <SegmentMonitoreoCuadros />}
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}

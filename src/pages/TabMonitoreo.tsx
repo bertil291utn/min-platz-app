@@ -57,15 +57,12 @@ const TabMonitoreo: React.FC = () => {
     }
   };
 
-  const handleOptionSelect = (option: MonitoringModal, bloqueId: number) => {
-    const selectedBloque = activeBloques.find(b => b.id === bloqueId);
-    if (selectedBloque) {
-      dispatch(setMonitoringBloque(selectedBloque));
-      if (option === 'monitorear-camas') {
-        dispatch(setMonitoringSegment('camas'));
-      }
-      handleModal(option)();
+  const handleOptionSelect = (option: MonitoringModal
+  ) => {
+    if (option === 'monitorear-camas') {
+      dispatch(setMonitoringSegment('bloques'));
     }
+    handleModal(option)();
   };
 
   const IsThereActiveBloques = activeBloques.length > 0;
@@ -87,25 +84,12 @@ const TabMonitoreo: React.FC = () => {
 
             <div className="ion-padding">
               {activeSegment === 'monitorear' && (
-                <IonAccordionGroup>
-                  {activeBloques.map((bloque) => (
-                    <IonAccordion
-                      key={bloque.id?.toString()}
-                      value={bloque.id?.toString()}
-                    >
-                      <IonItem slot="header">
-                        <IonLabel>{bloque.name}</IonLabel>
-                      </IonItem>
-                      <div slot="content" className="ion-padding">
-                        <MonitoringOptionsScreen
-                          showReturnButton={false}
-                          onOptionSelect={(option) => bloque.id && handleOptionSelect(option, bloque.id)}
-                        />
-                      </div>
-                    </IonAccordion>
-                  ))}
-
-                </IonAccordionGroup>
+                <div slot="content" className="ion-padding">
+                  <MonitoringOptionsScreen
+                    showReturnButton={false}
+                    onOptionSelect={(option) => handleOptionSelect(option)}
+                  />
+                </div>
               )}
 
               {activeSegment === 'historial' && (
