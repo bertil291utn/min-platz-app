@@ -37,7 +37,19 @@ const SegmentMonitoreoDiseases = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: 'white',
+        padding: '1rem',
+        zIndex: 1000,
+        borderTop: '1px solid #ccc'
+      }}>
         <ReturnButtonC
           segmentReturn={'cuadros'}
         />
@@ -53,7 +65,7 @@ const SegmentMonitoreoDiseases = () => {
       <p>Seleccione enfermedad</p>
       <br />
 
-      <div>
+      <div style={{ paddingBottom: '5rem' }}>
         {diseasesArr.map((disease) => (
           expertUser ? (
             <div key={disease.id}>
