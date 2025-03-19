@@ -2,7 +2,7 @@ import { IonLabel, IonButton, IonPopover, IonAlert } from '@ionic/react';
 import { getSpanishOrdinal } from '../helpers/viewHelper';
 import { useState } from 'react';
 import { STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
-import { getWeekNumber, CURRENT_DATE_UTC5 } from '../helpers/regularHelper';
+import { getWeekNumber, CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import { BloqueMonitored } from '../interfaces/Monitoring';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
@@ -17,6 +17,8 @@ const SegmentMonitoreoCuadros = () => {
   const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
   const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
   const expertUser = useAppSelector(state => state.auth.expertUser);
+  const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
+
 
 
   const [displayAlert, setDisplayAlert] = useState(false);
@@ -26,21 +28,20 @@ const SegmentMonitoreoCuadros = () => {
     dispatch(setSelectedDiseases([]))
     dispatch(setSelectedCuadros([]))
     dispatch(setSelectedCuadro(cuadro));
-    const currentWeekNumber = getWeekNumber(CURRENT_DATE_UTC5);
     const existingData = localStorage.getItem(STORE_MONITORED_VAR);
 
 
     if (!existingData) { dispatch(setActiveSegment('diseases')); return; }
-
+    const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER
     const parsedData: BloqueMonitored[] = JSON.parse(existingData as string);
-    const bloqueIndex = parsedData?.findIndex(b => b.id == selectedBloque?.id && b.weekNumber === currentWeekNumber)
+    const bloqueIndex = parsedData?.findIndex(b => b.id == selectedBloque?.id && b.weekNumber === weekNumber)
     const bloque = parsedData[bloqueIndex]
     const camasIndex = bloque?.camas?.findIndex(c => c.id == selectedCama)
     if (camasIndex == -1) { dispatch(setActiveSegment('diseases')); return }
     const cama = bloque?.camas[camasIndex]
 
     let cuadroIndex = -1;
-    if (bloque?.weekNumber === currentWeekNumber)
+    if (bloque?.weekNumber === weekNumber)
       cuadroIndex = cama?.cuadros?.findIndex(c => c.id == cuadro)
 
     if (cuadroIndex == -1) { dispatch(setActiveSegment('diseases')); return; }

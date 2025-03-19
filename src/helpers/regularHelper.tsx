@@ -12,3 +12,5 @@ export const getWeekNumber = (date: Date): number => {
 };
 
 export const CURRENT_DATE_UTC5 = new Date(new Date().getTime() - 5 * 60 * 60 * 1000);
+
+export const CURRENT_WEEK_NUMBER = getWeekNumber(CURRENT_DATE_UTC5);

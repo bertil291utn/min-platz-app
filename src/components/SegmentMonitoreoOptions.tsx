@@ -5,7 +5,7 @@ import LabelMonitoring from './LabelMonitoring';
 import { CuadroMonitored } from '../interfaces/Monitoring';
 import { sleep } from '../helpers/regularHelper';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setActiveSegment, setIsToastSavedOpen, setSelectedDiseases, updateMonitoringData } from '../store/slices/monitoringBloqueSlice';
+import { setActiveSegment, setIsToastSavedOpen, setSelectedDiseases, setSelectedWeek, updateMonitoringData } from '../store/slices/monitoringBloqueSlice';
 
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
@@ -17,6 +17,7 @@ const SegmentMonitoreoOptions = () => {
   const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
   const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
+  const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
   const selectedCuadros = useAppSelector(state => state.monitoringBloque.selectedCuadros);
   const loading = useAppSelector(state => state.monitoringBloque.loading);
   const error = useAppSelector(state => state.monitoringBloque.error);
@@ -48,15 +49,17 @@ const SegmentMonitoreoOptions = () => {
     };
 
     try {
-      await dispatch(updateMonitoringData({ 
-        bloqueId: selectedBloque?.id as number, 
-        camaId: selectedCama, 
-        newCuadro 
+      await dispatch(updateMonitoringData({
+        bloqueId: selectedBloque?.id as number,
+        camaId: selectedCama,
+        newCuadro,
+        customWeek: selectedWeek as number
       })).unwrap();
-      
+
       // Only proceed if the update was successful
       dispatch(setActiveSegment('camas'));
       dispatch(setSelectedDiseases([]));
+      dispatch(setSelectedWeek(undefined));
       // No need to manually set IsToastSavedOpen as it's handled in the reducer
     } catch (error) {
       console.error('Failed to update monitoring data:', error);

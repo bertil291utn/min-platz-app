@@ -29,11 +29,13 @@ import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 import { Bloque } from '../interfaces/Bloque';
 import {
   setActiveSegment as setMonitoringSegment,
-  setSelectedBloque as setMonitoringBloque
+  setSelectedBloque as setMonitoringBloque,
+  setSelectedWeek
 } from '../store/slices/monitoringBloqueSlice';
 import MonitoreoPlacas from '../components/MonitoreoPlacas';
 import MonitoreoMallas from '../components/MonitoreoMallas';
 import { MonitoringModal } from '../interfaces/Monitoring';
+import { CURRENT_DATE_UTC5, getWeekNumber } from '../helpers/regularHelper';
 
 
 type SegmentType = 'monitorear' | 'historial';
@@ -68,6 +70,10 @@ const TabMonitoreo: React.FC = () => {
   };
 
   const IsThereActiveBloques = activeBloques.length > 0;
+  
+  useEffect(() => {
+    dispatch(setSelectedWeek(undefined));
+  }, [IsOpenModal])
 
 
   useEffect(() => {

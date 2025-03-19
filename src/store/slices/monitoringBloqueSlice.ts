@@ -3,12 +3,13 @@ import { Bloque, SegmentBloque, SegmentViewBloque } from '../../interfaces/Bloqu
 import { Disease } from '../../interfaces/Diseases';
 import { BloqueMonitored, CamaMonitored, CuadroMonitored } from '../../interfaces/Monitoring';
 import { STORE_MONITORED_VAR } from '../../helpers/bloquesConstant';
-import { CURRENT_DATE_UTC5, getWeekNumber } from '../../helpers/regularHelper';
+import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER, getWeekNumber } from '../../helpers/regularHelper';
 
 interface MonitoringBloqueState {
   selectedBloque: Bloque | undefined;
   selectedCuadro: number | undefined;
   selectedCama: number;
+  selectedWeek: number | undefined;
   selectedDiseases: Disease[];
   selectedCuadros: CuadroMonitored[];
   activeSegment: SegmentBloque;
@@ -24,6 +25,7 @@ const initialState: MonitoringBloqueState = {
   selectedBloque: undefined,
   selectedCuadro: undefined,
   selectedCama: 0,
+  selectedWeek: undefined,
   selectedDiseases: [],
   selectedCuadros: [],
   activeSegment: 'camas',
@@ -40,7 +42,7 @@ export const fetchMonitoredBloques = createAsyncThunk(
   'monitoringBloque/fetchMonitoredBloques',
   async () => {
     const localBloques = localStorage.getItem(STORE_MONITORED_VAR);
-    
+
     if (navigator.onLine) {
       try {
         // TODO: Replace with actual database fetch call
@@ -57,7 +59,7 @@ export const fetchMonitoredBloques = createAsyncThunk(
     } else if (localBloques) {
       return JSON.parse(localBloques);
     }
-    
+
     return [];
   }
 );
@@ -65,16 +67,15 @@ export const fetchMonitoredBloques = createAsyncThunk(
 // Update monitoring data
 export const updateMonitoringData = createAsyncThunk(
   'monitoringBloque/updateMonitoringData',
-  async ({ bloqueId, camaId, newCuadro }: { bloqueId: number, camaId: number, newCuadro: CuadroMonitored }, { getState }) => {
+  async ({ bloqueId, camaId, newCuadro, customWeek }: { bloqueId: number, camaId: number, newCuadro: CuadroMonitored, customWeek: number }, { getState }) => {
     const state = getState() as { monitoringBloque: MonitoringBloqueState };
-    const currentWeekNumber = getWeekNumber(CURRENT_DATE_UTC5);
 
     // Create a new array of bloques
     let updatedBloques = [...state.monitoringBloque.bloquesMonitored];
-
+    const weekNumber = customWeek || CURRENT_WEEK_NUMBER
     // Find bloque index
     let bloqueIndex = updatedBloques.findIndex(b =>
-      b.weekNumber === currentWeekNumber && b.id === bloqueId
+      b.weekNumber === weekNumber && b.id === bloqueId
     );
 
     // If no bloque found, create a new one
@@ -83,7 +84,7 @@ export const updateMonitoringData = createAsyncThunk(
         id: bloqueId,
         name: `Bloque ${bloqueId}`,
         dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
-        weekNumber: currentWeekNumber,
+        weekNumber,
         camas: []
       };
       updatedBloques = [...updatedBloques, newBloque];
@@ -92,10 +93,10 @@ export const updateMonitoringData = createAsyncThunk(
 
     // Create a new bloque object
     const currentBloque = { ...updatedBloques[bloqueIndex] };
-    
+
     // Find cama
     let camaIndex = currentBloque.camas.findIndex(c => c.id === camaId);
-    
+
     // If no cama found, create a new one
     if (camaIndex === -1) {
       const newCama = {
@@ -109,11 +110,11 @@ export const updateMonitoringData = createAsyncThunk(
 
     // Create new cama object
     const updatedCama = { ...currentBloque.camas[camaIndex] };
-    
+
     // Update cuadros
     const cuadroIndex = updatedCama.cuadros.findIndex(c => c.id === newCuadro.id);
     if (cuadroIndex !== -1) {
-      updatedCama.cuadros = updatedCama.cuadros.map(c => 
+      updatedCama.cuadros = updatedCama.cuadros.map(c =>
         c.id === newCuadro.id ? { ...newCuadro } : c
       );
     } else {
@@ -121,12 +122,12 @@ export const updateMonitoringData = createAsyncThunk(
     }
 
     // Update the cama in the bloque
-    currentBloque.camas = currentBloque.camas.map((c, i) => 
+    currentBloque.camas = currentBloque.camas.map((c, i) =>
       i === camaIndex ? updatedCama : c
     );
 
     // Update the bloque in the bloques array
-    updatedBloques = updatedBloques.map((b, i) => 
+    updatedBloques = updatedBloques.map((b, i) =>
       i === bloqueIndex ? currentBloque : b
     );
 
@@ -151,7 +152,7 @@ export const syncWithDatabase = createAsyncThunk(
   'monitoringBloque/syncWithDatabase',
   async (_, { getState }) => {
     const state = getState() as { monitoringBloque: MonitoringBloqueState };
-    
+
     if (!state.monitoringBloque.isOnline) {
       throw new Error('Cannot sync while offline');
     }
@@ -183,6 +184,9 @@ const monitoringBloqueSlice = createSlice({
     },
     setSelectedCama: (state, action: PayloadAction<number>) => {
       state.selectedCama = action.payload;
+    },
+    setSelectedWeek: (state, action: PayloadAction<number | undefined>) => {
+      state.selectedWeek = action.payload;
     },
     setSelectedDiseases: (state, action: PayloadAction<Disease[]>) => {
       state.selectedDiseases = action.payload;
@@ -218,7 +222,7 @@ const monitoringBloqueSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch monitored bloques';
       })
-      
+
       // updateMonitoringData
       .addCase(updateMonitoringData.pending, (state) => {
         state.loading = true;
@@ -233,7 +237,7 @@ const monitoringBloqueSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to update monitoring data';
       })
-      
+
       // syncWithDatabase
       .addCase(syncWithDatabase.pending, (state) => {
         state.loading = true;
@@ -254,6 +258,7 @@ export const {
   setSelectedBloque,
   setSelectedCuadro,
   setSelectedCama,
+  setSelectedWeek,
   setSelectedDiseases,
   setSelectedCuadros,
   setActiveSegment,

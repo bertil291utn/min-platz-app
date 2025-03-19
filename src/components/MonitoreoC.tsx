@@ -11,6 +11,7 @@ import MonitoreoMallas from './MonitoreoMallas';
 import { homeOutline } from 'ionicons/icons';
 import SegmentMonitoreoCuadros from './SegmentMonitoreoCuadros';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
+import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER, getWeekNumber } from '../helpers/regularHelper';
 
 const MonitoreoC = () => {
   const dispatch = useAppDispatch();
@@ -23,11 +24,13 @@ const MonitoreoC = () => {
   const activeSegment = useAppSelector(state => state.monitoringBloque.activeSegment);
   const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
   const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
+  const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
   const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
 
   const handleSegmentChange = (value: string) => {
     dispatch(setActiveSegment(value as SegmentBloque));
   };
+
 
   return (
     <div>
@@ -43,6 +46,10 @@ const MonitoreoC = () => {
             >
               <IonIcon size='large' icon={homeOutline} />
               <IonLabel></IonLabel>
+            </IonChip>
+
+            <IonChip color="secondary">
+              <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
             </IonChip>
 
             {selectedBloque ? (
@@ -88,7 +95,7 @@ const MonitoreoC = () => {
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}
 
-        
+
       </div>
     </div>
   );
