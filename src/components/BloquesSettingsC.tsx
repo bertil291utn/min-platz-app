@@ -1,10 +1,11 @@
-import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonLabel, IonToast } from '@ionic/react';
+import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonIcon, IonItem, IonLabel, IonRow, IonToast } from '@ionic/react';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { Bloque } from '../interfaces/Bloque';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { INITIAL_BLOQUE, editBloque, removeBloque, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
+import { bedOutline, gridOutline, calculatorOutline, layersOutline } from 'ionicons/icons';
 
 const BloquesSettingsC = () => {
   const activeBloques = useAppSelector(selectActiveBloques);
@@ -46,16 +47,55 @@ const BloquesSettingsC = () => {
         <IonCard key={bloque.id} onClick={handleActions(bloque)}>
           <IonCardHeader>
             <IonCardTitle>{bloque.name}</IonCardTitle>
-            <IonLabel>{bloque.numCamas} camas</IonLabel>
-            <IonLabel>{bloque.numCuadrosPerCama} cuadros por cama</IonLabel>
-            <IonLabel>{bloque.numCamas * bloque.numCuadrosPerCama} total de cuadros</IonLabel>
-            <IonLabel>{bloque.numPlacasExternas || 0} placas externas</IonLabel>
-            <IonLabel>{bloque.numPlacasInternas || 0} placas internas</IonLabel>
+            <IonCardSubtitle>{bloque.description}</IonCardSubtitle>
           </IonCardHeader>
 
-          <IonCardContent>{bloque.description}</IonCardContent>
+          <IonCardContent>
+            <IonItem lines="none">
+              <IonIcon icon={bedOutline} slot="start" color="secondary" />
+              <IonLabel>
+                <h3>Camas</h3>
+                <p>{bloque.numCamas}</p>
+              </IonLabel>
+            </IonItem>
+
+            <IonItem lines="none">
+              <IonIcon icon={gridOutline} slot="start" color="secondary" />
+              <IonLabel>
+                <h3>Cuadros por cama</h3>
+                <p>{bloque.numCuadrosPerCama}</p>
+              </IonLabel>
+            </IonItem>
+
+            <IonItem lines="none">
+              <IonIcon icon={calculatorOutline} slot="start" color="secondary" />
+              <IonLabel>
+                <h3>Total de cuadros</h3>
+                <p>{bloque.numCamas * bloque.numCuadrosPerCama}</p>
+              </IonLabel>
+            </IonItem>
+
+            <IonItem lines="none">
+              <IonIcon icon={layersOutline} slot="start" color="secondary" />
+              <IonLabel>
+                <h3>Placas externas</h3>
+                <p>{bloque.numPlacasExternas || 0}</p>
+              </IonLabel>
+            </IonItem>
+
+            <IonItem lines="none">
+              <IonIcon icon={layersOutline} slot="start" color="secondary" />
+              <IonLabel>
+                <h3>Placas internas</h3>
+                <p>{bloque.numPlacasInternas || 0}</p>
+              </IonLabel>
+            </IonItem>
+          </IonCardContent>
         </IonCard>
+
       )}
+
+
       {/* modal for edit */}
       <AddBloquesSettingsModalC
         isOpenModal={isEditModalOpen}
