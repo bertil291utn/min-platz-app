@@ -4,18 +4,24 @@ import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { Bloque } from '../interfaces/Bloque';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { INITIAL_BLOQUE, editBloque, removeBloque, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
+import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
 
 const BloquesSettingsC = () => {
   const activeBloques = useAppSelector(selectActiveBloques);
   const dispatch = useAppDispatch();
-  
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingBloque, setEditingBloque] = useState<Bloque>(INITIAL_BLOQUE);
   const [isASheetOpen, setIsASheetOpen] = useState(false);
   const [isDeleteToastOpen, setIsDeleteToastOpen] = useState(false);
 
   const handleActions = (bloque: Bloque) => () => {
-    setEditingBloque(bloque);
+    setEditingBloque(
+      {
+        ...bloque,
+        numPlacasExternas: bloque.numPlacasExternas || NUMERO_CAMAS_MIN,
+        numPlacasInternas: bloque.numPlacasInternas || NUMERO_CAMAS_MIN
+      });
     setIsASheetOpen(true);
   };
 
@@ -43,6 +49,8 @@ const BloquesSettingsC = () => {
             <IonLabel>{bloque.numCamas} camas</IonLabel>
             <IonLabel>{bloque.numCuadrosPerCama} cuadros por cama</IonLabel>
             <IonLabel>{bloque.numCamas * bloque.numCuadrosPerCama} total de cuadros</IonLabel>
+            <IonLabel>{bloque.numPlacasExternas || 0} placas externas</IonLabel>
+            <IonLabel>{bloque.numPlacasInternas || 0} placas internas</IonLabel>
           </IonCardHeader>
 
           <IonCardContent>{bloque.description}</IonCardContent>

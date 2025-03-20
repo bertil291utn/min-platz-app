@@ -7,6 +7,8 @@ export interface Bloque {
   numCamas: number;
   numCuadrosPerCama: number;
   archived?: boolean;
+  numPlacasInternas?:number;
+  numPlacasExternas?:number;
 }
 
 export type SegmentBloque = 'bloques' | 'camas' | 'diseases' | 'options' | 'cuadros';

@@ -14,7 +14,7 @@ import { addBloque, INITIAL_BLOQUE, selectActiveBloques } from '../store/slices/
 
 const SettingsC = () => {
   const activeBloques = useAppSelector(selectActiveBloques);
-  const bloques = useAppSelector(state=>state.bloqueInfo.bloques);
+  const bloques = useAppSelector(state => state.bloqueInfo.bloques);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
   const dispatch = useAppDispatch();
@@ -23,7 +23,9 @@ const SettingsC = () => {
     setBloqueForm(prev => ({
       ...prev,
       name: `Bloque ${bloques.length + 1}`,
-      numCamas: NUMERO_CAMAS_MIN
+      numCamas: NUMERO_CAMAS_MIN,
+      numPlacasExternas: NUMERO_CAMAS_MIN,
+      numPlacasInternas: NUMERO_CAMAS_MIN
     }));
   }, [isOpenModal]);
 
@@ -68,7 +70,7 @@ const SettingsC = () => {
             <IonLabel>Usuario</IonLabel>
           </IonItem>
           <div className="ion-padding" slot="content">
-            <TipoUserSettingsC/>
+            <TipoUserSettingsC />
           </div>
 
         </IonAccordion>

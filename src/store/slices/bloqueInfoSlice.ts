@@ -10,6 +10,8 @@ export const INITIAL_BLOQUE: Bloque = {
   numCamas: 0,
   numCuadrantes: 0,
   numCuadrosPerCama: 0,
+  numPlacasInternas: 0,
+  numPlacasExternas: 0,
   archived: false
 };
 
@@ -30,7 +32,7 @@ export const fetchBloques = createAsyncThunk(
   'bloqueInfo/fetchBloques',
   async () => {
     const localBloques = localStorage.getItem(BLOQUE_KEY_LOCAL_STORAGE);
-    
+
     if (navigator.onLine) {
       try {
         // TODO: Replace with actual database fetch call
@@ -47,7 +49,7 @@ export const fetchBloques = createAsyncThunk(
     } else if (localBloques) {
       return JSON.parse(localBloques);
     }
-    
+
     return [];
   }
 );
@@ -61,14 +63,12 @@ const bloqueInfoSlice = createSlice({
       localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(action.payload));
     },
     addBloque: (state, action: PayloadAction<Bloque>) => {
-      if (state.bloques.length < 10) {
-        const newBloque: Bloque = {
-          ...action.payload,
-          id: state.bloques.length + 1,
-        };
-        state.bloques.push(newBloque);
-        localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(state.bloques));
-      }
+      const newBloque: Bloque = {
+        ...action.payload,
+        id: state.bloques.length + 1,
+      };
+      state.bloques.push(newBloque);
+      localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(state.bloques));
     },
     removeBloque: (state, action: PayloadAction<number>) => {
       if (state.bloques.length >= 1) {
@@ -110,9 +110,9 @@ const bloqueInfoSlice = createSlice({
 
 // Selectors
 export const selectAllBloques = (state: { bloqueInfo: BloqueInfoState }) => state.bloqueInfo.bloques;
-export const selectArchivedBloques = (state: { bloqueInfo: BloqueInfoState }) => 
+export const selectArchivedBloques = (state: { bloqueInfo: BloqueInfoState }) =>
   state.bloqueInfo.bloques.filter(bloque => bloque.archived);
-export const selectActiveBloques = (state: { bloqueInfo: BloqueInfoState }) => 
+export const selectActiveBloques = (state: { bloqueInfo: BloqueInfoState }) =>
   state.bloqueInfo.bloques.filter(bloque => !bloque.archived);
 
 export const { setBloques, addBloque, removeBloque, unarchiveBloque, editBloque } = bloqueInfoSlice.actions;

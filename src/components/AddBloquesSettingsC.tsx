@@ -68,10 +68,15 @@ const AddBloquesSettingsModalC = (
       isOpen={isOpenModal}
       onDidDismiss={() => setIsOpenModal(false)}
     >
-
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>{type == 'new' ? 'Anadir nuevo' : 'Editar'} bloque</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonContent>
         <div className="ion-padding">
-          <IonLabel><b>{type == 'new' ? 'Anadir nuevo' : 'Editar'} bloque</b></IonLabel>
+          <br />
+          <br />
           <br />
           <br />
           <form onSubmit={(e) => e.preventDefault()}>
@@ -100,18 +105,6 @@ const AddBloquesSettingsModalC = (
               required
             />
             <br />
-
-            {/* description */}
-            <IonTextarea fill='outline' label="Descripcion"
-              labelPlacement="floating"
-              name="description"
-              value={bloqueForm.description}
-              onIonInput={(e) => handleChange(e)}
-              rows={3}
-            ></IonTextarea>
-
-
-            <br />
             {/* cuadros por cama */}
             <IonItem>
               <IonLabel>Numero de cuadros por cama</IonLabel>
@@ -127,7 +120,7 @@ const AddBloquesSettingsModalC = (
             </IonItem>
 
             {/* numero cuadrantes */}
-            <IonItem>
+            {/* <IonItem>
               <IonLabel>Numero de cuadrantes</IonLabel>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <IonButton fill="clear" onClick={handleDecrement('numCuadrantes')} size='large'>
@@ -138,7 +131,48 @@ const AddBloquesSettingsModalC = (
                   <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
                 </IonButton>
               </div>
+            </IonItem> */}
+
+            <h4 style={{ marginTop: '2rem' }}>Para monitoreo</h4>
+            {/* monitoreo */}
+            {/* no placas internas */}
+            <IonItem>
+              <IonLabel>Numero de placas internas</IonLabel>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <IonButton fill="clear" onClick={handleDecrement('numPlacasInternas')} size='large'>
+                  <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
+                </IonButton>
+                <IonLabel>{bloqueForm.numPlacasInternas}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement('numPlacasInternas')}>
+                  <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
+                </IonButton>
+              </div>
             </IonItem>
+
+            {/* no placas externas */}
+            <IonItem>
+              <IonLabel>Numero de placas externas</IonLabel>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <IonButton fill="clear" onClick={handleDecrement('numPlacasExternas')} size='large'>
+                  <IonIcon slot="icon-only" ios={removeCircle} md={removeCircle}></IonIcon>
+                </IonButton>
+                <IonLabel>{bloqueForm.numPlacasExternas}</IonLabel>
+                <IonButton size='large' fill="clear" onClick={handleIncrement('numPlacasExternas')}>
+                  <IonIcon slot="icon-only" ios={addCircle} md={addCircle}></IonIcon>
+                </IonButton>
+              </div>
+            </IonItem>
+
+            {/* description */}
+            <IonTextarea
+              style={{ marginTop: '2rem' }}
+              fill='outline' label="Descripcion de bloque"
+              labelPlacement="floating"
+              name="description"
+              value={bloqueForm.description}
+              onIonInput={(e) => handleChange(e)}
+              rows={3}
+            ></IonTextarea>
 
             <br />
             <IonButton onClick={handleConfirm} expand="block">
