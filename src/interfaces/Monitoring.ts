@@ -9,6 +9,7 @@ export interface CuadroMonitored {
   id: number;
   name: string;
   diseases: DiseaseMonitored[];
+  //if there's no listed disease it might need to be added a modal to add new disease and be selected
   notes?: string;
 }
 

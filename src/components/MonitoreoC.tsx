@@ -30,7 +30,6 @@ const MonitoreoC = () => {
   const handleSegmentChange = (value: string) => {
     dispatch(setActiveSegment(value as SegmentBloque));
   };
-console.log(selectedWeek)
 
   return (
     <div>

@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 const TipoUserSettingsC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.userLogged.user);
-  console.log(user)
 
   const handleToggleChange = (e: CustomEvent) => {
     const newValue = e.detail.checked;

@@ -53,7 +53,6 @@ const SegmentMonitoreoCamas = () => {
 
 
   const handleSelectCama = (index: number) => () => {
-    console.log(index)
     dispatch(setSelectedDiseases([]));
     dispatch(setSelectedCuadros([]));
     dispatch(setSelectedCuadro(undefined));
