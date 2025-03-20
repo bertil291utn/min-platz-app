@@ -143,7 +143,8 @@ const MonitoreoPlacas = () => {
       case 'details':
         return (
           <div className="ion-padding">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <IonLabel>Seleccione cantidad de {selectedDisease?.name} encontrados</IonLabel>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
               <IonButton onClick={() => dispatch(setCount(Math.max(0, count - 1)))}>
                 <IonIcon icon={removeCircle} />
               </IonButton>
@@ -153,12 +154,19 @@ const MonitoreoPlacas = () => {
               </IonButton>
             </div>
 
-            <IonTextarea
-              value={notes}
-              onIonChange={e => dispatch(setNotes(e.detail.value!))}
-              placeholder="Agregar notas..."
-              rows={4}
-            />
+
+            <div style={{ margin: '2rem 0' }}>
+              <IonTextarea
+                label="Notas adicionales"
+                labelPlacement="floating"
+                fill='outline'
+                value={notes}
+                onIonInput={e => dispatch(setNotes(e.detail.value!))}
+                rows={4}
+                name='notes'
+              />
+            </div>
+
 
             <IonButton expand="block" onClick={handleSave} disabled={loading}>
               {loading ? <IonSpinner /> : 'Guardar'}

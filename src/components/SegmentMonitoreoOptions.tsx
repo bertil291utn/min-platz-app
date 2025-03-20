@@ -106,7 +106,8 @@ const SegmentMonitoreoOptions = () => {
         {showTextarea && (
           <IonTextarea
             fill='outline'
-            placeholder="Notas adicionales"
+            label="Notas adicionales"
+            labelPlacement="floating"
             value={notes}
             onIonInput={e => setNotes(e.detail.value as string)}
             rows={4}
