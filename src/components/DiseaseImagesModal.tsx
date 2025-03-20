@@ -31,7 +31,10 @@ const DiseaseImagesModal: React.FC<Props> = ({ isOpen, onDismiss, disease }) => 
   }, [disease.folderName, isOpen]);
 
   return (
-    <IonModal isOpen={isOpen} onDidDismiss={onDismiss}>
+    <IonModal
+      initialBreakpoint={1}
+      breakpoints={[0, 1]}
+      isOpen={isOpen} onDidDismiss={onDismiss}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end">

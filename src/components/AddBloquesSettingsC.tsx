@@ -62,7 +62,13 @@ const AddBloquesSettingsModalC = (
   };
 
   return (
-    <IonModal isOpen={isOpenModal} onDidDismiss={() => setIsOpenModal(false)}>
+    <IonModal
+      initialBreakpoint={1}
+      breakpoints={[0, 1]}
+      isOpen={isOpenModal}
+      onDidDismiss={() => setIsOpenModal(false)}
+    >
+
       <IonContent>
         <div className="ion-padding">
           <IonLabel><b>{type == 'new' ? 'Anadir nuevo' : 'Editar'} bloque</b></IonLabel>
