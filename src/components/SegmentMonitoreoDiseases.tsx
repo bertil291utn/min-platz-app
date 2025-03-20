@@ -9,16 +9,28 @@ import LabelMonitoring from './LabelMonitoring';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setActiveSegment, setSelectedDiseases } from '../store/slices/monitoringBloqueSlice';
 
-const SegmentMonitoreoDiseases = () => {
+interface SegmentMonitoreoDiseaseProps {
+  onDiseaseSelect?: (disease: Disease) => void;
+  mode?: 'regular' | 'placas';
+}
+
+const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({ 
+  onDiseaseSelect,
+  mode = 'regular' 
+}) => {
   const [diseasesArr] = useState(DISEASES);
   const dispatch = useAppDispatch();
   const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const user = useAppSelector((state) => state.userLogged.user);
 
-
-
   const handleSelectDisease = (disease: Disease) => () => {
+    if (mode === 'placas' && onDiseaseSelect) {
+      onDiseaseSelect(disease);
+      return;
+    }
+
+    // Regular monitoring logic
     const setDisease = () => {
       const prev = [...selectedDiseases];
       const isSelected = prev.some(d => d.id === disease.id);
@@ -27,9 +39,9 @@ const SegmentMonitoreoDiseases = () => {
       } else {
         return [...prev, disease];
       }
-    }
+    };
     dispatch(setSelectedDiseases(setDisease()));
-  }
+  };
 
   const handleViewDisease = (disease: Disease) => () => {
     setShowModalDisease(disease);
