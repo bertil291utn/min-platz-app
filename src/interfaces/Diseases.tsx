@@ -4,11 +4,14 @@ export interface ImageD {
   alt: string;
 }
 
-export interface Disease {
+export interface Disease extends DiseaseMain {
+  images?: ImageD[];
+  info?: string;
+}
+
+export interface DiseaseMain {
 
   id: number;
   name: string;
   folderName: string;
-  images?: ImageD[];
-  info?: string;
 }

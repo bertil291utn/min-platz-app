@@ -3,6 +3,7 @@ import { Bloque } from '../interfaces/Bloque';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setSelectedCama, setSelectedBloque, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
+import { setActiveSegment as setActiveSegmentPlacas, setSelectedBloque as setSelectedBloquePlacas } from '../store/slices/placasMonitoringSlice';
 
 const SegmentMonitoreoBloques = () => {
 
@@ -17,6 +18,8 @@ const SegmentMonitoreoBloques = () => {
     dispatch(setSelectedCama(1))
     dispatch(setSelectedBloque(bloque));
     dispatch(setActiveSegment('camas'));
+    dispatch(setActiveSegmentPlacas('type'))
+    dispatch(setSelectedBloquePlacas(bloque));
   }
 
   return (

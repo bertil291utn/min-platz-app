@@ -4,6 +4,7 @@ import bloqueInfoReducer from './slices/bloqueInfoSlice';
 import monitoringBloqueReducer from './slices/monitoringBloqueSlice';
 import viewMonitoredReducer from './slices/viewMonitoredSlice';
 import userReducer from './slices/userSlice';
+import placasMonitoringReducer from './slices/placasMonitoringSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     bloqueInfo: bloqueInfoReducer,
     monitoringBloque: monitoringBloqueReducer,
     viewMonitored: viewMonitoredReducer,
-    userLogged: userReducer
+    userLogged: userReducer,
+    placasMonitoring: placasMonitoringReducer
   }
 });
 

@@ -1,7 +1,6 @@
-export interface DiseaseMonitored {
-  id: number;
-  name: string;
-  folderName: string;
+import { DiseaseMain } from './Diseases';
+
+export interface DiseaseMonitored  extends DiseaseMain {
   tercio?: number; // Optional for acaros
 }
 
