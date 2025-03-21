@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Disease } from '../../interfaces/Diseases';
-import { BloqueMonPlaca, PlacaType, PlacasSegment, PlacaMonitored } from '../../interfaces/PlacaMonitoring';
+import { BloqueMonPlaca, PlacaType, PlacasSegment, PlacaMonitored, DiseaseInPlaca } from '../../interfaces/PlacaMonitoring';
 import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../../helpers/regularHelper';
 import { Bloque } from '../../interfaces/Bloque';
 
@@ -11,9 +11,8 @@ interface PlacasMonitoringState {
   selectedBloque: Bloque | null;
   selectedType: PlacaType | null;
   selectedPlacaNumber: number | null;
-  selectedDisease: Disease | null;
+  selectedDiseases: DiseaseInPlaca[];  // Changed from selectedDisease: Disease | null
   selectedWeek: number | null;
-  countDisease: number;
   notes: string;
   placasMonitored: BloqueMonPlaca[];
   loading: boolean;
@@ -26,9 +25,8 @@ const initialState: PlacasMonitoringState = {
   selectedBloque: null,
   selectedType: null,
   selectedPlacaNumber: null,
-  selectedDisease: null,
+  selectedDiseases: [],
   selectedWeek: null,
-  countDisease: 0,
   notes: '',
   placasMonitored: [],
   loading: false,
@@ -50,15 +48,13 @@ export const updatePlacaMonitoring = createAsyncThunk(
     bloqueId,
     type,
     placaNumber,
-    disease,
-    countDisease,
+    diseases,
     notes
   }: {
     bloqueId: number;
     type: PlacaType;
     placaNumber: number;
-    disease: Disease;
-    countDisease: number;
+    diseases: DiseaseInPlaca[];
     notes: string;
   }, { getState }) => {
     const state = getState() as { placasMonitoring: PlacasMonitoringState };
@@ -83,10 +79,7 @@ export const updatePlacaMonitoring = createAsyncThunk(
     const placa: PlacaMonitored = {
       id: placaNumber,
       type,
-      diseases: [{
-        ...disease,
-        countDisease
-      }],
+      diseases,
       notes
     };
 
@@ -97,15 +90,7 @@ export const updatePlacaMonitoring = createAsyncThunk(
     if (placaIndex === -1) {
       updatedPlacas[bloqueIndex].placas.push(placa);
     } else {
-      const existingPlaca = updatedPlacas[bloqueIndex].placas[placaIndex];
-      const diseaseIndex = existingPlaca.diseases.findIndex(d => d.id === disease.id);
-
-      if (diseaseIndex === -1) {
-        existingPlaca.diseases.push({ ...disease, countDisease });
-      } else {
-        existingPlaca.diseases[diseaseIndex] = { ...disease, countDisease };
-      }
-      existingPlaca.notes = notes;
+      updatedPlacas[bloqueIndex].placas[placaIndex] = placa;
     }
 
     localStorage.setItem(STORE_PLACAS_MONITORED, JSON.stringify(updatedPlacas));
@@ -129,22 +114,21 @@ const placasMonitoringSlice = createSlice({
     setSelectedPlacaNumber: (state, action: PayloadAction<number | null>) => {
       state.selectedPlacaNumber = action.payload;
     },
-    setSelectedDisease: (state, action: PayloadAction<Disease | null>) => {
-      state.selectedDisease = action.payload;
-    },
+    
     setSelectedWeek: (state, action: PayloadAction<number | null>) => {
       state.selectedWeek = action.payload;
     },
-    setCountDisease: (state, action: PayloadAction<number>) => {
-      state.countDisease = action.payload;
-    },
+   
     setNotes: (state, action: PayloadAction<string>) => {
       state.notes = action.payload;
     },
+    
+    setSelectedDiseases: (state, action: PayloadAction<DiseaseInPlaca[]>) => {
+      state.selectedDiseases = action.payload;
+    },
     resetForm: (state) => {
-      state.countDisease = 0;
       state.notes = '';
-      state.selectedDisease = null;
+      state.selectedDiseases = [];
     }
   },
   extraReducers: (builder) => {
@@ -172,11 +156,10 @@ export const {
   setSelectedBloque,
   setSelectedType,
   setSelectedPlacaNumber,
-  setSelectedDisease,
   setSelectedWeek,
-  setCountDisease,
   setNotes,
-  resetForm
+  resetForm,
+  setSelectedDiseases,
 } = placasMonitoringSlice.actions;
 
 export default placasMonitoringSlice.reducer;

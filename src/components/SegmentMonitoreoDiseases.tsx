@@ -9,6 +9,7 @@ import LabelMonitoring from './LabelMonitoring';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setActiveSegment, setSelectedDiseases } from '../store/slices/monitoringBloqueSlice';
 import { ReturnButtonPlacas } from './MonitoreoPlacas';
+import { setActiveSegment as setActiveSegmentPlacas, setSelectedDiseases as setSelectedDiseasesPlacas } from '../store/slices/placasMonitoringSlice';
 
 interface SegmentMonitoreoDiseaseProps {
   onDiseaseSelect?: (disease: Disease) => void;
@@ -22,12 +23,23 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
   const [diseasesArr] = useState(DISEASES);
   const dispatch = useAppDispatch();
   const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
+  const selectedDiseasesPlacas = useAppSelector(state => state.placasMonitoring.selectedDiseases);
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const user = useAppSelector((state) => state.userLogged.user);
 
   const handleSelectDisease = (disease: Disease) => () => {
-    if (mode === 'placas' && onDiseaseSelect) {
-      onDiseaseSelect(disease);
+    if (mode === 'placas') {
+      const setDisease = () => {
+        const prev = [...selectedDiseasesPlacas];
+        const isSelected = prev.some(d => d.id === disease.id);
+        if (isSelected) {
+          return prev.filter(d => d.id !== disease.id);
+        } else {
+          return [...prev, { ...disease, countDisease: 1 }];
+        }
+      };
+      dispatch(setSelectedDiseasesPlacas(setDisease()));
+      // onDiseaseSelect(disease);
       return;
     }
 
@@ -69,8 +81,12 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
 
         {mode === 'placas' && <ReturnButtonPlacas segmentReturn="number" />}
 
-        {selectedDiseases.length > 0 &&
-          <IonButton fill="clear" onClick={() => dispatch(setActiveSegment('options'))}>
+        {(selectedDiseases.length > 0 || selectedDiseasesPlacas.length > 0) &&
+          <IonButton fill="clear" onClick={() => {
+            mode === 'camas' && dispatch(setActiveSegment('options'))
+            mode === 'placas' && dispatch(setActiveSegmentPlacas('details'))
+
+          }}>
             <IonIcon slot="end" icon={arrowForward}></IonIcon>
             avanzar
           </IonButton>
@@ -87,7 +103,7 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
               <DiseaseCard
                 disease={disease}
                 handleSelectDisease={handleSelectDisease}
-                selectedDiseases={selectedDiseases}
+                selectedDiseases={mode === 'camas' ? selectedDiseases : selectedDiseasesPlacas}
               />
             </div>
           ) : (
@@ -96,7 +112,7 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
                 <DiseaseCard
                   disease={disease}
                   handleSelectDisease={handleSelectDisease}
-                  selectedDiseases={selectedDiseases}
+                  selectedDiseases={mode === 'camas' ? selectedDiseases : selectedDiseasesPlacas}
                 />
                 <IonButton fill="clear" expand='block'
                   onClick={handleViewDisease(disease)}

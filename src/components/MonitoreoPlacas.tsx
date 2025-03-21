@@ -1,50 +1,49 @@
-import { IonCard, IonCardContent, IonChip, IonIcon, IonLabel, IonButton, IonTextarea, IonToast, IonSpinner, IonSelect, IonSelectOption, IonCardHeader, IonTitle } from '@ionic/react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setActiveSegment, setSelectedType, setSelectedPlacaNumber, setSelectedDisease, setNotes, updatePlacaMonitoring, resetForm, setSelectedWeek, setCountDisease } from '../store/slices/placasMonitoringSlice';
-import { DISEASES } from '../helpers/diseases';
+import {
+  IonCard, IonCardContent, IonChip, IonIcon, IonLabel, IonButton,
+  IonTextarea, IonToast, IonSpinner, IonList, IonItem,
+  IonCardHeader,
+  IonSelect,
+  IonSelectOption,
+  IonTitle
+} from '@ionic/react';
 import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
-import { useEffect, useState } from 'react';
-import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
-import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
-import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
-import { PlacasSegment } from '../interfaces/PlacaMonitoring';
+import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { Disease } from '../interfaces/Diseases';
+import { DiseaseInPlaca, PlacasSegment } from '../interfaces/PlacaMonitoring';
+import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
+import {
+  setActiveSegment, setSelectedType, setSelectedPlacaNumber,
+  setSelectedDiseases, setNotes, updatePlacaMonitoring, resetForm,
+  setSelectedWeek
+} from '../store/slices/placasMonitoringSlice';
+import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
+import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 
 const MonitoreoPlacas = () => {
   const [showNumSemana, setShowNumSemana] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+
   const {
     activeSegment,
     selectedBloque,
     selectedType,
     selectedPlacaNumber,
-    selectedDisease,
+    selectedDiseases,
     selectedWeek,
-    countDisease,
     notes,
     loading,
     isToastSavedOpen
   } = useAppSelector(state => state.placasMonitoring);
 
-  useEffect(()=>{
-    dispatch(setCountDisease(1))
-  },[]);
-
-  const sortedDiseases = [...DISEASES].sort((a, b) => {
-    if (a.name === 'Thrips' || a.name === 'Mosca Blanca') return -1;
-    if (b.name === 'Thrips' || b.name === 'Mosca Blanca') return 1;
-    return 0;
-  });
-
   const handleSave = async () => {
-    if (!selectedBloque || !selectedType || !selectedPlacaNumber || !selectedDisease) return;
+    if (!selectedBloque || !selectedType || !selectedPlacaNumber || selectedDiseases.length === 0) return;
 
     await dispatch(updatePlacaMonitoring({
       bloqueId: selectedBloque.id!,
       type: selectedType,
       placaNumber: selectedPlacaNumber,
-      disease: selectedDisease,
-      countDisease,
+      diseases: selectedDiseases,
       notes
     }));
 
@@ -52,69 +51,49 @@ const MonitoreoPlacas = () => {
     dispatch(setActiveSegment('diseases'));
   };
 
+  const handleDiseaseSelect = (disease: Disease) => {
+    const newDisease: DiseaseInPlaca = {
+      ...disease,
+      countDisease: 0
+    };
+    dispatch(setSelectedDiseases([...selectedDiseases, newDisease]));
+  };
+
+  const handleUpdateDiseaseCount = (diseaseId: number, newCount: number) => {
+    const updatedDiseases = selectedDiseases.map(disease =>
+      disease.id === diseaseId
+        ? { ...disease, countDisease: newCount }
+        : disease
+    );
+    dispatch(setSelectedDiseases(updatedDiseases));
+  };
+
   const handleWeekSelect = (value: number) => {
     dispatch(setSelectedWeek(value));
-  };
+  }
 
-  const handleDiseaseSelect = (disease: Disease) => {
-    dispatch(setSelectedDisease(disease));
-    dispatch(setActiveSegment('details'));
-  };
-
-  const renderBreadcrumbs = () => selectedBloque &&
-    (<IonCard>
-      <IonCardContent>
-        <IonChip color="secondary"
-          onClick={() => {
-            dispatch(setActiveSegment('bloques'));
-            dispatch(setSelectedType(null));
-            dispatch(setSelectedPlacaNumber(null));
-            dispatch(setSelectedDisease(null));
-            dispatch(setNotes(''));
-            
-          }}
-        >
-          <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
-        </IonChip>
-
-        <IonChip color="secondary" onClick={() => {
-          dispatch(setActiveSegment('bloques'))
-          dispatch(setSelectedType(null));
-          dispatch(setSelectedPlacaNumber(null));
-          dispatch(setSelectedDisease(null));
-          dispatch(setNotes(''));
-        }}>
-          <IonLabel>{selectedBloque.name}</IonLabel>
-        </IonChip>
-        {selectedType && (
-          <IonChip color="secondary" onClick={() => 
-          {
-            dispatch(setActiveSegment('type'))
-            dispatch(setSelectedPlacaNumber(null));
-            dispatch(setSelectedDisease(null));
-            dispatch(setNotes(''));
-          }
-          }>
-            <IonLabel>Placas {selectedType}s</IonLabel>
-          </IonChip>
-        )}
-        {selectedPlacaNumber && (
-          <IonChip color="secondary" onClick={() => {
-            
-            dispatch(setActiveSegment('number'))
-            dispatch(setSelectedDisease(null));
-            dispatch(setNotes(''));
-          }}>
-            <IonLabel>Placa {selectedPlacaNumber}</IonLabel>
-          </IonChip>
-        )}
-        {selectedDisease && (
-          <IonChip color="secondary" onClick={() => dispatch(setActiveSegment('diseases'))}>
-            <IonLabel>{selectedDisease.name}</IonLabel>
-          </IonChip>
-        )}
-      </IonCardContent>
-    </IonCard>);
+  const renderDiseasesList = () => (
+    <IonList>
+      {selectedDiseases.map(disease => (
+        <IonItem key={disease.id}>
+          <IonLabel>{disease.name}</IonLabel>
+          <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <IonButton onClick={() =>
+              handleUpdateDiseaseCount(disease.id, Math.max(0, disease.countDisease - 1))
+            }>
+              <IonIcon icon={removeCircle} />
+            </IonButton>
+            <IonLabel>{disease.countDisease}</IonLabel>
+            <IonButton onClick={() =>
+              handleUpdateDiseaseCount(disease.id, disease.countDisease + 1)
+            }>
+              <IonIcon icon={addCircle} />
+            </IonButton>
+          </div>
+        </IonItem>
+      ))}
+    </IonList>
+  );
 
   const renderContent = () => {
     switch (activeSegment) {
@@ -229,31 +208,21 @@ const MonitoreoPlacas = () => {
           <div className="ion-padding">
             <ReturnButtonPlacas segmentReturn="diseases" />
             <div style={{ margin: '1.5rem 0' }}>
-              <IonLabel>Seleccione cantidad de {selectedDisease?.name} encontrados</IonLabel>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
-              <IonButton onClick={() => dispatch(setCountDisease(Math.max(0, countDisease - 1)))}>
-                <IonIcon icon={removeCircle} />
-              </IonButton>
-              <IonLabel>{countDisease}</IonLabel>
-              <IonButton onClick={() => dispatch(setCountDisease(countDisease + 1))}>
-                <IonIcon icon={addCircle} />
-              </IonButton>
+              <IonLabel>Cantidad de plagas encontradas</IonLabel>
             </div>
 
+            {renderDiseasesList()}
 
             <div style={{ margin: '2rem 0' }}>
               <IonTextarea
                 label="Notas adicionales"
                 labelPlacement="floating"
-                fill='outline'
+                fill="outline"
                 value={notes}
                 onIonInput={e => dispatch(setNotes(e.detail.value!))}
                 rows={4}
-                name='notes'
               />
             </div>
-
 
             <IonButton expand="block" onClick={handleSave} disabled={loading}>
               {loading ? <IonSpinner /> : 'Guardar'}
@@ -266,15 +235,65 @@ const MonitoreoPlacas = () => {
   };
 
   return (
-    <div>
-      {renderBreadcrumbs()}
+    <>
+      {selectedBloque && (
+        <IonCard>
+          <IonCardContent>
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <IonChip color="secondary" onClick={() => {
+                dispatch(setActiveSegment('bloques'));
+                dispatch(setSelectedType(null));
+                dispatch(setSelectedPlacaNumber(null));
+                dispatch(setSelectedDiseases([]));
+                dispatch(setNotes(''));
+              }}>
+                <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
+              </IonChip>
+              <IonChip color="secondary" onClick={() => {
+                dispatch(setActiveSegment('bloques'))
+                dispatch(setSelectedType(null));
+                dispatch(setSelectedPlacaNumber(null));
+                dispatch(setSelectedDiseases([]));
+                dispatch(setNotes(''));
+              }}>
+                <IonLabel>{selectedBloque.name}</IonLabel>
+              </IonChip>
+              {selectedType && (
+                <IonChip color="secondary" onClick={() => {
+                  dispatch(setActiveSegment('type'))
+                  dispatch(setSelectedPlacaNumber(null));
+                  dispatch(setSelectedDiseases([]));
+                  dispatch(setNotes(''));
+                }
+                }>
+                  <IonLabel>Placas {selectedType}s</IonLabel>
+                </IonChip>
+              )}
+              {selectedPlacaNumber && (
+                <IonChip color="secondary" onClick={() => {
+
+                  dispatch(setActiveSegment('number'))
+                  dispatch(setSelectedDiseases([]));
+                  dispatch(setNotes(''));
+                }}>
+                  <IonLabel>Placa {selectedPlacaNumber}</IonLabel>
+                </IonChip>
+              )}
+              {selectedDiseases.length > 0 &&
+                <IonChip color="secondary" onClick={() => dispatch(setActiveSegment('diseases'))}>
+                  <IonLabel>Diseases</IonLabel>
+                </IonChip>}
+            </div>
+          </IonCardContent>
+        </IonCard>
+      )}
       {renderContent()}
       <IonToast
         isOpen={isToastSavedOpen}
-        message={`Monitoreo de placa ${selectedPlacaNumber} guardado`}
-        duration={3000}
+        message="Monitoreo guardado exitosamente"
+        duration={2000}
       />
-    </div>
+    </>
   );
 };
 
