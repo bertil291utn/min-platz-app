@@ -1,3 +1,9 @@
+export interface PlacaDetails {
+  id: number;
+  description: string;
+  type: 'interno' | 'externo';
+}
+
 export interface Bloque {
   id?: number;
   location?: string;
@@ -7,8 +13,7 @@ export interface Bloque {
   numCamas: number;
   numCuadrosPerCama: number;
   archived?: boolean;
-  numPlacasInternas?:number;
-  numPlacasExternas?:number;
+  placasDetails?: PlacaDetails[];
 }
 
 export type SegmentBloque = 'bloques' | 'camas' | 'diseases' | 'options' | 'cuadros';
