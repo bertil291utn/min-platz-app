@@ -1,9 +1,9 @@
-import { IonCard, IonCardContent, IonChip, IonIcon, IonLabel, IonButton, IonTextarea, IonToast, IonSpinner, IonSelect, IonSelectOption } from '@ionic/react';
+import { IonCard, IonCardContent, IonChip, IonIcon, IonLabel, IonButton, IonTextarea, IonToast, IonSpinner, IonSelect, IonSelectOption, IonCardHeader, IonTitle } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setActiveSegment, setSelectedType, setSelectedPlacaNumber, setSelectedDisease, setCount, setNotes, updatePlacaMonitoring, resetForm, setSelectedWeek } from '../store/slices/placasMonitoringSlice';
+import { setActiveSegment, setSelectedType, setSelectedPlacaNumber, setSelectedDisease, setNotes, updatePlacaMonitoring, resetForm, setSelectedWeek, setCountDisease } from '../store/slices/placasMonitoringSlice';
 import { DISEASES } from '../helpers/diseases';
 import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
@@ -20,11 +20,15 @@ const MonitoreoPlacas = () => {
     selectedPlacaNumber,
     selectedDisease,
     selectedWeek,
-    count,
+    countDisease,
     notes,
     loading,
     isToastSavedOpen
   } = useAppSelector(state => state.placasMonitoring);
+
+  useEffect(()=>{
+    dispatch(setCountDisease(1))
+  },[]);
 
   const sortedDiseases = [...DISEASES].sort((a, b) => {
     if (a.name === 'Thrips' || a.name === 'Mosca Blanca') return -1;
@@ -40,7 +44,7 @@ const MonitoreoPlacas = () => {
       type: selectedType,
       placaNumber: selectedPlacaNumber,
       disease: selectedDisease,
-      count,
+      countDisease,
       notes
     }));
 
@@ -101,7 +105,7 @@ const MonitoreoPlacas = () => {
         return (
           <div className="ion-padding">
             <ReturnButtonPlacas segmentReturn="bloques" />
-            
+
             <IonButton
               fill="outline"
               expand="block"
@@ -111,10 +115,10 @@ const MonitoreoPlacas = () => {
             </IonButton>
 
             {showNumSemana && (
-              <div style={{ marginBottom: '2rem' }}>
-                <IonSelect 
-                  label="Seleccione semana" 
-                  labelPlacement="floating" 
+              <div style={{ margin: '2rem 0' }}>
+                <IonSelect
+                  label="Seleccione semana"
+                  labelPlacement="floating"
                   fill="outline"
                   onIonChange={(e) => handleWeekSelect(e.detail.value)}
                   value={selectedWeek || CURRENT_WEEK_NUMBER}
@@ -127,30 +131,49 @@ const MonitoreoPlacas = () => {
                 </IonSelect>
               </div>
             )}
+            <div style={{ marginTop: '3rem' }}>
+              <IonLabel>Seleccione tipo de placa</IonLabel>
+            </div>
 
-            <IonLabel>Seleccione tipo de placa</IonLabel>
-            <br /><br />
+            <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+              <IonCard
+                onClick={() => {
+                  dispatch(setSelectedType('interno'));
+                  dispatch(setActiveSegment('number'));
+                }}
+                color={selectedType === 'interno' ? 'primary' : ''}
+              >
+                <IonCardHeader>
+                  <IonTitle>
+                    Placas Internas
+                  </IonTitle>
+                </IonCardHeader>
+              </IonCard>
 
-            <IonButton expand="block" onClick={() => {
-              dispatch(setSelectedType('interno'));
-              dispatch(setActiveSegment('number'));
-            }}>
-              Placas Internas
-            </IonButton>
-            <IonButton expand="block" onClick={() => {
-              dispatch(setSelectedType('externo'));
-              dispatch(setActiveSegment('number'));
-            }}>
-              Placas Externas
-            </IonButton>
+              <IonCard
+                onClick={() => {
+                  dispatch(setSelectedType('externo'));
+                  dispatch(setActiveSegment('number'));
+                }}
+                color={selectedType === 'externo' ? 'primary' : ''}
+              >
+                <IonCardHeader>
+                  <IonTitle>
+                    Placas Externas
+                  </IonTitle>
+                </IonCardHeader>
+              </IonCard>
+            </div>
+
           </div>
         );
       case 'number':
         return (
           <div className="ion-padding">
             <ReturnButtonPlacas segmentReturn="type" />
-            <IonLabel>Seleccione número de placa</IonLabel>
-            <br /><br />
+            <div style={{ margin: '1.5rem 0' }}>
+              <IonLabel>Seleccione número de placa</IonLabel>
+            </div>
             {Array.from({
               length: selectedType === 'interno' ?
                 selectedBloque?.numPlacasInternas || 0 :
@@ -172,7 +195,6 @@ const MonitoreoPlacas = () => {
       case 'diseases':
         return (
           <div className="ion-padding">
-            <ReturnButtonPlacas segmentReturn="number" />
             <SegmentMonitoreoDiseases
               onDiseaseSelect={handleDiseaseSelect}
               mode="placas"
@@ -183,13 +205,15 @@ const MonitoreoPlacas = () => {
         return (
           <div className="ion-padding">
             <ReturnButtonPlacas segmentReturn="diseases" />
-            <IonLabel>Seleccione cantidad de {selectedDisease?.name} encontrados</IonLabel>
+            <div style={{ margin: '1.5rem 0' }}>
+              <IonLabel>Seleccione cantidad de {selectedDisease?.name} encontrados</IonLabel>
+            </div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '2rem' }}>
-              <IonButton onClick={() => dispatch(setCount(Math.max(0, count - 1)))}>
+              <IonButton onClick={() => dispatch(setCountDisease(Math.max(0, countDisease - 1)))}>
                 <IonIcon icon={removeCircle} />
               </IonButton>
-              <IonLabel>{count}</IonLabel>
-              <IonButton onClick={() => dispatch(setCount(count + 1))}>
+              <IonLabel>{countDisease}</IonLabel>
+              <IonButton onClick={() => dispatch(setCountDisease(countDisease + 1))}>
                 <IonIcon icon={addCircle} />
               </IonButton>
             </div>
@@ -237,7 +261,7 @@ export interface ReturnButtonCProps {
   segmentReturn: PlacasSegment;
 }
 
-const ReturnButtonPlacas: React.FC<ReturnButtonCProps> = ({ segmentReturn }) => {
+export const ReturnButtonPlacas: React.FC<ReturnButtonCProps> = ({ segmentReturn }) => {
   const dispatch = useAppDispatch();
   return (
     <IonButton fill="clear" onClick={() => dispatch(setActiveSegment(segmentReturn))}>

@@ -8,15 +8,16 @@ import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setActiveSegment, setSelectedDiseases } from '../store/slices/monitoringBloqueSlice';
+import { ReturnButtonPlacas } from './MonitoreoPlacas';
 
 interface SegmentMonitoreoDiseaseProps {
   onDiseaseSelect?: (disease: Disease) => void;
-  mode?: 'regular' | 'placas';
+  mode?: 'camas' | 'placas';
 }
 
-const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({ 
+const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
   onDiseaseSelect,
-  mode = 'regular' 
+  mode = 'camas'
 }) => {
   const [diseasesArr] = useState(DISEASES);
   const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
       return;
     }
 
-    // Regular monitoring logic
+    // camas monitoring logic
     const setDisease = () => {
       const prev = [...selectedDiseases];
       const isSelected = prev.some(d => d.id === disease.id);
@@ -62,9 +63,11 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
         zIndex: 1000,
         borderTop: '1px solid #ccc'
       }}>
-        <ReturnButtonC
+        {mode === 'camas' && <ReturnButtonC
           segmentReturn={'cuadros'}
-        />
+        />}
+
+        {mode === 'placas' && <ReturnButtonPlacas segmentReturn="number" />}
 
         {selectedDiseases.length > 0 &&
           <IonButton fill="clear" onClick={() => dispatch(setActiveSegment('options'))}>

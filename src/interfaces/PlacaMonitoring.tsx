@@ -4,7 +4,7 @@ export type PlacaType = 'interno' | 'externo';
 export type PlacasSegment = 'bloques' | 'type' | 'number' | 'diseases' | 'details';
 
 export interface DiseaseInPlaca extends DiseaseMonitored {
-  count: number;
+  countDisease: number;
 }
 
 export interface PlacaMonitored {

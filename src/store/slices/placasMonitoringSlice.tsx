@@ -13,7 +13,7 @@ interface PlacasMonitoringState {
   selectedPlacaNumber: number | null;
   selectedDisease: Disease | null;
   selectedWeek: number | null;
-  count: number;
+  countDisease: number;
   notes: string;
   placasMonitored: BloqueMonPlaca[];
   loading: boolean;
@@ -28,7 +28,7 @@ const initialState: PlacasMonitoringState = {
   selectedPlacaNumber: null,
   selectedDisease: null,
   selectedWeek: null,
-  count: 0,
+  countDisease: 0,
   notes: '',
   placasMonitored: [],
   loading: false,
@@ -51,14 +51,14 @@ export const updatePlacaMonitoring = createAsyncThunk(
     type,
     placaNumber,
     disease,
-    count,
+    countDisease,
     notes
   }: {
     bloqueId: number;
     type: PlacaType;
     placaNumber: number;
     disease: Disease;
-    count: number;
+    countDisease: number;
     notes: string;
   }, { getState }) => {
     const state = getState() as { placasMonitoring: PlacasMonitoringState };
@@ -85,7 +85,7 @@ export const updatePlacaMonitoring = createAsyncThunk(
       type,
       diseases: [{
         ...disease,
-        count
+        countDisease
       }],
       notes
     };
@@ -101,9 +101,9 @@ export const updatePlacaMonitoring = createAsyncThunk(
       const diseaseIndex = existingPlaca.diseases.findIndex(d => d.id === disease.id);
 
       if (diseaseIndex === -1) {
-        existingPlaca.diseases.push({ ...disease, count });
+        existingPlaca.diseases.push({ ...disease, countDisease });
       } else {
-        existingPlaca.diseases[diseaseIndex] = { ...disease, count };
+        existingPlaca.diseases[diseaseIndex] = { ...disease, countDisease };
       }
       existingPlaca.notes = notes;
     }
@@ -135,14 +135,14 @@ const placasMonitoringSlice = createSlice({
     setSelectedWeek: (state, action: PayloadAction<number | null>) => {
       state.selectedWeek = action.payload;
     },
-    setCount: (state, action: PayloadAction<number>) => {
-      state.count = action.payload;
+    setCountDisease: (state, action: PayloadAction<number>) => {
+      state.countDisease = action.payload;
     },
     setNotes: (state, action: PayloadAction<string>) => {
       state.notes = action.payload;
     },
     resetForm: (state) => {
-      state.count = 0;
+      state.countDisease = 0;
       state.notes = '';
       state.selectedDisease = null;
     }
@@ -174,7 +174,7 @@ export const {
   setSelectedPlacaNumber,
   setSelectedDisease,
   setSelectedWeek,
-  setCount,
+  setCountDisease,
   setNotes,
   resetForm
 } = placasMonitoringSlice.actions;
