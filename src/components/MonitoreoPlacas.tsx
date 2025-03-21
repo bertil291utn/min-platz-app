@@ -67,21 +67,44 @@ const MonitoreoPlacas = () => {
         <IonChip color="secondary"
           onClick={() => {
             dispatch(setActiveSegment('bloques'));
+            dispatch(setSelectedType(null));
+            dispatch(setSelectedPlacaNumber(null));
+            dispatch(setSelectedDisease(null));
+            dispatch(setNotes(''));
+            
           }}
         >
           <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
         </IonChip>
 
-        <IonChip color="secondary" onClick={() => dispatch(setActiveSegment('bloques'))}>
+        <IonChip color="secondary" onClick={() => {
+          dispatch(setActiveSegment('bloques'))
+          dispatch(setSelectedType(null));
+          dispatch(setSelectedPlacaNumber(null));
+          dispatch(setSelectedDisease(null));
+          dispatch(setNotes(''));
+        }}>
           <IonLabel>{selectedBloque.name}</IonLabel>
         </IonChip>
         {selectedType && (
-          <IonChip color="secondary" onClick={() => dispatch(setActiveSegment('type'))}>
+          <IonChip color="secondary" onClick={() => 
+          {
+            dispatch(setActiveSegment('type'))
+            dispatch(setSelectedPlacaNumber(null));
+            dispatch(setSelectedDisease(null));
+            dispatch(setNotes(''));
+          }
+          }>
             <IonLabel>Placas {selectedType}s</IonLabel>
           </IonChip>
         )}
         {selectedPlacaNumber && (
-          <IonChip color="secondary" onClick={() => dispatch(setActiveSegment('number'))}>
+          <IonChip color="secondary" onClick={() => {
+            
+            dispatch(setActiveSegment('number'))
+            dispatch(setSelectedDisease(null));
+            dispatch(setNotes(''));
+          }}>
             <IonLabel>Placa {selectedPlacaNumber}</IonLabel>
           </IonChip>
         )}
