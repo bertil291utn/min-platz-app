@@ -4,23 +4,26 @@ import {
   IonCardHeader,
   IonSelect,
   IonSelectOption,
-  IonTitle
+  IonTitle,
+  IonAlert
 } from '@ionic/react';
 import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { Disease } from '../interfaces/Diseases';
-import { DiseaseInPlaca, PlacasSegment } from '../interfaces/PlacaMonitoring';
+import { BloqueMonPlaca, DiseaseInPlaca, PlacasSegment } from '../interfaces/PlacaMonitoring';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import {
   setActiveSegment, setSelectedType, setSelectedPlacaNumber,
   setSelectedDiseases, setNotes, updatePlacaMonitoring, resetForm,
-  setSelectedWeek
+  setSelectedWeek,
+  STORE_PLACAS_MONITORED
 } from '../store/slices/placasMonitoringSlice';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 
 const MonitoreoPlacas = () => {
+  const [displayAlert, setDisplayAlert] = useState(false);
   const [showNumSemana, setShowNumSemana] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
@@ -71,6 +74,49 @@ const MonitoreoPlacas = () => {
   const handleWeekSelect = (value: number) => {
     dispatch(setSelectedWeek(value));
   }
+
+  const handleSelectPlaca = (placaNumber: number) => {
+    dispatch(setSelectedPlacaNumber(placaNumber));
+    
+    // Check existing data
+    const existingData = localStorage.getItem(STORE_PLACAS_MONITORED);
+    
+    if (!existingData) {
+      dispatch(setActiveSegment('diseases')); 
+      return;
+    }
+
+    const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
+    const parsedData: BloqueMonPlaca[] = JSON.parse(existingData);
+    
+    const bloqueIndex = parsedData?.findIndex(b => 
+      b.id === selectedBloque?.id && b.weekNumber === weekNumber
+    );
+
+    if (bloqueIndex === -1) {
+      dispatch(setActiveSegment('diseases'));
+      return;
+    }
+
+    const bloque = parsedData[bloqueIndex];
+    const placa = bloque.placas.find(p => 
+      p.id === placaNumber && p.type === selectedType
+    );
+
+    if (!placa) {
+      dispatch(setActiveSegment('diseases'));
+      return;
+    }
+
+    // If placa exists, show alert and set existing data
+    setDisplayAlert(true);
+    
+    // Set existing data for editing
+    if (placa.diseases.length > 0) {
+      dispatch(setSelectedDiseases(placa.diseases));
+      dispatch(setNotes(placa.notes || ''));
+    }
+  };
 
   const renderDiseasesList = () => (
     <IonList>
@@ -184,14 +230,37 @@ const MonitoreoPlacas = () => {
               <IonButton
                 key={index}
                 fill={selectedPlacaNumber === index + 1 ? 'solid' : 'outline'}
-                onClick={() => {
-                  dispatch(setSelectedPlacaNumber(index + 1));
-                  dispatch(setActiveSegment('diseases'));
-                }}
+                onClick={() => handleSelectPlaca(index + 1)}
               >
                 Placa {index + 1}
               </IonButton>
             ))}
+
+            <IonAlert
+              header={`Esta placa #${selectedPlacaNumber} ya fue monitoreada`}
+              subHeader='Monitorear otra vez?'
+              isOpen={displayAlert}
+              buttons={[
+                {
+                  text: 'No',
+                  role: 'cancel',
+                  handler: () => {
+                    dispatch(setSelectedPlacaNumber(null));
+                    dispatch(setSelectedDiseases([]));
+                    setDisplayAlert(false);
+                  }
+                },
+                {
+                  text: 'Si',
+                  role: 'confirm',
+                  handler: () => {
+                    dispatch(setActiveSegment('diseases'));
+                    setDisplayAlert(false);
+                  }
+                }
+              ]}
+              onDidDismiss={() => setDisplayAlert(false)}
+            />
           </div>
         );
       case 'diseases':

@@ -4,7 +4,7 @@ import { BloqueMonPlaca, PlacaType, PlacasSegment, PlacaMonitored, DiseaseInPlac
 import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../../helpers/regularHelper';
 import { Bloque } from '../../interfaces/Bloque';
 
-const STORE_PLACAS_MONITORED = 'placas-monitored';
+export const STORE_PLACAS_MONITORED = 'placas-monitored';
 
 interface PlacasMonitoringState {
   activeSegment: PlacasSegment;
