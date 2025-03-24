@@ -19,7 +19,8 @@ import {
   IonTextarea,
   IonTitle,
   IonToolbar,
-  TextareaCustomEvent
+  TextareaCustomEvent,
+  IonToast
 } from '@ionic/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { addCircle, arrowForward, removeCircle } from 'ionicons/icons';
@@ -58,6 +59,8 @@ const AddBloquesSettingsModalC = (
   const [placasDetails, setPlacasDetails] = useState<PlacaDetails[]>([]);
   const [internoCount, setInternoCount] = useState(1);
   const [externoCount, setExternoCount] = useState(1);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     setBloqueForm(prev => ({
@@ -113,6 +116,16 @@ const AddBloquesSettingsModalC = (
   };
 
   const handleAddPlaca = (type: 'interno' | 'externo') => {
+    const lastPlacaOfType = [...placasDetails]
+      .filter(p => p.type === type)
+      .pop();
+
+    if (lastPlacaOfType && (!lastPlacaOfType.description || lastPlacaOfType.description.length < 6)) {
+      setToastMessage(`Añada una descripción de al menos 6 caracteres para la placa ${lastPlacaOfType.id}`);
+      setShowToast(true);
+      return;
+    }
+
     const count = type === 'interno' ? internoCount : externoCount;
     
     const newPlaca: PlacaDetails = {
@@ -129,8 +142,6 @@ const AddBloquesSettingsModalC = (
   
     const updatedPlacas = [...placasDetails, newPlaca];
     setPlacasDetails(updatedPlacas);
-    
-    // Update bloqueForm with new placas
     setBloqueForm(prev => ({
       ...prev,
       placasDetails: updatedPlacas
@@ -150,15 +161,23 @@ const AddBloquesSettingsModalC = (
   };
 
   const handleRemovePlaca = (id: string, type: 'interno' | 'externo') => {
-    const updatedPlacas = placasDetails.filter(placa => !(placa.id === id && placa.type === type));
-    
+    const placasOfType = placasDetails.filter(p => p.type === type);
+    const lastPlacaOfType = placasOfType[placasOfType.length - 1];
+
+    if (id !== lastPlacaOfType.id) {
+      setToastMessage('Solo puede eliminar la última placa añadida');
+      setShowToast(true);
+      return;
+    }
+
+    const updatedPlacas = placasDetails.filter(placa => placa.id !== id);
     setPlacasDetails(updatedPlacas);
     setBloqueForm(prev => ({
       ...prev,
       placasDetails: updatedPlacas
     }));
-  
-    // Reset counters when all placas of a type are removed
+
+    // Reset counter if no placas of this type remain
     const remainingPlacas = updatedPlacas.filter(placa => placa.type === type);
     if (remainingPlacas.length === 0) {
       if (type === 'interno') {
@@ -262,7 +281,7 @@ const AddBloquesSettingsModalC = (
               label="Localización de la placa"
               labelPlacement="floating"
               value={placa.description}
-              onIonChange={(e) => handleUpdatePlacaDescription(placa.id, e.detail.value!)}
+              onIonInput={(e) => handleUpdatePlacaDescription(placa.id, e.detail.value!)}
             />
             <IonButton
               fill="clear"
@@ -334,10 +353,14 @@ const AddBloquesSettingsModalC = (
           <div style={{ marginTop: '2rem' }}>
             {activeSegment === 'bloque' ? renderBloqueSettings() : renderPlacasSettings()}
           </div>
-
-
         </div>
       </IonContent>
+      <IonToast
+        isOpen={showToast}
+        message={toastMessage}
+        duration={3000}
+        onDidDismiss={() => setShowToast(false)}
+      />
     </IonModal>
   );
 };

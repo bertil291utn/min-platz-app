@@ -58,7 +58,7 @@ const MonitoreoMallas = () => {
                   labelPlacement="floating"
                   placeholder="Ingrese sus observaciones sobre las mallas..."
                   value={observations}
-                  onIonChange={e => setObservations(e.detail.value!)}
+                  onIonInput={e => setObservations(e.detail.value!)}
                   autoGrow={true}
                   rows={6}
                 />
