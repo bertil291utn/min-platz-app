@@ -222,11 +222,8 @@ const MonitoreoPlacas = () => {
             <div style={{ margin: '1.5rem 0' }}>
               <IonLabel>Seleccione número de placa</IonLabel>
             </div>
-            <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
-              {Array.from({
-                length:
-                  selectedBloque?.placasDetails?.filter(p => p.type === selectedType).length || 0
-              }).map((_, index) => {
+            <div>
+              {selectedBloque?.placasDetails?.filter(p => p.type == selectedType).map((_, index) => {
                 const placaNumber = index + 1;
                 const placaDescription = selectedBloque?.placasDetails?.find(
                   p => p.type === selectedType && p.id === `${selectedType}-${placaNumber}`
@@ -239,16 +236,12 @@ const MonitoreoPlacas = () => {
                     color={selectedPlacaNumber === placaNumber ? 'primary' : ''}
                   >
                     <IonCardHeader>
-                      <IonTitle style={{
-                        color: selectedPlacaNumber === placaNumber ? 'white' : ''
-                      }}>
+                      <IonTitle>
                         Placa {selectedType === 'interno' ? 'Interna' : 'Externa'} #{placaNumber}
                       </IonTitle>
                     </IonCardHeader>
                     {placaDescription && (
-                      <IonCardContent style={{
-                        color: selectedPlacaNumber === placaNumber ? 'white' : ''
-                      }}>
+                      <IonCardContent>
                         {placaDescription}
                       </IonCardContent>
                     )}
