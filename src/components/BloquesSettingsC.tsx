@@ -1,7 +1,7 @@
-import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonGrid, IonIcon, IonItem, IonLabel, IonRow, IonToast } from '@ionic/react';
+import { IonActionSheet, IonAlert, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonIcon, IonItem, IonLabel } from '@ionic/react';
 import { useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
-import { Bloque } from '../interfaces/Bloque';
+import { Bloque, PlacaDetails } from '../interfaces/Bloque';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { INITIAL_BLOQUE, editBloque, removeBloque, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
@@ -17,19 +17,28 @@ const BloquesSettingsC = () => {
   const [isDeleteToastOpen, setIsDeleteToastOpen] = useState(false);
 
   const handleActions = (bloque: Bloque) => () => {
-    setEditingBloque(
-      {
-        ...bloque,
-        numPlacasExternas: bloque.numPlacasExternas || NUMERO_CAMAS_MIN,
-        numPlacasInternas: bloque.numPlacasInternas || NUMERO_CAMAS_MIN
-      });
+    // Include placasDetails when setting editing bloque
+    setEditingBloque({
+      ...bloque,
+      placasDetails: bloque.placasDetails || []
+    });
     setIsASheetOpen(true);
   };
 
-  // coming from modal
   const handleEdit = () => {
     if (editingBloque.id) {
-      dispatch(editBloque({ id: editingBloque.id, updatedBloque: editingBloque }));
+      // Ensure placasDetails is included in the update
+      const updatedBloque: Bloque = {
+        ...editingBloque,
+        placasDetails: editingBloque.placasDetails || []
+      };
+
+
+
+      dispatch(editBloque({ 
+        id: editingBloque.id, 
+        updatedBloque 
+      }));
     }
     setIsEditModalOpen(false);
   };
@@ -41,9 +50,13 @@ const BloquesSettingsC = () => {
     }
   };
 
+  const countPlacasByType = (placas: PlacaDetails[] = [], type: 'interno' | 'externo'): number => {
+    return placas.filter(placa => placa.type === type).length;
+  };
+
   return (
     <div>
-      {activeBloques.map((bloque) =>
+      {activeBloques.map((bloque) => (
         <IonCard key={bloque.id} onClick={handleActions(bloque)}>
           <IonCardHeader>
             <IonCardTitle>{bloque.name}</IonCardTitle>
@@ -79,7 +92,7 @@ const BloquesSettingsC = () => {
               <IonIcon icon={layersOutline} slot="start" color="secondary" />
               <IonLabel>
                 <h3>Placas externas</h3>
-                <p>{bloque.numPlacasExternas || 0}</p>
+                <p>{countPlacasByType(bloque.placasDetails, 'externo')}</p>
               </IonLabel>
             </IonItem>
 
@@ -87,16 +100,13 @@ const BloquesSettingsC = () => {
               <IonIcon icon={layersOutline} slot="start" color="secondary" />
               <IonLabel>
                 <h3>Placas internas</h3>
-                <p>{bloque.numPlacasInternas || 0}</p>
+                <p>{countPlacasByType(bloque.placasDetails, 'interno')}</p>
               </IonLabel>
             </IonItem>
           </IonCardContent>
         </IonCard>
+      ))}
 
-      )}
-
-
-      {/* modal for edit */}
       <AddBloquesSettingsModalC
         isOpenModal={isEditModalOpen}
         setIsOpenModal={setIsEditModalOpen}
@@ -125,7 +135,7 @@ const BloquesSettingsC = () => {
           },
         ]}
         onDidDismiss={() => setIsASheetOpen(false)}
-      ></IonActionSheet>
+      />
 
       <IonAlert
         subHeader='Esta seguro de eliminar este bloque?'
@@ -140,7 +150,7 @@ const BloquesSettingsC = () => {
           },
         ]}
         onDidDismiss={() => setIsDeleteToastOpen(false)}
-      ></IonAlert>
+      />
     </div>
   );
 };

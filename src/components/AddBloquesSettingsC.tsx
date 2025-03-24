@@ -39,7 +39,7 @@ interface AddBloquesSettingsModalCProps {
 type SettingsSegment = 'bloque' | 'placas';
 
 interface PlacaDetails {
-  id: number;
+  id: string;
   description: string;
   type: 'interno' | 'externo';
 }
@@ -56,6 +56,8 @@ const AddBloquesSettingsModalC = (
 ) => {
   const [activeSegment, setActiveSegment] = useState<SettingsSegment>('bloque');
   const [placasDetails, setPlacasDetails] = useState<PlacaDetails[]>([]);
+  const [internoCount, setInternoCount] = useState(1);
+  const [externoCount, setExternoCount] = useState(1);
 
   useEffect(() => {
     setBloqueForm(prev => ({
@@ -63,7 +65,23 @@ const AddBloquesSettingsModalC = (
       numCuadrosPerCama: bloqueForm.numCuadrosPerCama || NUMERO_CUADROS_PER_CAMAS_MIN,
       numCuadrantes: bloqueForm.numCuadrantes || 1
     }));
-  }, [isOpenModal])
+    
+    // Initialize placasDetails from bloqueForm
+    if ((bloqueForm.placasDetails ?? []).length > 0) {
+      setPlacasDetails(bloqueForm.placasDetails!);
+      
+      // Set counters based on existing placas
+      const internos = (bloqueForm.placasDetails ?? []).filter(p => p.type === 'interno');
+      const externos = (bloqueForm.placasDetails ?? []).filter(p => p.type === 'externo');
+      
+      setInternoCount(internos.length + 1);
+      setExternoCount(externos.length + 1);
+    } else {
+      setPlacasDetails([]);
+      setInternoCount(1);
+      setExternoCount(1);
+    }
+  }, [isOpenModal, bloqueForm.placasDetails]);
 
   const handleIncrement = (nameElem: string) => () => {
     setBloqueForm(prev => ({
@@ -95,24 +113,60 @@ const AddBloquesSettingsModalC = (
   };
 
   const handleAddPlaca = (type: 'interno' | 'externo') => {
+    const count = type === 'interno' ? internoCount : externoCount;
+    
     const newPlaca: PlacaDetails = {
-      id: placasDetails.length + 1,
+      id: `${type}-${count}`,
       description: '',
       type
     };
-    setPlacasDetails([...placasDetails, newPlaca]);
+  
+    if (type === 'interno') {
+      setInternoCount(prev => prev + 1);
+    } else {
+      setExternoCount(prev => prev + 1);
+    }
+  
+    const updatedPlacas = [...placasDetails, newPlaca];
+    setPlacasDetails(updatedPlacas);
+    
+    // Update bloqueForm with new placas
+    setBloqueForm(prev => ({
+      ...prev,
+      placasDetails: updatedPlacas
+    }));
   };
 
-  const handleUpdatePlacaDescription = (id: number, description: string) => {
-    setPlacasDetails(prev =>
-      prev.map(placa =>
-        placa.id === id ? { ...placa, description } : placa
-      )
+  const handleUpdatePlacaDescription = (id: string, description: string) => {
+    const updatedPlacas = placasDetails.map(placa =>
+      placa.id === id ? { ...placa, description } : placa
     );
+    
+    setPlacasDetails(updatedPlacas);
+    setBloqueForm(prev => ({
+      ...prev,
+      placasDetails: updatedPlacas
+    }));
   };
 
-  const handleRemovePlaca = (id: number) => {
-    setPlacasDetails(prev => prev.filter(placa => placa.id !== id));
+  const handleRemovePlaca = (id: string, type: 'interno' | 'externo') => {
+    const updatedPlacas = placasDetails.filter(placa => !(placa.id === id && placa.type === type));
+    
+    setPlacasDetails(updatedPlacas);
+    setBloqueForm(prev => ({
+      ...prev,
+      placasDetails: updatedPlacas
+    }));
+  
+    // Reset counters when all placas of a type are removed
+    const remainingPlacas = updatedPlacas.filter(placa => placa.type === type);
+    if (remainingPlacas.length === 0) {
+      if (type === 'interno') {
+        setInternoCount(1);
+      } else {
+        setExternoCount(1);
+      }
+    }
   };
 
   const renderBloqueSettings = () => (
@@ -178,7 +232,7 @@ const AddBloquesSettingsModalC = (
 
   const renderPlacasSettings = () => (
     <>
-      <div>
+      <div style={{ position: 'sticky', top: 0, backgroundColor: 'white', zIndex: 1000, padding: '1rem', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
         <IonButton
           fill='outline'
           expand="block"
@@ -199,13 +253,13 @@ const AddBloquesSettingsModalC = (
         <IonCard key={placa.id}>
           <IonCardHeader>
             <IonCardTitle>
-              Placa {placa.type === 'interno' ? 'Interna' : 'Externa'} #{placa.id}
+              Placa {placa.id}
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
             <IonTextarea
               fill='outline'
-              label="Descripción de la placa"
+              label="Localización de la placa"
               labelPlacement="floating"
               value={placa.description}
               onIonChange={(e) => handleUpdatePlacaDescription(placa.id, e.detail.value!)}
@@ -213,7 +267,7 @@ const AddBloquesSettingsModalC = (
             <IonButton
               fill="clear"
               color="danger"
-              onClick={() => handleRemovePlaca(placa.id)}
+              onClick={() => handleRemovePlaca(placa.id, placa.type)}
             >
               <IonIcon slot="icon-only" icon={removeCircle} />
               Eliminar

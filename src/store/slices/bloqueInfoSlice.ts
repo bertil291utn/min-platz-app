@@ -10,8 +10,7 @@ export const INITIAL_BLOQUE: Bloque = {
   numCamas: 0,
   numCuadrantes: 0,
   numCuadrosPerCama: 0,
-  numPlacasInternas: 0,
-  numPlacasExternas: 0,
+  placasDetails: [], // Add new field
   archived: false
 };
 
@@ -66,6 +65,7 @@ const bloqueInfoSlice = createSlice({
       const newBloque: Bloque = {
         ...action.payload,
         id: state.bloques.length + 1,
+        placasDetails: action.payload.placasDetails || [], // Include placasDetails in new bloque
       };
       state.bloques.push(newBloque);
       localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(state.bloques));
@@ -86,7 +86,14 @@ const bloqueInfoSlice = createSlice({
     },
     editBloque: (state, action: PayloadAction<{ id: number; updatedBloque: Bloque }>) => {
       state.bloques = state.bloques.map(bloque =>
-        bloque.id === action.payload.id ? { ...action.payload.updatedBloque, id: action.payload.id } : bloque
+        bloque.id === action.payload.id 
+          ? { 
+              ...action.payload.updatedBloque,
+              id: action.payload.id,
+              // If placasDetails is provided in updatedBloque, use it; otherwise keep existing or use empty array
+              placasDetails: action.payload.updatedBloque.placasDetails || bloque.placasDetails || []
+            } 
+          : bloque
       );
       localStorage.setItem(BLOQUE_KEY_LOCAL_STORAGE, JSON.stringify(state.bloques));
     }

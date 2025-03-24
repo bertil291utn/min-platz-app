@@ -1,5 +1,5 @@
 export interface PlacaDetails {
-  id: number;
+  id: string;
   description: string;
   type: 'interno' | 'externo';
 }
