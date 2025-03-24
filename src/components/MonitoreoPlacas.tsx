@@ -77,19 +77,19 @@ const MonitoreoPlacas = () => {
 
   const handleSelectPlaca = (placaNumber: number) => {
     dispatch(setSelectedPlacaNumber(placaNumber));
-    
+
     // Check existing data
     const existingData = localStorage.getItem(STORE_PLACAS_MONITORED);
-    
+
     if (!existingData) {
-      dispatch(setActiveSegment('diseases')); 
+      dispatch(setActiveSegment('diseases'));
       return;
     }
 
     const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
     const parsedData: BloqueMonPlaca[] = JSON.parse(existingData);
-    
-    const bloqueIndex = parsedData?.findIndex(b => 
+
+    const bloqueIndex = parsedData?.findIndex(b =>
       b.id === selectedBloque?.id && b.weekNumber === weekNumber
     );
 
@@ -99,7 +99,7 @@ const MonitoreoPlacas = () => {
     }
 
     const bloque = parsedData[bloqueIndex];
-    const placa = bloque.placas.find(p => 
+    const placa = bloque.placas.find(p =>
       p.id === placaNumber && p.type === selectedType
     );
 
@@ -110,7 +110,7 @@ const MonitoreoPlacas = () => {
 
     // If placa exists, show alert and set existing data
     setDisplayAlert(true);
-    
+
     // Set existing data for editing
     if (placa.diseases.length > 0) {
       dispatch(setSelectedDiseases(placa.diseases));
@@ -222,19 +222,40 @@ const MonitoreoPlacas = () => {
             <div style={{ margin: '1.5rem 0' }}>
               <IonLabel>Seleccione número de placa</IonLabel>
             </div>
-            {Array.from({
-              length: selectedType === 'interno' ?
-                selectedBloque?.numPlacasInternas || 0 :
-                selectedBloque?.numPlacasExternas || 0
-            }).map((_, index) => (
-              <IonButton
-                key={index}
-                fill={selectedPlacaNumber === index + 1 ? 'solid' : 'outline'}
-                onClick={() => handleSelectPlaca(index + 1)}
-              >
-                Placa {index + 1}
-              </IonButton>
-            ))}
+            <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>
+              {Array.from({
+                length:
+                  selectedBloque?.placasDetails?.filter(p => p.type === selectedType).length || 0
+              }).map((_, index) => {
+                const placaNumber = index + 1;
+                const placaDescription = selectedBloque?.placasDetails?.find(
+                  p => p.type === selectedType && p.id === `${selectedType}-${placaNumber}`
+                )?.description;
+
+                return (
+                  <IonCard
+                    key={index}
+                    onClick={() => handleSelectPlaca(placaNumber)}
+                    color={selectedPlacaNumber === placaNumber ? 'primary' : ''}
+                  >
+                    <IonCardHeader>
+                      <IonTitle style={{
+                        color: selectedPlacaNumber === placaNumber ? 'white' : ''
+                      }}>
+                        Placa {selectedType === 'interno' ? 'Interna' : 'Externa'} #{placaNumber}
+                      </IonTitle>
+                    </IonCardHeader>
+                    {placaDescription && (
+                      <IonCardContent style={{
+                        color: selectedPlacaNumber === placaNumber ? 'white' : ''
+                      }}>
+                        {placaDescription}
+                      </IonCardContent>
+                    )}
+                  </IonCard>
+                );
+              })}
+            </div>
 
             <IonAlert
               header={`Esta placa #${selectedPlacaNumber} ya fue monitoreada`}
