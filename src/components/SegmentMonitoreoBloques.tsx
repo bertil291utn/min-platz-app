@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { selectActiveBloques } from '../store/slices/bloqueInfoSlice';
 import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setSelectedCama, setSelectedBloque, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
 import { setActiveSegment as setActiveSegmentPlacas, setSelectedBloque as setSelectedBloquePlacas } from '../store/slices/placasMonitoringSlice';
-
+import { setActiveSegment as setActiveSegmentMallas } from '../store/slices/mallasMonitoringSlice';
 const SegmentMonitoreoBloques = () => {
 
   const activeBloques = useAppSelector(selectActiveBloques);
@@ -20,6 +20,7 @@ const SegmentMonitoreoBloques = () => {
     dispatch(setActiveSegment('camas'));
     dispatch(setActiveSegmentPlacas('type'))
     dispatch(setSelectedBloquePlacas(bloque));
+    dispatch(setActiveSegmentMallas('variety'));
   }
 
   return (

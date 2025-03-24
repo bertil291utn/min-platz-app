@@ -6,6 +6,7 @@ import viewMonitoredReducer from './slices/viewMonitoredSlice';
 import userReducer from './slices/userSlice';
 import placasMonitoringReducer from './slices/placasMonitoringSlice';
 import viewPlacasReducer from './slices/viewPlacasSlice';
+import mallasMonitoringReducer from './slices/mallasMonitoringSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     viewMonitored: viewMonitoredReducer,
     userLogged: userReducer,
     placasMonitoring: placasMonitoringReducer,
-    viewPlacas: viewPlacasReducer
+    viewPlacas: viewPlacasReducer,
+    mallasMonitoring: mallasMonitoringReducer
   }
 });
 

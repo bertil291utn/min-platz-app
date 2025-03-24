@@ -3,17 +3,19 @@ import { DISEASES } from '../helpers/diseases';
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonItemDivider } from '@ionic/react';
 import { Disease } from '../interfaces/Diseases';
 import DiseaseImagesModal from './DiseaseImagesModal';
-import { arrowForward } from 'ionicons/icons';
+import { arrowForward, arrowBack } from 'ionicons/icons';
 import ReturnButtonC from './ReturnButtonC';
 import LabelMonitoring from './LabelMonitoring';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setActiveSegment, setSelectedDiseases } from '../store/slices/monitoringBloqueSlice';
 import { ReturnButtonPlacas } from './MonitoreoPlacas';
 import { setActiveSegment as setActiveSegmentPlacas, setSelectedDiseases as setSelectedDiseasesPlacas } from '../store/slices/placasMonitoringSlice';
+import { setActiveSegment as setActiveSegmentMallas, setSelectedDiseases as setSelectedDiseasesMallas } from '../store/slices/mallasMonitoringSlice';
+import { MallasSegment } from '../interfaces/MallasMonitoring';
 
 interface SegmentMonitoreoDiseaseProps {
   onDiseaseSelect?: (disease: Disease) => void;
-  mode?: 'camas' | 'placas';
+  mode?: 'camas' | 'placas' | 'mallas';
 }
 
 const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
@@ -24,10 +26,28 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
   const dispatch = useAppDispatch();
   const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
   const selectedDiseasesPlacas = useAppSelector(state => state.placasMonitoring.selectedDiseases);
+  const selectedDiseasesMallas = useAppSelector(state => state.mallasMonitoring.selectedDiseases);
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const user = useAppSelector((state) => state.userLogged.user);
 
   const handleSelectDisease = (disease: Disease) => () => {
+    if (mode === 'mallas') {
+        const setDisease = () => {
+        const prev = [...selectedDiseasesMallas];
+        const isSelected = prev.some(d => d.id === disease.id);
+        if (isSelected) {
+          return prev.filter(d => d.id !== disease.id);
+        } else {
+          return [...prev, { ...disease, count: 1, status: 'vivo' as const }];
+        }
+      };
+      dispatch(setSelectedDiseasesMallas(setDisease()));
+      if (onDiseaseSelect) {
+        onDiseaseSelect(disease);
+      }
+      return;
+    }
+
     if (mode === 'placas') {
       const setDisease = () => {
         const prev = [...selectedDiseasesPlacas];
@@ -39,7 +59,9 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
         }
       };
       dispatch(setSelectedDiseasesPlacas(setDisease()));
-      // onDiseaseSelect(disease);
+      if (onDiseaseSelect) {
+        onDiseaseSelect(disease);
+      }
       return;
     }
 
@@ -75,17 +97,17 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
         zIndex: 1000,
         borderTop: '1px solid #ccc'
       }}>
-        {mode === 'camas' && <ReturnButtonC
-          segmentReturn={'cuadros'}
-        />}
-
+        {mode === 'camas' && <ReturnButtonC segmentReturn={'cuadros'} />}
         {mode === 'placas' && <ReturnButtonPlacas segmentReturn="number" />}
+        {mode === 'mallas' && <ReturnButtonMallas segmentReturn="variety" />}
 
-        {(selectedDiseases.length > 0 || selectedDiseasesPlacas.length > 0) &&
+        {((mode === 'camas' && selectedDiseases.length > 0) ||
+          (mode === 'placas' && selectedDiseasesPlacas.length > 0) ||
+          (mode === 'mallas' && selectedDiseasesMallas.length > 0)) &&
           <IonButton fill="clear" onClick={() => {
-            mode === 'camas' && dispatch(setActiveSegment('options'))
-            mode === 'placas' && dispatch(setActiveSegmentPlacas('details'))
-
+            if (mode === 'camas') dispatch(setActiveSegment('options'));
+            if (mode === 'placas') dispatch(setActiveSegmentPlacas('details'));
+            if (mode === 'mallas') dispatch(setActiveSegmentMallas('details'));
           }}>
             <IonIcon slot="end" icon={arrowForward}></IonIcon>
             avanzar
@@ -103,7 +125,11 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
               <DiseaseCard
                 disease={disease}
                 handleSelectDisease={handleSelectDisease}
-                selectedDiseases={mode === 'camas' ? selectedDiseases : selectedDiseasesPlacas}
+                selectedDiseases={
+                  mode === 'camas' ? selectedDiseases :
+                    mode === 'placas' ? selectedDiseasesPlacas :
+                      selectedDiseasesMallas
+                }
               />
             </div>
           ) : (
@@ -112,7 +138,11 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
                 <DiseaseCard
                   disease={disease}
                   handleSelectDisease={handleSelectDisease}
-                  selectedDiseases={mode === 'camas' ? selectedDiseases : selectedDiseasesPlacas}
+                  selectedDiseases={
+                    mode === 'camas' ? selectedDiseases :
+                      mode === 'placas' ? selectedDiseasesPlacas :
+                        selectedDiseasesMallas
+                  }
                 />
                 <IonButton fill="clear" expand='block'
                   onClick={handleViewDisease(disease)}
@@ -157,3 +187,18 @@ const DiseaseCard = ({ disease, handleSelectDisease, selectedDiseases }:
     </IonCard>
   );
 }
+
+// Add ReturnButtonMallas component
+export interface ReturnButtonMallasProps {
+  segmentReturn: MallasSegment;
+}
+
+export const ReturnButtonMallas: React.FC<ReturnButtonMallasProps> = ({ segmentReturn }) => {
+  const dispatch = useAppDispatch();
+  return (
+    <IonButton fill="clear" onClick={() => dispatch(setActiveSegmentMallas(segmentReturn))}>
+      <IonIcon slot="start" icon={arrowBack}></IonIcon>
+      regresar
+    </IonButton>
+  );
+};
