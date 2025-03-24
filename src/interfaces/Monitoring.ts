@@ -1,6 +1,6 @@
 import { DiseaseMain } from './Diseases';
 
-export interface DiseaseMonitored  extends DiseaseMain {
+export interface DiseaseMonitored extends DiseaseMain {
   tercio?: number; // Optional for acaros
 }
 
@@ -27,4 +27,4 @@ export interface BloqueMonitored {
 }
 
 
-export type MonitoringModal = 'monitorear-camas' | 'view' | 'monitorear-placas' | 'monitorear-mallas';
+export type MonitoringModal = 'monitorear-camas' | 'monitorear-placas' | 'monitorear-mallas' | 'view-camas' | 'view-placas' | 'view-mallas';

@@ -36,6 +36,7 @@ import MonitoreoPlacas from '../components/MonitoreoPlacas';
 import MonitoreoMallas from '../components/MonitoreoMallas';
 import { MonitoringModal } from '../interfaces/Monitoring';
 import { CURRENT_DATE_UTC5, getWeekNumber } from '../helpers/regularHelper';
+import ViewMonitoredPlacas from '../components/ViewMonitoredPlacas';
 
 
 type SegmentType = 'monitorear' | 'historial';
@@ -70,7 +71,7 @@ const TabMonitoreo: React.FC = () => {
   };
 
   const IsThereActiveBloques = activeBloques.length > 0;
-  
+
   useEffect(() => {
     dispatch(setSelectedWeek(undefined));
   }, [IsOpenModal])
@@ -78,8 +79,11 @@ const TabMonitoreo: React.FC = () => {
 
   useEffect(() => {
     switch (currentModal) {
-      case 'view':
-        setHeaderText('Ver Monitoreo');
+      case 'view-camas':
+        setHeaderText('Ver Monitoreo por Camas');
+        break;
+      case 'view-placas':
+        setHeaderText('Ver Monitoreo por placas');
         break;
       case 'monitorear-camas':
         setHeaderText('Monitoreo de Camas');
@@ -123,15 +127,27 @@ const TabMonitoreo: React.FC = () => {
               )}
 
               {activeSegment === 'historial' && (
-                <IonCard onClick={handleModal('view')}>
-                  <IonCardHeader>
-                    <IonIcon icon={eyeOutline} size="large" color="secondary" />
-                    <IonCardTitle>Ver Monitoreo</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    Ver historial de monitoreos realizados anteriormente
-                  </IonCardContent>
-                </IonCard>
+                <>
+                  {/* camas */}
+                  <IonCard onClick={handleModal('view-camas')}>
+                    <IonCardHeader>
+                      <IonCardTitle>Monitoreo por camas</IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      Ver historial de monitoreos realizados anteriormente
+                    </IonCardContent>
+                  </IonCard>
+
+                  {/* placas */}
+                  <IonCard onClick={handleModal('view-placas')}>
+                    <IonCardHeader>
+                      <IonCardTitle>Monitoreo por placas</IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      Ver historial de placas
+                    </IonCardContent>
+                  </IonCard>
+                </>
               )}
             </div>
           </>
@@ -148,7 +164,8 @@ const TabMonitoreo: React.FC = () => {
           headerText={headerText}
         >
           <>
-            {currentModal === 'view' && <ViewMonitoredC />}
+            {currentModal === 'view-camas' && <ViewMonitoredC />}
+            {currentModal === 'view-placas' && <ViewMonitoredPlacas />}
             {currentModal === 'monitorear-camas' && <MonitoreoC />}
             {currentModal === 'monitorear-placas' && <MonitoreoPlacas />}
             {currentModal === 'monitorear-mallas' && <MonitoreoMallas />}
