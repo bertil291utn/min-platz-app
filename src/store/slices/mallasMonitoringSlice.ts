@@ -5,6 +5,7 @@ import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../../helpers/regularHel
 const STORE_MALLAS_MONITORED = 'mallas-monitored';
 
 interface MallasMonitoringState {
+  selectedWeek: number | null;
   activeSegment: MallasSegment;
   selectedVariety: string | null;
   selectedDiseases: DiseaseStatus[];
@@ -16,6 +17,7 @@ interface MallasMonitoringState {
 }
 
 const initialState: MallasMonitoringState = {
+  selectedWeek: null,
   activeSegment: 'bloques',
   selectedVariety: null,
   selectedDiseases: [],
@@ -120,10 +122,14 @@ const mallasMonitoringSlice = createSlice({
     setObservations: (state, action: PayloadAction<string>) => {
       state.observations = action.payload;
     },
+    setSelectedWeek: (state, action: PayloadAction<number | null>) => {
+      state.selectedWeek = action.payload;
+    },
     resetForm: (state) => {
       state.selectedDiseases = [];
       state.observations = '';
       state.selectedVariety = null;
+      state.selectedWeek = null;
     }
   },
   extraReducers: (builder) => {
@@ -153,7 +159,8 @@ export const {
   updateDiseaseStatus,
   updateDiseaseCount,
   setObservations,
-  resetForm
+  resetForm,
+  setSelectedWeek
 } = mallasMonitoringSlice.actions;
 
 export default mallasMonitoringSlice.reducer;

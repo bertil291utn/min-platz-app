@@ -12,13 +12,16 @@ import {
   updateDiseaseCount,
   setObservations,
   resetForm,
-  updateMallaMonitoring
+  updateMallaMonitoring,
+  setSelectedWeek
 } from '../store/slices/mallasMonitoringSlice';
 import { Disease } from '../interfaces/Diseases';
 import { addCircle, removeCircle } from 'ionicons/icons';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import { ROSE_VARIETIES } from '../interfaces/RoseVariety';
+import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
+import { useState } from 'react';
 
 const MonitoreoMallas = () => {
   const dispatch = useAppDispatch();
@@ -28,17 +31,16 @@ const MonitoreoMallas = () => {
     selectedDiseases,
     observations,
     loading,
-    isToastSavedOpen
+    isToastSavedOpen,
+    selectedWeek
   } = useAppSelector(state => state.mallasMonitoring);
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
 
-  const handleDiseaseSelect = (disease: Disease) => {
-    // dispatch(setSelectedDiseases([
-    //   ...selectedDiseases,
-    //   { ...disease, status: 'vivo', count: 0 }
-    // ]));
-    // dispatch(setActiveSegment('details'));
-  };
+  const [showNumSemana, setShowNumSemana] = useState<boolean>(false);
+
+  const handleWeekSelect = (value: number) => {
+    dispatch(setSelectedWeek(value));
+  }
 
   const handleSave = () => {
     if (!selectedBloque?.id || !selectedVariety || selectedDiseases.length === 0) return;
@@ -47,7 +49,7 @@ const MonitoreoMallas = () => {
       bloqueId: selectedBloque.id,
       variety: selectedVariety,
       diseases: selectedDiseases,
-      observations
+      observations,
     }));
 
     dispatch(resetForm());
@@ -62,6 +64,31 @@ const MonitoreoMallas = () => {
       case 'variety':
         return (
           <div className="ion-padding">
+
+            <IonButton
+              fill="outline"
+              expand="block"
+              onClick={() => setShowNumSemana(!showNumSemana)}
+            >
+              {showNumSemana ? 'Ocultar semana' : 'mostrar semana'}
+            </IonButton>
+            {showNumSemana && (
+              <div style={{ margin: '2rem 0' }}>
+                <IonSelect
+                  label="Seleccione semana"
+                  labelPlacement="floating"
+                  fill="outline"
+                  onIonChange={(e) => handleWeekSelect(e.detail.value)}
+                  value={selectedWeek || CURRENT_WEEK_NUMBER}
+                >
+                  {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, index) => (
+                    <IonSelectOption key={index + 1} value={index + 1}>
+                      Semana {index + 1}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </div>
+            )}
             <IonCard>
               <IonCardHeader>
                 <IonCardTitle>Seleccione Variedad</IonCardTitle>
@@ -91,7 +118,6 @@ const MonitoreoMallas = () => {
       case 'diseases':
         return (
           <SegmentMonitoreoDiseases
-            onDiseaseSelect={handleDiseaseSelect}
             mode="mallas"
           />
         );
@@ -125,7 +151,7 @@ const MonitoreoMallas = () => {
                       Muerto
                     </IonButton>
 
-                    <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin:'1.5rem 0' }}>
+                    <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.5rem 0' }}>
                       <IonButton onClick={() => dispatch(updateDiseaseCount({
                         diseaseId: disease.id,
                         count: Math.max(0, disease.count - 1)
@@ -174,6 +200,12 @@ const MonitoreoMallas = () => {
         <IonCard>
           <IonCardContent>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+
+              <IonChip color="secondary" onClick={() => {
+                dispatch(setActiveSegment('bloques'));
+              }}>
+                <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
+              </IonChip>
               <IonChip
                 color="secondary"
                 onClick={() => dispatch(setActiveSegment('bloques'))}
