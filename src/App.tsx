@@ -41,7 +41,6 @@ import './theme/variables.css';
 import './theme/tabs.css';
 import LoginPages from './pages/LoginPages';
 
-setupIonicReact();
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
@@ -95,7 +94,9 @@ const AppContent: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <AppRoutes />
+        <IonRouterOutlet animated={false}>
+          <AppRoutes />
+        </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
   );

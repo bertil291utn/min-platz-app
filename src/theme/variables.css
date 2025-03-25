@@ -1,2 +1,30 @@
+/* Add these rules at the top of the file */
+.ion-page {
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+
+.ion-page-invisible {
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
+}
+
+/* Add this at the beginning of the file */
+:root {
+  --ion-safe-area-top: env(safe-area-inset-top);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+/* Force page visibility in production */
+ion-app {
+  background-color: var(--ion-background-color);
+}
+
+ion-content {
+  --background: var(--ion-background-color);
+}
+
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */

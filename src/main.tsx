@@ -9,6 +9,15 @@ import { USER_AUTH, USER_SET } from './helpers/AuthConst';
 import { setUser } from './store/slices/userSlice';
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 import { registerServiceWorker } from './utils/service-worker-registration';
+import { setupIonicReact } from '@ionic/react';
+import './theme/variables.css';
+
+setupIonicReact({
+  mode: 'md',
+  swipeBackEnabled: false,
+  hardwareBackButton: true,
+  animated: false
+});
 
 // Initialize Redux store with data from localStorage
 store.dispatch(checkAuthStatus());

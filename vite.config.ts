@@ -5,36 +5,30 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
-    legacy(),
+    legacy({
+      targets: ['defaults', 'not IE 11']
+    }),
     VitePWA({
       registerType: 'autoUpdate',
-      strategies: 'generateSW',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}'],
+        navigateFallback: '/index.html',
+        navigateFallbackAllowlist: [/^(?!\/__).*/],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.your-backend\.com\/.*$/,
+            urlPattern: /^https:\/\/api\./i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
               expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              }
-            }
-          },
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images-cache',
-              expiration: {
-                maxEntries: 60,
-                maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 1 week
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
               }
             }
           }
@@ -101,9 +95,35 @@ export default defineConfig({
       }
     })
   ],
+  base: mode === 'production' ? './' : '/',
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        inlineDynamicImports: true,
+      }
+    },
+    target: 'es2015',
+    minify: 'terser',
+    cssCodeSplit: true,
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
+  },
+  optimizeDeps: {
+    include: ['@ionic/react', '@ionic/react-router'],
+    esbuildOptions: {
+      target: 'es2015'
+    }
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(mode),
+    __DEV__: mode !== 'production'
+  },
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
   }
-})
+}));
