@@ -32,3 +32,4 @@ yarn-error.log*
 .cursor
 .vscode
 .vercel
+vercel.json
