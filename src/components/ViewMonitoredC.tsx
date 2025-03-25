@@ -35,6 +35,7 @@ import {
 } from '../store/slices/viewMonitoredSlice';
 import { SegmentViewBloque } from '../interfaces/Bloque';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
+import { formatDate } from '../helpers/viewHelper';
 
 const ViewMonitoredC: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -69,17 +70,7 @@ const ViewMonitoredC: React.FC = () => {
     return matchesSearch && matchesDate;
   });
 
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  
 
   const filteredBloquesByPremium = user?.premium
     ? bloquesMonitored

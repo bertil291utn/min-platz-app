@@ -7,6 +7,7 @@ import userReducer from './slices/userSlice';
 import placasMonitoringReducer from './slices/placasMonitoringSlice';
 import viewPlacasReducer from './slices/viewPlacasSlice';
 import mallasMonitoringReducer from './slices/mallasMonitoringSlice';
+import viewMallasReducer from './slices/viewMallasSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
     userLogged: userReducer,
     placasMonitoring: placasMonitoringReducer,
     viewPlacas: viewPlacasReducer,
-    mallasMonitoring: mallasMonitoringReducer
+    mallasMonitoring: mallasMonitoringReducer,
+    viewMallas: viewMallasReducer
   }
 });
 

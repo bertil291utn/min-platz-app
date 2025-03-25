@@ -21,7 +21,6 @@ import { logout } from '../store/slices/authSlice';
 import { cleanUser } from '../store/slices/userSlice';
 
 const Tabs: React.FC = () => {
-  // const { isAuthenticated, logout } = useAuth();
   const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
   const dispatch = useAppDispatch();
 
@@ -69,10 +68,6 @@ const Tabs: React.FC = () => {
             <IonLabel>Monitoreo</IonLabel>
           </IonTabButton>
 
-          {/* <IonTabButton tab="library" href="/tabs/library">
-            <IonIcon icon={library} />
-            <IonLabel>Library</IonLabel>
-          </IonTabButton> */}
 
           <IonTabButton tab="settings" href="/tabs/settings">
             <IonIcon size='large' icon={settings} />

@@ -37,6 +37,7 @@ import MonitoreoMallas from '../components/MonitoreoMallas';
 import { MonitoringModal } from '../interfaces/Monitoring';
 import { CURRENT_DATE_UTC5, getWeekNumber } from '../helpers/regularHelper';
 import ViewMonitoredPlacas from '../components/ViewMonitoredPlacas';
+import ViewMonitoredMallas from '../components/ViewMonitoredMallas';
 
 
 type SegmentType = 'monitorear' | 'historial';
@@ -147,6 +148,16 @@ const TabMonitoreo: React.FC = () => {
                       Ver historial de placas
                     </IonCardContent>
                   </IonCard>
+
+                  {/* mallas */}
+                  <IonCard onClick={handleModal('view-mallas')}>
+                    <IonCardHeader>
+                      <IonCardTitle>Monitoreo por Mallas</IonCardTitle>
+                    </IonCardHeader>
+                    <IonCardContent>
+                      Ver historial de mallas
+                    </IonCardContent>
+                  </IonCard>
                 </>
               )}
             </div>
@@ -166,6 +177,7 @@ const TabMonitoreo: React.FC = () => {
           <>
             {currentModal === 'view-camas' && <ViewMonitoredC />}
             {currentModal === 'view-placas' && <ViewMonitoredPlacas />}
+            {currentModal === 'view-mallas' && <ViewMonitoredMallas />}
             {currentModal === 'monitorear-camas' && <MonitoreoC />}
             {currentModal === 'monitorear-placas' && <MonitoreoPlacas />}
             {currentModal === 'monitorear-mallas' && <MonitoreoMallas />}

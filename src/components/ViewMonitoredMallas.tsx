@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   IonList,
   IonItem,
@@ -15,36 +15,37 @@ import {
   IonItemDivider,
   IonNote
 } from '@ionic/react';
-import { layersOutline, leafOutline } from 'ionicons/icons';
+import { leafOutline, flowerOutline } from 'ionicons/icons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchPlacasMonitored } from '../store/slices/placasMonitoringSlice';
+import { fetchMallasMonitored } from '../store/slices/mallasMonitoringSlice';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
-import { PlacaMonitored, BloqueMonPlaca } from '../interfaces/PlacaMonitoring';
-import { setActiveViewSegment, setSelectedBloque, setSelectedPlaca } from '../store/slices/viewPlacasSlice';
+import { BloqueMallaMonitored, MallaMonitored } from '../interfaces/MallasMonitoring';
+import { setActiveViewSegment, setSelectedBloque, setSelectedMalla } from '../store/slices/viewMallasSlice';
+import { useEffect } from 'react';
+import { ROSE_VARIETIES } from '../interfaces/RoseVariety';
 import { formatDate } from '../helpers/viewHelper';
 
-const ViewMonitoredPlacas = () => {
+const ViewMonitoredMallas = () => {
   const dispatch = useAppDispatch();
-  const activeViewSegment = useAppSelector(state => state.viewPlacas.activeViewSegment);
-  const selectedBloque = useAppSelector(state => state.viewPlacas.selectedBloque);
-  const selectedPlaca = useAppSelector(state => state.viewPlacas.selectedPlaca);
-  const placasMonitored = useAppSelector(state => state.placasMonitoring.placasMonitored);
+  const activeViewSegment = useAppSelector(state => state.viewMallas.activeViewSegment);
+  const selectedBloque = useAppSelector(state => state.viewMallas.selectedBloque);
+  const selectedMalla = useAppSelector(state => state.viewMallas.selectedMalla);
+  const mallasMonitored = useAppSelector(state => state.mallasMonitoring.mallasMonitored);
   const user = useAppSelector((state) => state.userLogged.user);
 
   useEffect(() => {
-    dispatch(fetchPlacasMonitored());
+    dispatch(fetchMallasMonitored());
   }, [dispatch]);
 
- 
+  
 
   const filteredBloquesByPremium = user?.premium
-    ? placasMonitored
-    : placasMonitored.filter(bloque => {
+    ? mallasMonitored
+    : mallasMonitored.filter(bloque => {
       const weekDifference = CURRENT_WEEK_NUMBER - bloque.weekNumber;
       return weekDifference <= 4;
     });
 
-  // Group bloques by week
   const groupedByWeek = Object.entries(
     filteredBloquesByPremium.reduce((acc, bloque) => {
       const week = bloque.weekNumber;
@@ -53,17 +54,16 @@ const ViewMonitoredPlacas = () => {
       }
       acc[week].push(bloque);
       return acc;
-    }, {} as { [key: number]: BloqueMonPlaca[] })
+    }, {} as { [key: number]: BloqueMallaMonitored[] })
   ).sort(([weekA], [weekB]) => Number(weekB) - Number(weekA));
 
-  // Render bloques list
   const renderBloquesList = () => (
     <>
-      {placasMonitored.length === 0 ? (
+      {mallasMonitored.length === 0 ? (
         <div className="ion-padding ion-text-center">
           <IonText color="medium">
-            <h5>No hay registros de monitoreo de placas</h5>
-            <p>No se encontraron registros de monitoreo de placas.</p>
+            <h5>No hay registros de monitoreo de mallas</h5>
+            <p>No se encontraron registros de monitoreo de mallas.</p>
           </IonText>
         </div>
       ) : (
@@ -87,7 +87,7 @@ const ViewMonitoredPlacas = () => {
                     detail
                     onClick={() => {
                       dispatch(setSelectedBloque(bloque));
-                      dispatch(setActiveViewSegment('placas'));
+                      dispatch(setActiveViewSegment('mallas'));
                     }}
                   >
                     <IonLabel>
@@ -95,8 +95,8 @@ const ViewMonitoredPlacas = () => {
                       <IonNote>{formatDate(bloque.dateMonitoring)}</IonNote>
                     </IonLabel>
                     <IonChip color="secondary" slot="end">
-                      <IonIcon icon={layersOutline} />
-                      <IonLabel>{bloque.placas.length}</IonLabel>
+                      <IonIcon icon={flowerOutline} />
+                      <IonLabel>{bloque.mallas.length}</IonLabel>
                     </IonChip>
                   </IonItem>
                 ))}
@@ -108,27 +108,26 @@ const ViewMonitoredPlacas = () => {
     </>
   );
 
-  // Render placas list
-  const renderPlacasList = () => {
+  const renderMallasList = () => {
     if (!selectedBloque) return null;
 
     return (
       <IonList>
-        {selectedBloque.placas.map((placa: PlacaMonitored) => (
+        {selectedBloque.mallas.map((malla: MallaMonitored) => (
           <IonItem
-            key={`${placa.id}-${placa.type}`}
+            key={malla.id}
             button
             onClick={() => {
-              dispatch(setSelectedPlaca(placa));
+              dispatch(setSelectedMalla(malla));
               dispatch(setActiveViewSegment('details'));
             }}
           >
             <IonLabel>
-              <h2>Placa {placa.type === 'interno' ? 'Interna' : 'Externa'} #{placa.id}</h2>
-              <p>{placa.diseases.length} enfermedades detectadas</p>
+              <h2>{ROSE_VARIETIES.find(v => v.id === malla.variety)?.name}</h2>
+              <p>{malla.diseases.length} enfermedades detectadas</p>
             </IonLabel>
             <IonBadge color="secondary" slot="end">
-              {placa.diseases.reduce((total, disease) => total + disease.countDisease, 0)} plagas
+              {malla.diseases.reduce((total, disease) => total + disease.count, 0)} plagas
             </IonBadge>
           </IonItem>
         ))}
@@ -136,9 +135,8 @@ const ViewMonitoredPlacas = () => {
     );
   };
 
-  // Render placa details
-  const renderPlacaDetails = () => {
-    if (!selectedPlaca) return null;
+  const renderMallaDetails = () => {
+    if (!selectedMalla) return null;
 
     return (
       <div className="ion-padding">
@@ -149,19 +147,20 @@ const ViewMonitoredPlacas = () => {
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
-            {selectedPlaca.diseases.length === 0 ? (
+            {selectedMalla.diseases.length === 0 ? (
               <IonText color="success">
-                <p>No se detectaron enfermedades en esta placa.</p>
+                <p>No se detectaron enfermedades en esta malla.</p>
               </IonText>
             ) : (
               <IonList>
-                {selectedPlaca.diseases.map(disease => (
+                {selectedMalla.diseases.map(disease => (
                   <IonItem key={disease.id}>
                     <IonLabel>
                       <h2>{disease.name}</h2>
+                      <p>Estado: {disease.status}</p>
                     </IonLabel>
                     <IonBadge color="secondary" slot="end">
-                      {disease.countDisease} encontrados
+                      {disease.count} encontrados
                     </IonBadge>
                   </IonItem>
                 ))}
@@ -170,13 +169,13 @@ const ViewMonitoredPlacas = () => {
           </IonCardContent>
         </IonCard>
 
-        {selectedPlaca.notes && (
+        {selectedMalla.observations && (
           <IonCard>
             <IonCardHeader>
-              <IonCardTitle>Notas</IonCardTitle>
+              <IonCardTitle>Observaciones</IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
-              {selectedPlaca.notes}
+              {selectedMalla.observations}
             </IonCardContent>
           </IonCard>
         )}
@@ -196,7 +195,7 @@ const ViewMonitoredPlacas = () => {
                   onClick={() => {
                     dispatch(setActiveViewSegment('bloques'));
                     dispatch(setSelectedBloque(null));
-                    dispatch(setSelectedPlaca(null));
+                    dispatch(setSelectedMalla(null));
                   }}
                 >
                   <IonLabel>{`Semana ${selectedBloque.weekNumber}`}</IonLabel>
@@ -205,8 +204,8 @@ const ViewMonitoredPlacas = () => {
                 <IonChip
                   color="secondary"
                   onClick={() => {
-                    dispatch(setActiveViewSegment('placas'));
-                    dispatch(setSelectedPlaca(null));
+                    dispatch(setActiveViewSegment('mallas'));
+                    dispatch(setSelectedMalla(null));
                   }}
                 >
                   <IonLabel>{selectedBloque.name}</IonLabel>
@@ -214,10 +213,10 @@ const ViewMonitoredPlacas = () => {
               </>
             )}
 
-            {selectedPlaca && (
+            {selectedMalla && (
               <IonChip color="secondary">
                 <IonLabel>
-                  Placa {selectedPlaca.type === 'interno' ? 'Interna' : 'Externa'} #{selectedPlaca.id}
+                  {ROSE_VARIETIES.find(v => v.id === selectedMalla.variety)?.name}
                 </IonLabel>
               </IonChip>
             )}
@@ -227,11 +226,11 @@ const ViewMonitoredPlacas = () => {
 
       <div className="ion-padding">
         {activeViewSegment === 'bloques' && renderBloquesList()}
-        {activeViewSegment === 'placas' && renderPlacasList()}
-        {activeViewSegment === 'details' && renderPlacaDetails()}
+        {activeViewSegment === 'mallas' && renderMallasList()}
+        {activeViewSegment === 'details' && renderMallaDetails()}
       </div>
     </>
   );
 };
 
-export default ViewMonitoredPlacas;
+export default ViewMonitoredMallas;
