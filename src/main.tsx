@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 import App from './App';
 import { store } from './store';
 import { checkAuthStatus, setAuthenticated } from './store/slices/authSlice';
@@ -42,9 +43,9 @@ window.addEventListener('offline', () => {
 const container = document.getElementById('root');
 const root = createRoot(container!);
 root.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>
+  </Provider>
 );
 
 // Call this after ReactDOM.render

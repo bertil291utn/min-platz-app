@@ -31,11 +31,33 @@ export default defineConfig(({ mode }) => ({
                 statuses: [0, 200]
               }
             }
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\./i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+              }
+            }
           }
         ]
       },
       manifest: {
-        name: 'Min Plats Flowers',
+        name: 'Min Plats flowers',
         short_name: 'MinPlats',
         description: 'Monitoreo de enfermedades en flores',
         theme_color: '#ffffff',
@@ -73,7 +95,8 @@ export default defineConfig(({ mode }) => ({
           {
             src: 'assets/icon/icon-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
             src: 'assets/icon/icon-384x384.png',
@@ -84,12 +107,6 @@ export default defineConfig(({ mode }) => ({
             src: 'assets/icon/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png'
-          },
-          {
-            src: 'assets/icon/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
           }
         ]
       }

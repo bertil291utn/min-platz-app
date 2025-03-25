@@ -1,43 +1,46 @@
 const CACHE_NAME = 'min-platz-cache-v1';
 const DYNAMIC_CACHE = 'min-platz-dynamic-v1';
 
-// Include all routes and assets that need to work offline
 const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/assets/icons/*',
-  '/static/css/*',
-  '/static/js/*',
-  // Cache Rose Varieties
-  '/api/varieties',
-  // Cache Diseases data
-  '/api/diseases',
-  // Cache local storage keys
+  '/favicon.ico',
+  '/static/css/',
+  '/static/js/',
+  '/assets/',
+  // Cache all redux state
+  'bloques-data',
   'mallas-monitored',
   'placas-monitored',
   'camas-monitored',
-  'bloques-data'
+  'user-auth',
+  'user-set'
 ];
 
+// Install Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(urlsToCache))
+      .then((cache) => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
   );
 });
 
-// Enhanced fetch event handler for dynamic caching
+// Cache and return requests
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
+        // Cache hit - return response
         if (response) {
           return response;
         }
-        
-        return fetch(event.request)
-          .then((res) => {
+
+        return fetch(event.request).then(
+          (res) => {
             // Check if we received a valid response
             if (!res || res.status !== 200 || res.type !== 'basic') {
               return res;
@@ -52,7 +55,8 @@ self.addEventListener('fetch', (event) => {
               });
 
             return res;
-          });
+          }
+        );
       })
   );
 });
@@ -70,4 +74,11 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+});
+
+// Handle offline functionality
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

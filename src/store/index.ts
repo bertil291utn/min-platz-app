@@ -8,6 +8,7 @@ import placasMonitoringReducer from './slices/placasMonitoringSlice';
 import viewPlacasReducer from './slices/viewPlacasSlice';
 import mallasMonitoringReducer from './slices/mallasMonitoringSlice';
 import viewMallasReducer from './slices/viewMallasSlice';
+import appStateReducer from './slices/appStateSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
     placasMonitoring: placasMonitoringReducer,
     viewPlacas: viewPlacasReducer,
     mallasMonitoring: mallasMonitoringReducer,
-    viewMallas: viewMallasReducer
+    viewMallas: viewMallasReducer,
+    appState: appStateReducer
   }
 });
 

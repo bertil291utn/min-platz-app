@@ -7,7 +7,7 @@ import Tabs from './pages/Tabs';
 import { store } from './store';
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import { useEffect } from 'react';
-import { setOnlineStatus, setHasLocalData } from './store/slices/appStateSlice';
+import { setOnlineStatus, setHasLocalData, setAppInstalled } from './store/slices/appStateSlice';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -85,6 +85,15 @@ const AppContent: React.FC = () => {
 
     checkLocalData();
 
+    // Check if app is installed
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    dispatch(setAppInstalled(isInstalled));
+
+    // Listen for changes in display mode
+    window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt) => {
+      dispatch(setAppInstalled(evt.matches));
+    });
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
@@ -103,6 +112,27 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
+  let deferredPrompt: any;
+
+  useEffect(() => {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      deferredPrompt = e;
+      // Update UI to notify the user they can add to home screen
+      dispatch(setAppInstalled(false));
+    });
+
+    window.addEventListener('appinstalled', () => {
+      // Clear the deferredPrompt
+      deferredPrompt = null;
+      // Update UI
+      dispatch(setAppInstalled(true));
+    });
+  }, [dispatch]);
+
   return (
     <Provider store={store}>
       <AppContent />
