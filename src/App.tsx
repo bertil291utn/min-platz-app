@@ -5,7 +5,9 @@ import { Provider } from 'react-redux';
 import Home from './pages/Home';
 import Tabs from './pages/Tabs';
 import { store } from './store';
-import { useAppSelector } from './store/hooks';
+import { useAppSelector, useAppDispatch } from './store/hooks';
+import { useEffect } from 'react';
+import { setOnlineStatus, setHasLocalData } from './store/slices/appStateSlice';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -59,14 +61,50 @@ const AppRoutes: React.FC = () => {
   );
 };
 
+const AppContent: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // Check online status
+    const handleOnline = () => dispatch(setOnlineStatus(true));
+    const handleOffline = () => dispatch(setOnlineStatus(false));
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Check for existing local data
+    const checkLocalData = () => {
+      const hasData = [
+        'mallas-monitored',
+        'placas-monitored',
+        'camas-monitored',
+        'bloques-data'
+      ].some(key => localStorage.getItem(key));
+      
+      dispatch(setHasLocalData(hasData));
+    };
+
+    checkLocalData();
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [dispatch]);
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <AppRoutes />
+      </IonReactRouter>
+    </IonApp>
+  );
+};
+
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <IonApp>
-        <IonReactRouter>
-          <AppRoutes />
-        </IonReactRouter>
-      </IonApp>
+      <AppContent />
     </Provider>
   );
 };

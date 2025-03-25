@@ -7,6 +7,8 @@ import { fetchBloques } from './store/slices/bloqueInfoSlice';
 import { fetchMonitoredBloques } from './store/slices/monitoringBloqueSlice';
 import { USER_AUTH, USER_SET } from './helpers/AuthConst';
 import { setUser } from './store/slices/userSlice';
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+import { registerServiceWorker } from './utils/service-worker-registration';
 
 // Initialize Redux store with data from localStorage
 store.dispatch(checkAuthStatus());
@@ -35,3 +37,9 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+// Call this after ReactDOM.render
+defineCustomElements(window);
+
+// Register service worker
+registerServiceWorker();
