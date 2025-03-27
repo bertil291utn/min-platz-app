@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact, IonToast } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Provider } from 'react-redux';
 import Home from './pages/Home';
@@ -62,6 +62,7 @@ const AppRoutes: React.FC = () => {
 
 const AppContent: React.FC = () => {
   const dispatch = useAppDispatch();
+  const isOnline = useAppSelector((state) => state.appState.isOnline);
 
   useEffect(() => {
     // Check online status
@@ -107,6 +108,14 @@ const AppContent: React.FC = () => {
           <AppRoutes />
         </IonRouterOutlet>
       </IonReactRouter>
+
+      {/* Show offline toast */}
+      <IonToast
+        isOpen={!isOnline}
+        message="Estás desconectado. Algunas funciones pueden no estar disponibles."
+        duration={3000}
+        color="warning"
+      />
     </IonApp>
   );
 };

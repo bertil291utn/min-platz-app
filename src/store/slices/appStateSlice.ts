@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { saveData, getData } from '../../utils/db';
 
 interface AppState {
   isOnline: boolean;
@@ -11,6 +12,14 @@ const initialState: AppState = {
   hasLocalData: false,
   isAppInstalled: false
 };
+
+export const loadLocalData = createAsyncThunk(
+  'appState/loadLocalData',
+  async () => {
+    const localData = await getData('user-data', 'app-state');
+    return { hasLocalData: !!localData };
+  }
+);
 
 const appStateSlice = createSlice({
   name: 'appState',
@@ -25,7 +34,21 @@ const appStateSlice = createSlice({
     setAppInstalled: (state, action: PayloadAction<boolean>) => {
       state.isAppInstalled = action.payload;
     }
-  }
+  },
+  extraReducers: (builder) => {
+   
+
+    builder
+      .addCase(loadLocalData.pending, (state) => {
+        // Optional: Add loading state if needed
+      })
+      .addCase(loadLocalData.fulfilled, (state, action) => {
+        state.hasLocalData = action.payload.hasLocalData;
+      })
+      .addCase(loadLocalData.rejected, (state) => {
+        state.hasLocalData = false;
+      });
+  },
 });
 
 export const { setOnlineStatus, setHasLocalData, setAppInstalled } = appStateSlice.actions;

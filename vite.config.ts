@@ -13,10 +13,16 @@ export default defineConfig(({ mode }) => ({
     }),
     VitePWA({
       registerType: 'autoUpdate',
+      devOptions: {
+        enabled: true
+      },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}'],
         navigateFallback: '/index.html',
         navigateFallbackAllowlist: [/^(?!\/__).*/],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/api\./i,
