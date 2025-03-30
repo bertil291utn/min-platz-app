@@ -23,12 +23,13 @@ const config: CapacitorConfig = {
       layoutName: "launch_screen",
     },
     StatusBar: {
-      style: "light",
-      backgroundColor: "#ffffff",
-      overlaysWebView: false
-    }
+      overlaysWebView: false,
+      style: "DEFAULT",
+      backgroundColor: "#000000",
+    },
   },
   android: {
+    backgroundColor: "transparent"
   }
 };
 

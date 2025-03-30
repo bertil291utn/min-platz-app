@@ -128,27 +128,7 @@ const App: React.FC = () => {
   let deferredPrompt: any;
 
   useEffect(() => {
-    const initialize = async () => {
-      // Set status bar configuration
-      await StatusBar.setOverlaysWebView({ overlay: false });
-      await StatusBar.setBackgroundColor({ color: '#ffffff' });
-      await StatusBar.setStyle({ style: Style.Light });
 
-      // Hide splash screen
-      await SplashScreen.show({
-        showDuration: 2000,
-        autoHide: true,
-      });
-      // Handle app state changes
-      CapApp.addListener('appStateChange', ({ isActive }) => {
-        if (isActive) {
-          // App came to foreground
-          StatusBar.setOverlaysWebView({ overlay: false });
-        }
-      });
-    };
-
-    initialize();
 
     window.addEventListener('beforeinstallprompt', (e) => {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
