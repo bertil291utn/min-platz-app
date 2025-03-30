@@ -1,7 +1,6 @@
 import { CapacitorConfig } from '@capacitor/cli';
 import assetsConfig from './capacitor.assets.config';
 
-
 const config: CapacitorConfig = {
   appId: 'com.minplats.app',
   appName: 'Min Platz App',
@@ -20,13 +19,16 @@ const config: CapacitorConfig = {
       androidSplashResourceName: "splash",
       showSpinner: false,
       splashFullScreen: false,
-      splashImmersive: false
+      splashImmersive: false,
+      layoutName: "launch_screen",
     },
     StatusBar: {
       style: "light",
       backgroundColor: "#ffffff",
       overlaysWebView: false
     }
+  },
+  android: {
   }
 };
 
