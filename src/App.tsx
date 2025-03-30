@@ -8,6 +8,9 @@ import { store } from './store';
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import { useEffect } from 'react';
 import { setOnlineStatus, setHasLocalData, setAppInstalled } from './store/slices/appStateSlice';
+import { App as CapApp } from '@capacitor/app';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -80,7 +83,7 @@ const AppContent: React.FC = () => {
         'camas-monitored',
         'bloques-data'
       ].some(key => localStorage.getItem(key));
-      
+
       dispatch(setHasLocalData(hasData));
     };
 
@@ -125,6 +128,28 @@ const App: React.FC = () => {
   let deferredPrompt: any;
 
   useEffect(() => {
+    const initialize = async () => {
+      // Set status bar configuration
+      await StatusBar.setOverlaysWebView({ overlay: false });
+      await StatusBar.setBackgroundColor({ color: '#ffffff' });
+      await StatusBar.setStyle({ style: Style.Light });
+
+      // Hide splash screen
+      await SplashScreen.show({
+        showDuration: 2000,
+        autoHide: true,
+      });
+      // Handle app state changes
+      CapApp.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) {
+          // App came to foreground
+          StatusBar.setOverlaysWebView({ overlay: false });
+        }
+      });
+    };
+
+    initialize();
+
     window.addEventListener('beforeinstallprompt', (e) => {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
