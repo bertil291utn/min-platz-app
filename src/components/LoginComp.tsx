@@ -20,8 +20,6 @@ const LoginComp: React.FC = () => {
     password: ''
   });
 
- 
-
   const router = useIonRouter();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -105,7 +103,7 @@ const LoginComp: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', height: '100%', padding: '10px' }}>
+    <div className="login-component" style={{ display: 'flex', alignItems: 'center', height: '100%', padding: '10px' }}>
       <IonToast
         position="top"
         positionAnchor="header"

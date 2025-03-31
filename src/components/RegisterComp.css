@@ -13,7 +13,7 @@
   font-weight: 500;
 }
 
-ion-item {
+.register-component ion-item {
   --background: var(--ion-color-light-shade);
   --border-radius: 8px;
   margin-bottom: 0.5rem;

@@ -116,6 +116,7 @@ const RegisterComp: React.FC = () => {
         whatsapp: formData.whatsapp,
         nombre: formData.nombre,
         apellido: formData.apellido,
+        password:formData.password,
         rucId: formData.rucId || null,
         createdAt: new Date().toISOString()
       };
@@ -131,7 +132,7 @@ const RegisterComp: React.FC = () => {
   };
 
   return (
-    <div className="ion-padding">
+    <div className="ion-padding register-component">
       <div style={{ marginBottom: '2rem' }}>
         <IonButton fill="clear" onClick={() => router.push('/login', 'root')}>
           <IonIcon slot="start" icon={arrowBack} />
