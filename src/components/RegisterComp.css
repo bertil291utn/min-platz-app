@@ -1,0 +1,56 @@
+.mandatory-fields,
+.optional-fields {
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mandatory-fields h2,
+.optional-fields h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+ion-item {
+  --background: var(--ion-color-light-shade);
+  --border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+ion-input {
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+ion-button[type="submit"] {
+  margin-top: 1.5rem;
+}
+
+.ion-padding-vertical {
+  padding: 1rem 0;
+}
+
+/* Style for the toggle button */
+ion-button[fill="clear"] {
+  --color: var(--ion-color-medium);
+  font-size: 0.9rem;
+}
+
+ion-button[fill="clear"] ion-icon {
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+}
+
+/* Add asterisk to required fields */
+ion-input[required]::part(label) {
+  position: relative;
+}
+
+/* Error message styling */
+ion-note[color="danger"] {
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  display: block;
+} 

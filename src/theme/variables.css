@@ -22,9 +22,9 @@ ion-app {
   background-color: var(--ion-background-color);
 }
 
-ion-content {
+/* ion-content {
   --background: var(--ion-background-color);
-}
+} */
 
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */

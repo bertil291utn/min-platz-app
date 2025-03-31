@@ -11,6 +11,8 @@ import { setOnlineStatus, setHasLocalData, setAppInstalled } from './store/slice
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
+import RegisterPage from './pages/RegisterPage';
+import VerificationPage from './pages/VerificationPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -52,6 +54,12 @@ const AppRoutes: React.FC = () => {
     <IonRouterOutlet>
       <Route exact path="/login">
         {isAuthenticated ? <Redirect to="/tabs" /> : <LoginPages />}
+      </Route>
+      <Route exact path="/register">
+        {isAuthenticated ? <Redirect to="/tabs" /> : <RegisterPage />}
+      </Route>
+      <Route exact path="/verify">
+        <VerificationPage />
       </Route>
       <Route path="/tabs">
         {!isAuthenticated ? <Redirect to="/login" /> : <Tabs />}
