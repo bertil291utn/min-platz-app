@@ -46,7 +46,6 @@ const LoginComp: React.FC = () => {
     }
     
     const user = JSON.parse(userData);
-    console.log(user)
     if (user.whatsapp !== whatsapp) {
       throw new Error('WhatsApp no encontrado');
     }
@@ -83,6 +82,7 @@ const LoginComp: React.FC = () => {
         premium: user.premium || false,
         expert: user.expert || false
       }));
+      router.push('/tabs')
 
     } catch (error) {
       setToastMessage(error instanceof Error ? error.message : 'Error al iniciar sesión');

@@ -8,11 +8,27 @@ import { store } from './store';
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import { useEffect } from 'react';
 import { setOnlineStatus } from './store/slices/appStateSlice';
-import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 import RegisterPage from './pages/RegisterPage';
 import VerificationPage from './pages/VerificationPage';
+
+// Define Capacitor types for TypeScript
+interface CapacitorGlobal {
+  isNativePlatform: () => boolean;
+  Plugins: {
+    StatusBar?: any;
+    SplashScreen?: any;
+    [key: string]: any;
+  };
+}
+
+// Extend Window interface
+declare global {
+  interface Window {
+    Capacitor?: CapacitorGlobal;
+  }
+}
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -59,14 +75,22 @@ const AppWrapper = () => {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initialize Capacitor plugins if they're available (on native platforms)
-    try {
-      if (CapApp) {
+    // Initialize Capacitor plugins if running on a native platform
+    const isNativePlatform = typeof window !== 'undefined' && 
+                             window.Capacitor && 
+                             typeof window.Capacitor.isNativePlatform === 'function' && 
+                             window.Capacitor.isNativePlatform();
+
+    if (isNativePlatform) {
+      try {
+        // Only use the native plugins if we're on a native platform
         StatusBar.setStyle({ style: Style.Light });
         SplashScreen.hide();
+      } catch (e) {
+        console.log('Error initializing Capacitor plugins:', e);
       }
-    } catch (e) {
-      console.log('Capacitor plugins not available in this environment');
+    } else {
+      console.log('Running in web environment - Capacitor native plugins not available');
     }
 
     // Clean up event listeners
