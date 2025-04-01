@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact, IonToast } from '@ionic/react';
+import { IonApp, IonRouterOutlet, IonToast } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Provider } from 'react-redux';
 import Home from './pages/Home';
@@ -7,7 +7,7 @@ import Tabs from './pages/Tabs';
 import { store } from './store';
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import { useEffect } from 'react';
-import { setOnlineStatus, setHasLocalData, setAppInstalled } from './store/slices/appStateSlice';
+import { setOnlineStatus } from './store/slices/appStateSlice';
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
@@ -46,118 +46,70 @@ import './theme/variables.css';
 import './theme/tabs.css';
 import LoginPages from './pages/LoginPages';
 
-
-const AppRoutes: React.FC = () => {
-  const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
-
-  return (
-    <IonRouterOutlet>
-      <Route exact path="/login">
-        {isAuthenticated ? <Redirect to="/tabs" /> : <LoginPages />}
-      </Route>
-      <Route exact path="/register">
-        {isAuthenticated ? <Redirect to="/tabs" /> : <RegisterPage />}
-      </Route>
-      <Route exact path="/verify">
-        <VerificationPage />
-      </Route>
-      <Route path="/tabs">
-        {!isAuthenticated ? <Redirect to="/login" /> : <Tabs />}
-      </Route>
-      <Route exact path="/">
-        <Redirect to={isAuthenticated ? "/tabs" : "/login"} />
-      </Route>
-    </IonRouterOutlet>
-  );
-};
-
-const AppContent: React.FC = () => {
+// App wrapper component that includes state management
+const AppWrapper = () => {
   const dispatch = useAppDispatch();
-  const isOnline = useAppSelector((state) => state.appState.isOnline);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
-    // Check online status
+    // Set up online/offline event listeners
     const handleOnline = () => dispatch(setOnlineStatus(true));
     const handleOffline = () => dispatch(setOnlineStatus(false));
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Check for existing local data
-    const checkLocalData = () => {
-      const hasData = [
-        'mallas-monitored',
-        'placas-monitored',
-        'camas-monitored',
-        'bloques-data'
-      ].some(key => localStorage.getItem(key));
+    // Initialize Capacitor plugins if they're available (on native platforms)
+    try {
+      if (CapApp) {
+        StatusBar.setStyle({ style: Style.Light });
+        SplashScreen.hide();
+      }
+    } catch (e) {
+      console.log('Capacitor plugins not available in this environment');
+    }
 
-      dispatch(setHasLocalData(hasData));
-    };
-
-    checkLocalData();
-
-    // Check if app is installed
-    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
-    dispatch(setAppInstalled(isInstalled));
-
-    // Listen for changes in display mode
-    window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt) => {
-      dispatch(setAppInstalled(evt.matches));
-    });
-
+    // Clean up event listeners
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
   }, [dispatch]);
 
+  // Rest of your component...
   return (
     <IonApp>
       <IonReactRouter>
-        <IonRouterOutlet animated={false}>
-          <AppRoutes />
+        <IonRouterOutlet>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path="/login">
+            <LoginPages />
+          </Route>
+          <Route exact path="/">
+            <Redirect to={isAuthenticated ? "/tabs" : "/login"} />
+          </Route>
+          <Route path="/tabs">
+            {isAuthenticated ? <Tabs /> : <Redirect to="/login" />}
+          </Route>
+          <Route exact path="/register">
+            <RegisterPage />
+          </Route>
+          <Route exact path="/verify">
+            <VerificationPage />
+          </Route>
         </IonRouterOutlet>
       </IonReactRouter>
-
-      {/* Show offline toast */}
-      <IonToast
-        isOpen={!isOnline}
-        message="Estás desconectado. Algunas funciones pueden no estar disponibles."
-        duration={3000}
-        color="warning"
-      />
     </IonApp>
   );
 };
 
+// Main App component
 const App: React.FC = () => {
-  const dispatch = useAppDispatch();
-  let deferredPrompt: any;
-
-  useEffect(() => {
-
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent Chrome 67 and earlier from automatically showing the prompt
-      e.preventDefault();
-      // Stash the event so it can be triggered later
-      deferredPrompt = e;
-      // Update UI to notify the user they can add to home screen
-      dispatch(setAppInstalled(false));
-    });
-
-    window.addEventListener('appinstalled', () => {
-      // Clear the deferredPrompt
-      deferredPrompt = null;
-      // Update UI
-      dispatch(setAppInstalled(true));
-    });
-  }, [dispatch]);
-
   return (
     <Provider store={store}>
-      <AppContent />
+      <AppWrapper />
     </Provider>
   );
 };

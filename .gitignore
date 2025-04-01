@@ -35,3 +35,4 @@ yarn-error.log*
 vercel.json
 dev-dist
 android
+package-lock.json

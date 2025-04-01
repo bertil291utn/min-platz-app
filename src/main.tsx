@@ -8,13 +8,8 @@ import { fetchBloques } from './store/slices/bloqueInfoSlice';
 import { fetchMonitoredBloques } from './store/slices/monitoringBloqueSlice';
 import { USER_AUTH, USER_SET } from './helpers/AuthConst';
 import { setUser } from './store/slices/userSlice';
-import { defineCustomElements } from '@ionic/pwa-elements/loader';
-import { registerServiceWorker } from './utils/service-worker-registration';
 import { setupIonicReact } from '@ionic/react';
 import './theme/variables.css';
-import { setHasLocalData } from './store/slices/appStateSlice';
-import { initDB } from './utils/db';
-import { saveAppState, loadAppState } from './services/dataService';
 
 setupIonicReact({
   mode: 'md',
@@ -23,65 +18,46 @@ setupIonicReact({
   animated: false
 });
 
-// Initialize Redux store with data from localStorage
-store.dispatch(checkAuthStatus());
-store.dispatch(fetchBloques()); // Preload bloques data
-store.dispatch(fetchMonitoredBloques()); // Preload monitored bloques
-
-// Check if local data exists
-const checkLocalData = () => {
-  const hasData = [
-    'bloques-data',
-    'placas-monitored',
-    'camas-monitored'
-  ].some((key) => localStorage.getItem(key));
-
-  store.dispatch(setHasLocalData(hasData));
-};
-
-checkLocalData();
-
-const storedUser = localStorage.getItem(USER_SET);
-if (!storedUser) {
-  store.dispatch(setAuthenticated(false));
-} else {
-  store.dispatch(setUser(JSON.parse(storedUser)));
+// Initialize Redux store with any persisted data
+const userAuth = localStorage.getItem(USER_AUTH);
+if (userAuth) {
+  try {
+    const authData = JSON.parse(userAuth);
+    const currentTime = new Date().getTime();
+    
+    if (authData.expiry && authData.expiry > currentTime) {
+      store.dispatch(setAuthenticated(true));
+      
+      // Get user data if available
+      const userData = localStorage.getItem(USER_SET);
+      if (userData) {
+        const parsedUserData = JSON.parse(userData);
+        store.dispatch(setUser(parsedUserData));
+      }
+    } else {
+      // Token expired, clear it
+      localStorage.removeItem(USER_AUTH);
+      store.dispatch(setAuthenticated(false));
+    }
+  } catch (e) {
+    console.error('Error parsing auth data', e);
+    localStorage.removeItem(USER_AUTH);
+    store.dispatch(setAuthenticated(false));
+  }
 }
 
-// Set up online/offline listeners for monitoring
-window.addEventListener('online', () => {
-  store.dispatch({ type: 'monitoringBloque/setIsOnline', payload: true });
-});
-window.addEventListener('offline', () => {
-  store.dispatch({ type: 'monitoringBloque/setIsOnline', payload: false });
-});
+// Fetch initial data
+store.dispatch(fetchBloques());
+store.dispatch(fetchMonitoredBloques());
+store.dispatch(checkAuthStatus());
 
-// Async function to handle IndexedDB operations
-const handleIndexedDB = async () => {
-  await initDB();
-  console.log('IndexedDB initialized');
-
-  // Save app state to IndexedDB
-  await saveAppState({ isOnline: navigator.onLine, hasLocalData: true });
-
-  // Retrieve app state from IndexedDB
-  const appState = await loadAppState();
-  console.log('Loaded app state from IndexedDB:', appState);
-};
-
-// Call the async function
-handleIndexedDB();
-
+// Render the application
 const container = document.getElementById('root');
 const root = createRoot(container!);
 root.render(
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
 );
-
-// Call this after ReactDOM.render
-defineCustomElements(window);
-
-// Register service worker
-registerServiceWorker();
