@@ -96,6 +96,8 @@ const UserProfileC = () => {
                 slot="end"
               />
             </IonItem>
+             {/* remove this component just for test, this value has to coming from database and set in userset */}
+    
             <IonItem>
               <IonLabel>Usuario premium</IonLabel>
               <IonToggle
