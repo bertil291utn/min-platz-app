@@ -28,11 +28,11 @@ export const checkAuthStatus = createAsyncThunk(
         const authData = JSON.parse(userAuth);
         const now = new Date().getTime();
 
-        // Check if token is still valid (not expired)
-        if (authData.expiry && authData.expiry > now) {
+        // Check if token is still valid (not expired) and has CI
+        if (authData.expiry && authData.expiry > now && authData.ci) {
           isAuthenticated = true;
         } else {
-          // Token expired, clean up
+          // Token expired or invalid, clean up
           localStorage.removeItem(USER_AUTH);
         }
       } catch (error) {

@@ -16,7 +16,7 @@ import {
 import { arrowBack, checkmarkCircle, refreshCircle } from 'ionicons/icons';
 
 interface VerificationCompProps {
-  type: 'email' | 'whatsapp';
+  type: 'email' | 'whatsapp' | 'ruc';
   contact: string;
   onVerified: () => void;
 }
@@ -34,7 +34,7 @@ const VerificationComp: React.FC<VerificationCompProps> = ({ type, contact, onVe
     const newCode = Math.floor(100000 + Math.random() * 900000).toString();
     setVerificationCode(newCode);
     
-    // In a real app, you would send this code via email/WhatsApp
+    // In a real app, you would send this code via email/WhatsApp/SMS based on the type
     console.log(`Verification code: ${newCode}`);
 
     // Start countdown timer
@@ -75,7 +75,7 @@ const VerificationComp: React.FC<VerificationCompProps> = ({ type, contact, onVe
     const newCode = Math.floor(100000 + Math.random() * 900000).toString();
     setVerificationCode(newCode);
     
-    // In a real app, you would send this code via email/WhatsApp
+    // In a real app, you would send this code via email/WhatsApp/SMS based on the type
     console.log(`New verification code: ${newCode}`);
     
     // Reset timer
@@ -84,6 +84,19 @@ const VerificationComp: React.FC<VerificationCompProps> = ({ type, contact, onVe
     setToastMessage('Nuevo código enviado');
     setShowToast(true);
   };
+
+  const getVerificationType = () => {
+    switch(type) {
+      case 'email':
+        return 'Email';
+      case 'whatsapp':
+        return 'WhatsApp';
+      case 'ruc':
+        return 'RUC';
+      default:
+        return 'Cuenta';
+    }
+  }
 
   return (
     <div className="ion-padding">
@@ -96,9 +109,9 @@ const VerificationComp: React.FC<VerificationCompProps> = ({ type, contact, onVe
         <IonCardContent>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <IonText>
-              <h2>Verificación de {type === 'email' ? 'Email' : 'WhatsApp'}</h2>
+              <h2>Verificación de {getVerificationType()}</h2>
               <p>
-                Hemos enviado un código de verificación a:<br />
+                Hemos enviado un código de verificación {type === 'email' ? 'al correo' : type === 'whatsapp' ? 'al número' : 'asociado con el RUC'}:<br />
                 <strong>{contact}</strong>
               </p>
             </IonText>

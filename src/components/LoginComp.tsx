@@ -13,12 +13,15 @@ import {
 } from '@ionic/react';
 import { USER_AUTH } from '../helpers/AuthConst';
 import { setUser } from '../store/slices/userSlice';
+import { isValidIdentification } from '../helpers/cedulaHelper';
+
+const INITIAL_FORM_DATA = {
+  ci: '',
+  password: ''
+}
 
 const LoginComp: React.FC = () => {
-  const [credentials, setCredentials] = useState({
-    whatsapp: '',
-    password: ''
-  });
+  const [credentials, setCredentials] = useState(INITIAL_FORM_DATA);
 
   const router = useIonRouter();
   const [showToast, setShowToast] = useState(false);
@@ -26,12 +29,12 @@ const LoginComp: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  const storeAuthToken = (whatsapp: string) => {
+  const storeAuthToken = (ci: string) => {
     const expiryDate = new Date();
     expiryDate.setMonth(expiryDate.getMonth() + 1);
 
     const storageData = {
-      whatsapp,
+      ci,
       expiry: expiryDate.getTime(),
       token: 'your-auth-token'
     };
@@ -39,15 +42,19 @@ const LoginComp: React.FC = () => {
     localStorage.setItem(USER_AUTH, JSON.stringify(storageData));
   };
 
-  const validateUser = (whatsapp: string, password: string) => {
+  const validateUser = (ci: string, password: string) => {
+    if (!isValidIdentification(ci)) {
+      throw new Error('Cédula inválida');
+    }
+
     const userData = localStorage.getItem('USER_DATA');
     if (!userData) {
       throw new Error('Usuario no registrado');
     }
-    
+
     const user = JSON.parse(userData);
-    if (user.whatsapp !== whatsapp) {
-      throw new Error('WhatsApp no encontrado');
+    if (user.ci !== ci) {
+      throw new Error('Cédula no encontrada');
     }
 
     // In a real app, you would hash the password before comparing
@@ -63,26 +70,27 @@ const LoginComp: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const user = validateUser(credentials.whatsapp, credentials.password);
+      const user = validateUser(credentials.ci, credentials.password);
 
       // Store auth token
-      storeAuthToken(credentials.whatsapp);
+      storeAuthToken(credentials.ci);
 
       // Set authentication state
       dispatch(setAuthenticated(true));
 
       // Set user data
       dispatch(setUser({
-        id: user.whatsapp,
+        id: user.ci,
         email: user.email,
         name: user.nombre,
         lastName: user.apellido,
-        whatsapp: user.whatsapp,
-        rucId: user.rucId,
+        whatsapp: user.whatsapp || null,
+        ci: user.ci,
         premium: user.premium || false,
         expert: user.expert || false
       }));
       router.push('/tabs')
+      setCredentials(INITIAL_FORM_DATA)
 
     } catch (error) {
       setToastMessage(error instanceof Error ? error.message : 'Error al iniciar sesión');
@@ -118,13 +126,14 @@ const LoginComp: React.FC = () => {
           <IonInput
             labelPlacement='floating'
             fill='outline'
-            label='Ingrese su WhatsApp'
-            type="tel"
-            name="whatsapp"
-            value={credentials.whatsapp}
+            label='Ingrese su Cédula'
+            type="number"
+            name="ci"
+            value={credentials.ci}
             onIonInput={handleChange}
+            maxlength={10}
             required
-            placeholder="Ej: 999999999"
+            placeholder="Ej: 1234567890"
           />
           <br />
           <IonInput

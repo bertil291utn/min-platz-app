@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   IonContent,
   IonInput,
@@ -13,38 +13,43 @@ import {
   IonNote,
   InputCustomEvent,
   InputInputEventDetail,
-  IonLabel
+  IonLabel,
+  IonSpinner
 } from '@ionic/react';
 import { arrowBack, chevronDown, chevronUp } from 'ionicons/icons';
 import { USER_AUTH } from '../helpers/AuthConst';
 import './RegisterComp.css';
+import { fetchPersonInfo } from '../services/PersonService';
+import { isValidIdentification } from '../helpers/cedulaHelper';
 
 interface RegisterForm {
   email: string;
   whatsapp: string;
   nombre: string;
   apellido: string;
-  rucId: string;
+  ci: string;
   password: string;
   confirmPassword: string;
 }
 
+const INITIAL_FORM_DATA = {
+  email: '',
+  whatsapp: '',
+  nombre: '',
+  apellido: '',
+  ci: '',
+  password: '',
+  confirmPassword: ''
+}
 const RegisterComp: React.FC = () => {
-  const [formData, setFormData] = useState<RegisterForm>({
-    email: '',
-    whatsapp: '',
-    nombre: '',
-    apellido: '',
-    rucId: '',
-    password: '',
-    confirmPassword: ''
-  });
+  const [formData, setFormData] = useState<RegisterForm>(INITIAL_FORM_DATA);
 
   const [errors, setErrors] = useState<Partial<RegisterForm>>({});
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showOptionalFields, setShowOptionalFields] = useState(false);
+  const [fetchingCiInfo, setFetchingCiInfo] = useState(false);
   const router = useIonRouter();
 
   const handleChange = (e: InputCustomEvent<InputInputEventDetail>) => {
@@ -59,20 +64,55 @@ const RegisterComp: React.FC = () => {
     }));
   };
 
+  const fetchCiData = async () => {
+    if (!formData.ci) {
+      return;
+    }
+
+    if (!isValidIdentification(formData.ci)) {
+      setErrors(prev => ({
+        ...prev,
+        ci: 'Cédula inválida'
+      }));
+      return;
+    }
+
+    setFetchingCiInfo(true);
+    try {
+      const personInfo = await fetchPersonInfo(formData.ci);
+
+      if (personInfo) {
+        setFormData(prev => ({
+          ...prev,
+          nombre: personInfo.firstName,
+          apellido: personInfo.lastName
+        }));
+        // setToastMessage('Información obtenida correctamente');
+        // setShowToast(true);
+      }
+      // Silently fail if no data is found - let user fill in manually
+    } catch (error) {
+      // Silently fail if there's an error - let user fill in manually
+      console.error('Error fetching CI info:', error);
+    } finally {
+      setFetchingCiInfo(false);
+    }
+  };
+
   const validateForm = () => {
     const newErrors: Partial<RegisterForm> = {};
 
     // Mandatory fields validation
-    if (!formData.whatsapp) {
-      newErrors.whatsapp = 'El número de WhatsApp es requerido';
-    } else if (!/^\d{10}$/.test(formData.whatsapp)) {
-      newErrors.whatsapp = 'Número de WhatsApp inválido';
+    if (!formData.ci) {
+      newErrors.ci = 'La cédula es requerida';
+    } else if (!isValidIdentification(formData.ci)) {
+      newErrors.ci = 'Cédula inválida';
     } else {
       const existingUsers = JSON.parse(localStorage.getItem('USER_DATA') || '[]');
       if (Array.isArray(existingUsers)) {
-        const whatsappExists = existingUsers.some(user => user.whatsapp === formData.whatsapp);
-        if (whatsappExists) {
-          newErrors.whatsapp = 'Este número de WhatsApp ya está registrado';
+        const ciExists = existingUsers.some(user => user.ci === formData.ci);
+        if (ciExists) {
+          newErrors.ci = 'Esta cédula ya está registrada';
         }
       }
     }
@@ -100,6 +140,10 @@ const RegisterComp: React.FC = () => {
       newErrors.email = 'Email inválido';
     }
 
+    if (formData.whatsapp && !/^\d{10}$/.test(formData.whatsapp)) {
+      newErrors.whatsapp = 'Número de WhatsApp inválido';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -113,16 +157,24 @@ const RegisterComp: React.FC = () => {
     try {
       const userData = {
         email: formData.email,
-        whatsapp: formData.whatsapp,
+        whatsapp: formData.whatsapp || null,
         nombre: formData.nombre,
         apellido: formData.apellido,
-        password:formData.password,
-        rucId: formData.rucId || null,
+        password: formData.password,
+        ci: formData.ci,
         createdAt: new Date().toISOString()
       };
 
       localStorage.setItem('USER_DATA', JSON.stringify(userData));
-      router.push('/verify', 'forward');
+      setFormData(INITIAL_FORM_DATA)
+      // Push to verification page with CI information
+      router.push('/verify');
+
+      // Set the state data in sessionStorage since IonRouter doesn't support state transfer directly
+      sessionStorage.setItem('verification', JSON.stringify({
+        type: 'ci',
+        contact: formData.ci
+      }));
     } catch (error) {
       setToastMessage('Error al registrar');
       setShowToast(true);
@@ -150,18 +202,24 @@ const RegisterComp: React.FC = () => {
 
             <IonItem>
               <IonInput
-                label="WhatsApp *"
+                label="Cédula *"
                 labelPlacement="floating"
-                type="tel"
-                name="whatsapp"
-                value={formData.whatsapp}
+                type="number"
+                name="ci"
+                value={formData.ci}
                 onIonInput={handleChange}
-                errorText={errors.whatsapp}
+                onIonBlur={fetchCiData}
+                errorText={errors.ci}
+                maxlength={10}
+                required
               />
+              {fetchingCiInfo && (
+                <IonSpinner name="crescent" slot="end" />
+              )}
             </IonItem>
-            {errors.whatsapp && (
+            {errors.ci && (
               <IonNote color="danger" className="ion-padding-start">
-                {errors.whatsapp}
+                {errors.ci}
               </IonNote>
             )}
 
@@ -244,8 +302,8 @@ const RegisterComp: React.FC = () => {
 
           {/* Optional Fields Toggle Button */}
           <div className="ion-padding-vertical">
-            <IonButton 
-              fill="clear" 
+            <IonButton
+              fill="clear"
               expand="block"
               onClick={() => setShowOptionalFields(!showOptionalFields)}
             >
@@ -280,14 +338,20 @@ const RegisterComp: React.FC = () => {
 
               <IonItem>
                 <IonInput
-                  label="RUC ID"
+                  label="WhatsApp"
                   labelPlacement="floating"
-                  type="text"
-                  name="rucId"
-                  value={formData.rucId}
+                  type="tel"
+                  name="whatsapp"
+                  value={formData.whatsapp}
                   onIonInput={handleChange}
+                  errorText={errors.whatsapp}
                 />
               </IonItem>
+              {errors.whatsapp && (
+                <IonNote color="danger" className="ion-padding-start">
+                  {errors.whatsapp}
+                </IonNote>
+              )}
             </div>
           )}
         </IonList>

@@ -26,6 +26,7 @@
     "@reduxjs/toolkit": "^2.6.1",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
+    "ecuador-validator": "^1.2.2",
     "ionicons": "^7.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

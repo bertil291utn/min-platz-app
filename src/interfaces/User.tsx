@@ -5,7 +5,7 @@ export interface User {
   lastName: string
   premium: boolean;
   expert: boolean;
-  whatsapp: string;
-  rucId: string;
+  whatsapp?: string | null;
+  ci: string;
   avatar?: string;
 }
