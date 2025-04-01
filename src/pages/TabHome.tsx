@@ -3,17 +3,13 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from 
 import Home from './Home';
 
 interface TabHomeProps {
-  logout: () => void;
 }
 
-const TabHome: React.FC<TabHomeProps> = ({ logout }) => {
+const TabHome: React.FC<TabHomeProps> = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButton slot="end" onClick={logout} fill="clear">
-            Logout
-          </IonButton>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>

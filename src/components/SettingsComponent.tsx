@@ -1,16 +1,21 @@
 import {
   IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
+  IonIcon, IonList, IonNote, IonAvatar, IonChip,
 } from '@ionic/react';
+import { logOutOutline, personCircleOutline, mailOutline, callOutline, cardOutline, settingsOutline } from 'ionicons/icons';
 import BloquesSettingsC from './BloquesSettingsC';
 import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
 import { NUMERO_CAMAS_MIN } from '../helpers/bloquesConstant';
 import ArchivedBloquesSettingsC from './ArchivedBloquesSettingsC';
 import { Bloque } from '../interfaces/Bloque';
-import TipoUserSettingsC from './TipoUserSettingsC';
+import UserProfileC from './UserProfileC';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addBloque, INITIAL_BLOQUE, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
-
+import { cleanUser } from '../store/slices/userSlice';
+import { setAuthenticated } from '../store/slices/authSlice';
+import { useIonRouter } from '@ionic/react';
+import './SettingsComponent.css';
 
 const SettingsC = () => {
   const activeBloques = useAppSelector(selectActiveBloques);
@@ -18,6 +23,7 @@ const SettingsC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [bloqueForm, setBloqueForm] = useState<Bloque>(INITIAL_BLOQUE);
   const dispatch = useAppDispatch();
+  const router = useIonRouter();
 
   useEffect(() => {
     setBloqueForm(prev => ({
@@ -35,13 +41,18 @@ const SettingsC = () => {
     setBloqueForm(INITIAL_BLOQUE);
   };
 
+  const handleLogout = () => {
+    dispatch(cleanUser());
+    dispatch(setAuthenticated(false));
+    router.push('/login');
+  };
 
   const IsThereActiveBloques = activeBloques.length > 0;
 
   return (
     <div>
-
       <IonAccordionGroup>
+        <UserProfileC />
         <IonAccordion value="bloques">
           <IonItem slot="header" color="light">
             <IonLabel>Bloques</IonLabel>
@@ -65,16 +76,6 @@ const SettingsC = () => {
           </div>
         </IonAccordion>
         <ArchivedBloquesSettingsC />
-        <IonAccordion value="user">
-          <IonItem slot="header" color="light">
-            <IonLabel>Usuario</IonLabel>
-          </IonItem>
-          <div className="ion-padding" slot="content">
-            <TipoUserSettingsC />
-          </div>
-
-        </IonAccordion>
-
       </IonAccordionGroup>
 
       {/* modal add bloques */}

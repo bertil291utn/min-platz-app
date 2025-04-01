@@ -31,17 +31,13 @@ const Tabs: React.FC = () => {
     return <Redirect to="/login" />;
   }
 
-  const handleLogOut = () => () => {
-    dispatch(logout());
-    dispatch(cleanUser())
-  }
 
   return (
     <IonPage>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tabs/home">
-            <TabHome logout={handleLogOut()} />
+            <TabHome />
           </Route>
           <Route exact path="/tabs/monitoreo">
             <TabMonitoreo />
