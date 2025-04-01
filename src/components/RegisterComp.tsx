@@ -14,9 +14,12 @@ import {
   InputCustomEvent,
   InputInputEventDetail,
   IonLabel,
-  IonSpinner
+  IonSpinner,
+  IonPopover,
+  IonCard,
+  IonCardContent
 } from '@ionic/react';
-import { arrowBack, chevronDown, chevronUp } from 'ionicons/icons';
+import { arrowBack, chevronDown, chevronUp, informationCircle } from 'ionicons/icons';
 import { USER_AUTH } from '../helpers/AuthConst';
 import './RegisterComp.css';
 import { fetchPersonInfo } from '../services/PersonService';
@@ -41,6 +44,7 @@ const INITIAL_FORM_DATA = {
   password: '',
   confirmPassword: ''
 }
+
 const RegisterComp: React.FC = () => {
   const [formData, setFormData] = useState<RegisterForm>(INITIAL_FORM_DATA);
 
@@ -62,6 +66,58 @@ const RegisterComp: React.FC = () => {
       ...prev,
       [name]: ''
     }));
+
+    // Check confirm password match when password or confirmPassword changes
+    if (name === 'password' || name === 'confirmPassword') {
+      const confirmValue = name === 'confirmPassword' ? value : formData.confirmPassword;
+      const passwordValue = name === 'password' ? value : formData.password;
+
+      if (confirmValue && passwordValue !== confirmValue) {
+        setErrors(prev => ({
+          ...prev,
+          confirmPassword: 'Las contraseñas no coinciden'
+        }));
+      } else if (confirmValue) {
+        setErrors(prev => ({
+          ...prev,
+          confirmPassword: ''
+        }));
+      }
+    }
+  };
+
+  const validatePasswordOnBlur = () => {
+    if (!formData.password) {
+      setErrors(prev => ({
+        ...prev,
+        password: 'La contraseña es requerida'
+      }));
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      setErrors(prev => ({
+        ...prev,
+        password: 'La contraseña no cumple con los requisitos'
+      }));
+    }
+  };
+
+  const validateConfirmPasswordOnBlur = () => {
+    if (!formData.confirmPassword) {
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: 'Confirmar contraseña es requerido'
+      }));
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrors(prev => ({
+        ...prev,
+        confirmPassword: 'Las contraseñas no coinciden'
+      }));
+    }
   };
 
   const fetchCiData = async () => {
@@ -76,6 +132,17 @@ const RegisterComp: React.FC = () => {
       }));
       return;
     }
+    const existingUser = JSON.parse(localStorage.getItem('USER_DATA') as string);
+    if (existingUser) {
+      const ciExists = existingUser.ci === formData.ci;
+      if (ciExists) {
+        setErrors(prev => ({
+          ...prev,
+          ci: 'Esta cédula ya está registrada'
+        }));
+        return;
+      }
+    }
 
     setFetchingCiInfo(true);
     try {
@@ -87,8 +154,6 @@ const RegisterComp: React.FC = () => {
           nombre: personInfo.firstName,
           apellido: personInfo.lastName
         }));
-        // setToastMessage('Información obtenida correctamente');
-        // setShowToast(true);
       }
       // Silently fail if no data is found - let user fill in manually
     } catch (error) {
@@ -97,6 +162,16 @@ const RegisterComp: React.FC = () => {
     } finally {
       setFetchingCiInfo(false);
     }
+  };
+
+  const validatePassword = (password: string): boolean => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const endsWithAt = password.endsWith('@');
+    const hasMinLength = password.length >= 6;
+
+    return hasUpperCase && hasLowerCase && hasNumbers && endsWithAt && hasMinLength;
   };
 
   const validateForm = () => {
@@ -108,9 +183,9 @@ const RegisterComp: React.FC = () => {
     } else if (!isValidIdentification(formData.ci)) {
       newErrors.ci = 'Cédula inválida';
     } else {
-      const existingUsers = JSON.parse(localStorage.getItem('USER_DATA') || '[]');
-      if (Array.isArray(existingUsers)) {
-        const ciExists = existingUsers.some(user => user.ci === formData.ci);
+      const existingUser = JSON.parse(localStorage.getItem('USER_DATA') as string);
+      if (existingUser) {
+        const ciExists = existingUser.ci === formData.ci;
         if (ciExists) {
           newErrors.ci = 'Esta cédula ya está registrada';
         }
@@ -125,13 +200,17 @@ const RegisterComp: React.FC = () => {
       newErrors.apellido = 'El apellido es requerido';
     }
 
+    // Password validation
     if (!formData.password) {
       newErrors.password = 'La contraseña es requerida';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    } else if (!validatePassword(formData.password)) {
+      newErrors.password = 'La contraseña no cumple con los requisitos';
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    // Confirm password validation
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Confirmar contraseña es requerido';
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Las contraseñas no coinciden';
     }
 
@@ -166,15 +245,14 @@ const RegisterComp: React.FC = () => {
       };
 
       localStorage.setItem('USER_DATA', JSON.stringify(userData));
-      setFormData(INITIAL_FORM_DATA)
-      // Push to verification page with CI information
-      router.push('/verify');
+      setFormData(INITIAL_FORM_DATA);
 
-      // Set the state data in sessionStorage since IonRouter doesn't support state transfer directly
-      sessionStorage.setItem('verification', JSON.stringify({
-        type: 'ci',
-        contact: formData.ci
-      }));
+      // Show success message
+      setToastMessage('Usuario registrado exitosamente');
+      setShowToast(true);
+
+      // Wait for toast to be visible before redirecting
+      router.push('/login', 'root');
     } catch (error) {
       setToastMessage('Error al registrar');
       setShowToast(true);
@@ -196,9 +274,31 @@ const RegisterComp: React.FC = () => {
         <IonList>
           {/* Mandatory Fields */}
           <div className="mandatory-fields">
-            <IonText color="medium">
-              <h2>Campos Obligatorios</h2>
-            </IonText>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <IonText color="medium">
+                <h2>Campos Obligatorios</h2>
+              </IonText>
+              <IonButton
+                fill="clear"
+                id="password-info"
+                size="small"
+                style={{ height: '25px', margin: 0, padding: 0 }}
+              >
+                <IonIcon icon={informationCircle} color="medium" />
+              </IonButton>
+              <IonPopover trigger="password-info" triggerAction="click">
+                <div className="ion-padding">
+                  <h3 style={{ margin: '0 0 8px 0' }}>Requisitos de contraseña:</h3>
+                  <ul style={{ margin: 0, paddingInlineStart: '20px' }}>
+                    <li>Mínimo 6 caracteres</li>
+                    <li>Al menos una letra mayúscula</li>
+                    <li>Al menos una letra minúscula</li>
+                    <li>Al menos un número</li>
+                    <li>Debe terminar con @</li>
+                  </ul>
+                </div>
+              </IonPopover>
+            </div>
 
             <IonItem>
               <IonInput
@@ -225,7 +325,7 @@ const RegisterComp: React.FC = () => {
 
             <IonItem>
               <IonInput
-                label="Nombre *"
+                label="Nombres *"
                 labelPlacement="floating"
                 type="text"
                 name="nombre"
@@ -243,7 +343,7 @@ const RegisterComp: React.FC = () => {
 
             <IonItem>
               <IonInput
-                label="Apellido *"
+                label="Apellidos *"
                 labelPlacement="floating"
                 type="text"
                 name="apellido"
@@ -259,7 +359,7 @@ const RegisterComp: React.FC = () => {
               </IonNote>
             )}
 
-            <IonItem>
+            <IonItem style={{ width: '100%' }}>
               <IonInput
                 label="Contraseña *"
                 labelPlacement="floating"
@@ -267,6 +367,7 @@ const RegisterComp: React.FC = () => {
                 name="password"
                 value={formData.password}
                 onIonInput={handleChange}
+                onIonBlur={validatePasswordOnBlur}
                 errorText={errors.password}
                 required
               >
@@ -287,6 +388,7 @@ const RegisterComp: React.FC = () => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onIonInput={handleChange}
+                onIonBlur={validateConfirmPasswordOnBlur}
                 errorText={errors.confirmPassword}
                 required
               >
