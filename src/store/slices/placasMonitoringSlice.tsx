@@ -18,6 +18,7 @@ interface PlacasMonitoringState {
   loading: boolean;
   error: string | null;
   isToastSavedOpen: boolean;
+  isEdit: boolean;
 }
 
 const initialState: PlacasMonitoringState = {
@@ -31,7 +32,8 @@ const initialState: PlacasMonitoringState = {
   placasMonitored: [],
   loading: false,
   error: null,
-  isToastSavedOpen: false
+  isToastSavedOpen: false,
+  isEdit: false
 };
 
 export const fetchPlacasMonitored = createAsyncThunk(
@@ -126,9 +128,14 @@ const placasMonitoringSlice = createSlice({
     setSelectedDiseases: (state, action: PayloadAction<DiseaseInPlaca[]>) => {
       state.selectedDiseases = action.payload;
     },
+    setIsEdit: (state, action: PayloadAction<boolean>) => {
+      state.isEdit = action.payload;
+    },
     resetForm: (state) => {
       state.notes = '';
       state.selectedDiseases = [];
+      state.isEdit = false;
+      state.loading = false;
     }
   },
   extraReducers: (builder) => {
@@ -147,6 +154,9 @@ const placasMonitoringSlice = createSlice({
         state.loading = false;
         state.placasMonitored = action.payload;
         state.isToastSavedOpen = true;
+      })
+      .addCase(updatePlacaMonitoring.rejected, (state, action) => {
+        state.loading = false;
       });
   }
 });
@@ -160,6 +170,7 @@ export const {
   setNotes,
   resetForm,
   setSelectedDiseases,
+  setIsEdit
 } = placasMonitoringSlice.actions;
 
 export default placasMonitoringSlice.reducer;

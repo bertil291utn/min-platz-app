@@ -19,6 +19,7 @@ interface MonitoringBloqueState {
   IsToastSavedOpen: boolean;
   loading: boolean;
   error: string | null;
+  isEdit: boolean;
 }
 
 const initialState: MonitoringBloqueState = {
@@ -34,7 +35,8 @@ const initialState: MonitoringBloqueState = {
   bloquesMonitored: [],
   IsToastSavedOpen: false,
   loading: false,
-  error: null
+  error: null,
+  isEdit: false
 };
 
 // Fetch monitored bloques from localStorage or API
@@ -176,6 +178,12 @@ const monitoringBloqueSlice = createSlice({
   name: 'monitoringBloque',
   initialState,
   reducers: {
+    setActiveSegment: (state, action: PayloadAction<SegmentBloque>) => {
+      state.activeSegment = action.payload;
+    },
+    setActiveViewSegment: (state, action: PayloadAction<SegmentViewBloque>) => {
+      state.activeViewSegment = action.payload;
+    },
     setSelectedBloque: (state, action: PayloadAction<Bloque | undefined>) => {
       state.selectedBloque = action.payload;
     },
@@ -194,11 +202,14 @@ const monitoringBloqueSlice = createSlice({
     setSelectedCuadros: (state, action: PayloadAction<CuadroMonitored[]>) => {
       state.selectedCuadros = action.payload;
     },
-    setActiveSegment: (state, action: PayloadAction<SegmentBloque>) => {
-      state.activeSegment = action.payload;
+    setIsEdit: (state, action: PayloadAction<boolean>) => {
+      state.isEdit = action.payload;
     },
-    setActiveViewSegment: (state, action: PayloadAction<SegmentViewBloque>) => {
-      state.activeViewSegment = action.payload;
+    resetForm: (state) => {
+      state.selectedDiseases = [];
+      state.selectedCuadros = [];
+      state.isEdit = false;
+      state.loading = false;
     },
     setIsOnline: (state, action: PayloadAction<boolean>) => {
       state.isOnline = action.payload;
@@ -255,14 +266,16 @@ const monitoringBloqueSlice = createSlice({
 });
 
 export const {
+  setActiveSegment,
+  setActiveViewSegment,
   setSelectedBloque,
   setSelectedCuadro,
   setSelectedCama,
   setSelectedWeek,
   setSelectedDiseases,
   setSelectedCuadros,
-  setActiveSegment,
-  setActiveViewSegment,
+  resetForm,
+  setIsEdit,
   setIsOnline,
   setIsToastSavedOpen
 } = monitoringBloqueSlice.actions;

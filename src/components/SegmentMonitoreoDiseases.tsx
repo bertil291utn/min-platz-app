@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DISEASES } from '../helpers/diseases';
 import { IonButton, IonCard, IonCardHeader, IonCardTitle, IonIcon, IonItemDivider } from '@ionic/react';
 import { Disease } from '../interfaces/Diseases';
@@ -14,13 +14,11 @@ import { setActiveSegment as setActiveSegmentMallas, setSelectedDiseases as setS
 import { MallasSegment } from '../interfaces/MallasMonitoring';
 
 interface SegmentMonitoreoDiseaseProps {
-  onDiseaseSelect?: (disease: Disease) => void;
-  mode?: 'camas' | 'placas' | 'mallas';
+  mode: 'camas' | 'placas' | 'mallas';
 }
 
 const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
-  onDiseaseSelect,
-  mode = 'camas'
+  mode
 }) => {
   const [diseasesArr] = useState(DISEASES);
   const dispatch = useAppDispatch();
@@ -29,10 +27,16 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
   const selectedDiseasesMallas = useAppSelector(state => state.mallasMonitoring.selectedDiseases);
   const [showModalDisease, setShowModalDisease] = useState<Disease | boolean>(false);
   const user = useAppSelector((state) => state.userLogged.user);
+  
+  // Obtener el estado de edición de cada componente
+  const isEditCamas = useAppSelector(state => state.monitoringBloque.isEdit);
+  const isEditPlacas = useAppSelector(state => state.placasMonitoring.isEdit);
+  const isEditMallas = useAppSelector(state => state.mallasMonitoring.isEdit);
+
 
   const handleSelectDisease = (disease: Disease) => () => {
     if (mode === 'mallas') {
-        const setDisease = () => {
+      const setDisease = () => {
         const prev = [...selectedDiseasesMallas];
         const isSelected = prev.some(d => d.id === disease.id);
         if (isSelected) {
@@ -42,9 +46,6 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
         }
       };
       dispatch(setSelectedDiseasesMallas(setDisease()));
-      if (onDiseaseSelect) {
-        onDiseaseSelect(disease);
-      }
       return;
     }
 
@@ -59,9 +60,6 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
         }
       };
       dispatch(setSelectedDiseasesPlacas(setDisease()));
-      if (onDiseaseSelect) {
-        onDiseaseSelect(disease);
-      }
       return;
     }
 
@@ -82,6 +80,23 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
     setShowModalDisease(disease);
   }
 
+  // Determinar si debe mostrar el botón de avanzar según el modo y estado
+  const shouldShowAdvanceButton = 
+    (mode === 'camas' && (isEditCamas || selectedDiseases.length > 0)) ||
+    (mode === 'placas' && (isEditPlacas || selectedDiseasesPlacas.length > 0)) ||
+    (mode === 'mallas' && (isEditMallas || selectedDiseasesMallas.length > 0));
+
+  // Maneja el clic en el botón avanzar
+  const handleAdvance = () => {
+    if (mode === 'camas') {
+      dispatch(setActiveSegment('options'));
+    } else if (mode === 'placas') {
+      dispatch(setActiveSegmentPlacas('details'));
+    } else if (mode === 'mallas') {
+      dispatch(setActiveSegmentMallas('details'));
+    }
+  };
+
   return (
     <div>
       <div style={{
@@ -101,18 +116,13 @@ const SegmentMonitoreoDiseases: React.FC<SegmentMonitoreoDiseaseProps> = ({
         {mode === 'placas' && <ReturnButtonPlacas segmentReturn="number" />}
         {mode === 'mallas' && <ReturnButtonMallas segmentReturn="variety" />}
 
-        {((mode === 'camas' && selectedDiseases.length > 0) ||
-          (mode === 'placas' && selectedDiseasesPlacas.length > 0) ||
-          (mode === 'mallas' && selectedDiseasesMallas.length > 0)) &&
-          <IonButton fill="clear" onClick={() => {
-            if (mode === 'camas') dispatch(setActiveSegment('options'));
-            if (mode === 'placas') dispatch(setActiveSegmentPlacas('details'));
-            if (mode === 'mallas') dispatch(setActiveSegmentMallas('details'));
-          }}>
+        {/* Mostrar botón de avanzar si está en modo edición o si hay enfermedades seleccionadas */}
+        {shouldShowAdvanceButton && (
+          <IonButton fill="clear" onClick={handleAdvance}>
             <IonIcon slot="end" icon={arrowForward}></IonIcon>
             avanzar
           </IonButton>
-        }
+        )}
       </div>
 
       <p>Seleccione enfermedad</p>

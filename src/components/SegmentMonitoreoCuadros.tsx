@@ -5,7 +5,7 @@ import { STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
 import { getWeekNumber, CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import { BloqueMonitored } from '../interfaces/Monitoring';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
+import { setSelectedDiseases, setSelectedCuadros, setSelectedCuadro, setActiveSegment, setIsEdit } from '../store/slices/monitoringBloqueSlice';
 import LabelMonitoring from './LabelMonitoring';
 import ReturnButtonC from './ReturnButtonC';
 import { User } from '../interfaces/User';
@@ -46,6 +46,7 @@ const SegmentMonitoreoCuadros = () => {
 
     if (cuadroIndex == -1) { dispatch(setActiveSegment('diseases')); return; }
     setDisplayAlert(true);
+    dispatch(setIsEdit(true));
     const cuadros = cama?.cuadros ?? [];
     dispatch(setSelectedCuadros(cuadros));
     dispatch(setSelectedDiseases(cuadros[cuadroIndex]?.diseases ?? []));

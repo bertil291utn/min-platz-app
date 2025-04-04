@@ -1,7 +1,7 @@
 import {
   IonCard, IonCardHeader, IonCardTitle, IonCardContent,
   IonButton, IonLabel, IonTextarea, IonSelect, IonSelectOption,
-  IonChip, IonItem, IonList, IonIcon, IonSpinner, IonToast
+  IonChip, IonItem, IonList, IonIcon, IonSpinner, IonToast, IonAlert
 } from '@ionic/react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -13,7 +13,8 @@ import {
   setObservations,
   resetForm,
   updateMallaMonitoring,
-  setSelectedWeek
+  setSelectedWeek,
+  setIsEdit
 } from '../store/slices/mallasMonitoringSlice';
 import { Disease } from '../interfaces/Diseases';
 import { addCircle, removeCircle } from 'ionicons/icons';
@@ -21,7 +22,7 @@ import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import { ROSE_VARIETIES } from '../interfaces/RoseVariety';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const MonitoreoMallas = () => {
   const dispatch = useAppDispatch();
@@ -32,11 +33,14 @@ const MonitoreoMallas = () => {
     observations,
     loading,
     isToastSavedOpen,
-    selectedWeek
+    selectedWeek,
+    mallasMonitored,
+    isEdit
   } = useAppSelector(state => state.mallasMonitoring);
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
 
   const [showNumSemana, setShowNumSemana] = useState<boolean>(false);
+  const [displayAlert, setDisplayAlert] = useState<boolean>(false);
 
   const handleWeekSelect = (value: number) => {
     dispatch(setSelectedWeek(value));
@@ -53,8 +57,33 @@ const MonitoreoMallas = () => {
     }));
 
     dispatch(resetForm());
+    dispatch(setIsEdit(false));
     dispatch(setActiveSegment('diseases'));
   };
+
+  // Check if this is an edit case when variety is selected
+  useEffect(() => {
+    if (selectedVariety && selectedBloque?.id) {
+      const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
+      const bloqueIndex = mallasMonitored?.findIndex(b => 
+        b.id === selectedBloque.id && b.weekNumber === weekNumber
+      );
+      
+      if (bloqueIndex !== -1) {
+        const mallaExists = mallasMonitored[bloqueIndex].mallas.some(
+          m => m.variety === selectedVariety
+        );
+        if (mallaExists) {
+          setDisplayAlert(true);
+          dispatch(setIsEdit(true));
+        } else {
+          dispatch(setIsEdit(false));
+        }
+      } else {
+        dispatch(setIsEdit(false));
+      }
+    }
+  }, [selectedVariety, selectedBloque?.id, selectedWeek, mallasMonitored, dispatch]);
 
   const renderContent = () => {
     switch (activeSegment) {
@@ -243,6 +272,29 @@ const MonitoreoMallas = () => {
         isOpen={isToastSavedOpen}
         message="Monitoreo guardado exitosamente"
         duration={2000}
+      />
+
+      <IonAlert
+        isOpen={displayAlert}
+        onDidDismiss={() => setDisplayAlert(false)}
+        header="Variedad ya monitoreada"
+        message="Esta variedad ya ha sido monitoreada en esta semana. ¿Desea continuar?"
+        buttons={[
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            handler: () => {
+              dispatch(setActiveSegment('variety'));
+            }
+          },
+          {
+            text: 'Continuar',
+            handler: () => {
+              setDisplayAlert(false);
+              dispatch(setActiveSegment('diseases'));
+            }
+          }
+        ]}
       />
     </>
   );

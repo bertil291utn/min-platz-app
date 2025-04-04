@@ -14,6 +14,7 @@ interface MallasMonitoringState {
   loading: boolean;
   error: string | null;
   isToastSavedOpen: boolean;
+  isEdit: boolean;
 }
 
 const initialState: MallasMonitoringState = {
@@ -25,7 +26,8 @@ const initialState: MallasMonitoringState = {
   mallasMonitored: [],
   loading: false,
   error: null,
-  isToastSavedOpen: false
+  isToastSavedOpen: false,
+  isEdit: false
 };
 
 export const fetchMallasMonitored = createAsyncThunk(
@@ -125,11 +127,16 @@ const mallasMonitoringSlice = createSlice({
     setSelectedWeek: (state, action: PayloadAction<number | null>) => {
       state.selectedWeek = action.payload;
     },
+    setIsEdit: (state, action: PayloadAction<boolean>) => {
+      state.isEdit = action.payload;
+    },
     resetForm: (state) => {
       state.selectedDiseases = [];
       state.observations = '';
       state.selectedVariety = null;
       state.selectedWeek = null;
+      state.isEdit = false;
+      state.loading = false;
     }
   },
   extraReducers: (builder) => {
@@ -148,6 +155,9 @@ const mallasMonitoringSlice = createSlice({
         state.loading = false;
         state.mallasMonitored = action.payload;
         state.isToastSavedOpen = true;
+      })
+      .addCase(updateMallaMonitoring.rejected, (state, action) => {
+        state.loading = false;
       });
   }
 });
@@ -160,7 +170,8 @@ export const {
   updateDiseaseCount,
   setObservations,
   resetForm,
-  setSelectedWeek
+  setSelectedWeek,
+  setIsEdit
 } = mallasMonitoringSlice.actions;
 
 export default mallasMonitoringSlice.reducer;

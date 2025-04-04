@@ -8,7 +8,7 @@ import {
   IonAlert
 } from '@ionic/react';
 import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { Disease } from '../interfaces/Diseases';
 import { BloqueMonPlaca, DiseaseInPlaca, PlacasSegment } from '../interfaces/PlacaMonitoring';
@@ -16,7 +16,7 @@ import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import {
   setActiveSegment, setSelectedType, setSelectedPlacaNumber,
   setSelectedDiseases, setNotes, updatePlacaMonitoring, resetForm,
-  setSelectedWeek,
+  setSelectedWeek, setIsEdit,
   STORE_PLACAS_MONITORED
 } from '../store/slices/placasMonitoringSlice';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
@@ -36,11 +36,43 @@ const MonitoreoPlacas = () => {
     selectedWeek,
     notes,
     loading,
-    isToastSavedOpen
+    isToastSavedOpen,
+    isEdit
   } = useAppSelector(state => state.placasMonitoring);
 
+  // Check if this is an edit case when placa is selected
+  // useEffect(() => {
+  //   if (selectedBloque?.id && selectedType && selectedPlacaNumber) {
+  //     const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
+  //     const existingData = localStorage.getItem(STORE_PLACAS_MONITORED);
+
+  //     if (existingData) {
+  //       const parsedData: BloqueMonPlaca[] = JSON.parse(existingData);
+  //       const bloqueIndex = parsedData?.findIndex(b => 
+  //         b.id === selectedBloque.id && b.weekNumber === weekNumber
+  //       );
+
+  //       if (bloqueIndex !== -1) {
+  //         const placaExists = parsedData[bloqueIndex].placas.some(
+  //           p => p.id === selectedPlacaNumber && p.type === selectedType
+  //         );
+  //         if (placaExists) {
+  //           setDisplayAlert(true);
+  //           dispatch(setIsEdit(true));
+  //         } else {
+  //           dispatch(setIsEdit(false));
+  //         }
+  //       } else {
+  //         dispatch(setIsEdit(false));
+  //       }
+  //     } else {
+  //       dispatch(setIsEdit(false));
+  //     }
+  //   }
+  // }, [selectedBloque?.id, selectedType, selectedPlacaNumber, selectedWeek, dispatch]);
+
   const handleSave = async () => {
-    if (!selectedBloque || !selectedType || !selectedPlacaNumber || selectedDiseases.length === 0) return;
+    if (!selectedBloque || !selectedType || !selectedPlacaNumber) return;
 
     await dispatch(updatePlacaMonitoring({
       bloqueId: selectedBloque.id!,
@@ -51,6 +83,7 @@ const MonitoreoPlacas = () => {
     }));
 
     dispatch(resetForm());
+    dispatch(setIsEdit(false));
     dispatch(setActiveSegment('diseases'));
   };
 
@@ -109,6 +142,7 @@ const MonitoreoPlacas = () => {
     }
 
     // If placa exists, show alert and set existing data
+    dispatch(setIsEdit(true));
     setDisplayAlert(true);
 
     // Set existing data for editing
@@ -281,7 +315,6 @@ const MonitoreoPlacas = () => {
         return (
           <div className="ion-padding">
             <SegmentMonitoreoDiseases
-              onDiseaseSelect={handleDiseaseSelect}
               mode="placas"
             />
           </div>
@@ -291,7 +324,7 @@ const MonitoreoPlacas = () => {
           <div className="ion-padding">
             <ReturnButtonPlacas segmentReturn="diseases" />
             <div style={{ margin: '1.5rem 0' }}>
-              <IonLabel>Cantidad de plagas encontradas</IonLabel>
+              <IonLabel>Cantidad de plagas encontradas {selectedDiseases.length}</IonLabel>
             </div>
 
             {renderDiseasesList()}

@@ -1,35 +1,36 @@
-import { IonCard, IonCardContent, IonChip, IonIcon, IonLabel } from '@ionic/react';
+import {
+  IonCard, IonCardContent, IonChip, 
+  IonLabel, 
+} from '@ionic/react';
+import { 
+  useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchMonitoredBloques, setActiveSegment } from '../store/slices/monitoringBloqueSlice';
-import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
-import { SegmentBloque } from '../interfaces/Bloque';
-import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
-import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
-import { useEffect } from 'react';
-import MonitoreoPlacas from './MonitoreoPlacas';
-import MonitoreoMallas from './MonitoreoMallas';
-import { homeOutline } from 'ionicons/icons';
-import SegmentMonitoreoCuadros from './SegmentMonitoreoCuadros';
+import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
+import {
+  setActiveSegment, 
+  fetchMonitoredBloques
+} from '../store/slices/monitoringBloqueSlice';
 import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
-import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER, getWeekNumber } from '../helpers/regularHelper';
+import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
+import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
+import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
+import SegmentMonitoreoCuadros from './SegmentMonitoreoCuadros';
 
 const MonitoreoC = () => {
   const dispatch = useAppDispatch();
+  const {
+    activeSegment,
+    selectedBloque,
+    selectedCuadro,
+    selectedCama,
+  } = useAppSelector(state => state.monitoringBloque);
+
+  const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
 
   useEffect(() => {
     dispatch(fetchMonitoredBloques());
   }, [dispatch]);
 
-  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
-  const activeSegment = useAppSelector(state => state.monitoringBloque.activeSegment);
-  const selectedCama = useAppSelector(state => state.monitoringBloque.selectedCama);
-  const selectedCuadro = useAppSelector(state => state.monitoringBloque.selectedCuadro);
-  const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
-  const selectedDiseases = useAppSelector(state => state.monitoringBloque.selectedDiseases);
-
-  const handleSegmentChange = (value: string) => {
-    dispatch(setActiveSegment(value as SegmentBloque));
-  };
 
   return (
     <div>
@@ -89,7 +90,7 @@ const MonitoreoC = () => {
         {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
         {activeSegment === 'cuadros' && <SegmentMonitoreoCuadros />}
-        {activeSegment === 'diseases' && <SegmentMonitoreoDiseases />}
+        {activeSegment === 'diseases' && <SegmentMonitoreoDiseases mode='camas'/>}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}
 
 

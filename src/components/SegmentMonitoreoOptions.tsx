@@ -5,7 +5,7 @@ import LabelMonitoring from './LabelMonitoring';
 import { CuadroMonitored } from '../interfaces/Monitoring';
 import { sleep } from '../helpers/regularHelper';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { setActiveSegment, setIsToastSavedOpen, setSelectedDiseases, setSelectedWeek, updateMonitoringData } from '../store/slices/monitoringBloqueSlice';
+import { setActiveSegment, setIsToastSavedOpen, setSelectedDiseases, setSelectedWeek, updateMonitoringData, setIsEdit } from '../store/slices/monitoringBloqueSlice';
 
 const SegmentMonitoreoOptions = () => {
   const [selectedAcarosLevel, setSelectedAcarosLevel] = useState<number>(2);
@@ -60,6 +60,7 @@ const SegmentMonitoreoOptions = () => {
       dispatch(setActiveSegment('camas'));
       dispatch(setSelectedDiseases([]));
       dispatch(setSelectedWeek(undefined));
+      dispatch(setIsEdit(false));
       // No need to manually set IsToastSavedOpen as it's handled in the reducer
     } catch (error) {
       console.error('Failed to update monitoring data:', error);
@@ -117,7 +118,7 @@ const SegmentMonitoreoOptions = () => {
         )}
         <br />
 
-        <IonLabel>Vas a guardar estas enfermedades en el cuadro #{selectedCuadro}</IonLabel>
+        <IonLabel>Vas a guardar {selectedDiseases.length} enfermedades en el cuadro #{selectedCuadro}</IonLabel>
         <ul onClick={() => setActiveSegment('diseases')}>
           {selectedDiseases.map((disease) =>
             <li key={disease.id}>
