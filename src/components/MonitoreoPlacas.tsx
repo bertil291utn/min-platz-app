@@ -16,24 +16,23 @@ import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import {
   setActiveSegment, setSelectedType, setSelectedPlacaNumber,
   setSelectedDiseases, setNotes, updatePlacaMonitoring, resetForm,
-  setSelectedWeek, setIsEdit,
+  setIsEdit,
   STORE_PLACAS_MONITORED
 } from '../store/slices/placasMonitoringSlice';
-import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 
 const MonitoreoPlacas = () => {
   const [displayAlert, setDisplayAlert] = useState(false);
-  const [showNumSemana, setShowNumSemana] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+
+  // Get selectedBloque and selectedWeek from monitoringBloque state
+  const { selectedBloque, selectedWeek } = useAppSelector(state => state.monitoringBloque);
 
   const {
     activeSegment,
-    selectedBloque,
     selectedType,
     selectedPlacaNumber,
     selectedDiseases,
-    selectedWeek,
     notes,
     loading,
     isToastSavedOpen,
@@ -84,15 +83,7 @@ const MonitoreoPlacas = () => {
 
     dispatch(resetForm());
     dispatch(setIsEdit(false));
-    dispatch(setActiveSegment('diseases'));
-  };
-
-  const handleDiseaseSelect = (disease: Disease) => {
-    const newDisease: DiseaseInPlaca = {
-      ...disease,
-      countDisease: 0
-    };
-    dispatch(setSelectedDiseases([...selectedDiseases, newDisease]));
+    dispatch(setActiveSegment('type'));
   };
 
   const handleUpdateDiseaseCount = (diseaseId: number, newCount: number) => {
@@ -103,10 +94,6 @@ const MonitoreoPlacas = () => {
     );
     dispatch(setSelectedDiseases(updatedDiseases));
   };
-
-  const handleWeekSelect = (value: number) => {
-    dispatch(setSelectedWeek(value));
-  }
 
   const handleSelectPlaca = (placaNumber: number) => {
     dispatch(setSelectedPlacaNumber(placaNumber));
@@ -177,42 +164,9 @@ const MonitoreoPlacas = () => {
 
   const renderContent = () => {
     switch (activeSegment) {
-      case 'bloques':
-        return (
-          <div className='ion-padding'>
-            <SegmentMonitoreoBloques />
-          </div>
-        );
       case 'type':
         return (
           <div className="ion-padding">
-            <ReturnButtonPlacas segmentReturn="bloques" />
-
-            <IonButton
-              fill="outline"
-              expand="block"
-              onClick={() => setShowNumSemana(!showNumSemana)}
-            >
-              {showNumSemana ? 'Ocultar semana' : 'mostrar semana'}
-            </IonButton>
-
-            {showNumSemana && (
-              <div style={{ margin: '2rem 0' }}>
-                <IonSelect
-                  label="Seleccione semana"
-                  labelPlacement="floating"
-                  fill="outline"
-                  onIonChange={(e) => handleWeekSelect(e.detail.value)}
-                  value={selectedWeek || CURRENT_WEEK_NUMBER}
-                >
-                  {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, index) => (
-                    <IonSelectOption key={index + 1} value={index + 1}>
-                      Semana {index + 1}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </div>
-            )}
             <div style={{ marginTop: '3rem' }}>
               <IonLabel>Seleccione tipo de placa</IonLabel>
             </div>
@@ -346,9 +300,16 @@ const MonitoreoPlacas = () => {
           </div>
         );
       default:
-        return null;
+        return null
     }
   };
+
+  // Al iniciar, establecer activeSegment a 'type' si no hay uno definido
+  useEffect(() => {
+    if (!activeSegment || activeSegment === 'bloques') {
+      dispatch(setActiveSegment('type'));
+    }
+  }, []);
 
   return (
     <>
@@ -356,22 +317,10 @@ const MonitoreoPlacas = () => {
         <IonCard>
           <IonCardContent>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <IonChip color="secondary" onClick={() => {
-                dispatch(setActiveSegment('bloques'));
-                dispatch(setSelectedType(null));
-                dispatch(setSelectedPlacaNumber(null));
-                dispatch(setSelectedDiseases([]));
-                dispatch(setNotes(''));
-              }}>
+              <IonChip color="secondary">
                 <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
               </IonChip>
-              <IonChip color="secondary" onClick={() => {
-                dispatch(setActiveSegment('bloques'))
-                dispatch(setSelectedType(null));
-                dispatch(setSelectedPlacaNumber(null));
-                dispatch(setSelectedDiseases([]));
-                dispatch(setNotes(''));
-              }}>
+              <IonChip color="secondary">
                 <IonLabel>{selectedBloque.name}</IonLabel>
               </IonChip>
               {selectedType && (

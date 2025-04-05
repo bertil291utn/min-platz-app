@@ -1,20 +1,29 @@
 import {
-  IonCard, IonCardContent, IonChip, 
-  IonLabel, 
+  IonCard, IonCardContent, IonChip, IonIcon, IonLabel, IonButton,
+  IonTextarea, IonToast, IonSpinner, IonList, IonItem,
+  IonCardHeader,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonAlert
 } from '@ionic/react';
-import { 
-  useEffect } from 'react';
+import { addCircle, arrowBack, removeCircle } from 'ionicons/icons';
+import { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { Disease } from '../interfaces/Diseases';
+import { BloqueMonitored, CamaMonitored, CuadroMonitored } from '../interfaces/Monitoring';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
+import { STORE_MONITORED_VAR } from '../helpers/bloquesConstant';
 import {
-  setActiveSegment, 
-  fetchMonitoredBloques
+  setActiveSegment, setSelectedCuadro, setSelectedCama,
+  setSelectedDiseases, setIsEdit, fetchMonitoredBloques
 } from '../store/slices/monitoringBloqueSlice';
-import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import SegmentMonitoreoCamas from './SegmentMonitoreoCamas';
 import SegmentMonitoreoOptions from './SegmentMonitoreoOptions';
+import { homeOutline } from 'ionicons/icons';
 import SegmentMonitoreoCuadros from './SegmentMonitoreoCuadros';
+import { SegmentBloque } from '../interfaces/Bloque';
 
 const MonitoreoC = () => {
   const dispatch = useAppDispatch();
@@ -23,40 +32,44 @@ const MonitoreoC = () => {
     selectedBloque,
     selectedCuadro,
     selectedCama,
+    selectedDiseases,
+    loading,
+    isEdit,
+    selectedWeek
   } = useAppSelector(state => state.monitoringBloque);
 
-  const selectedWeek = useAppSelector(state => state.monitoringBloque.selectedWeek);
+  const [displayAlert, setDisplayAlert] = useState<boolean>(false);
 
   useEffect(() => {
+    // Al iniciar, establecer activeSegment a 'camas' si no hay uno definido
+    if (!activeSegment || activeSegment === 'bloques') {
+      dispatch(setActiveSegment('camas'));
+    }
+    
+    // Cargar los bloques monitoreados
     dispatch(fetchMonitoredBloques());
   }, [dispatch]);
 
+  const handleSegmentChange = (value: string) => {
+    dispatch(setActiveSegment(value as SegmentBloque));
+  };
 
   return (
     <div>
       <div className="sticky-header" style={{ position: 'sticky', top: 0, zIndex: 100, background: 'white' }}>
         <IonCard>
           <IonCardContent>
+            <IonChip color="secondary">
+              <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
+            </IonChip>
 
             {selectedBloque ? (
               <>
-                <IonChip color="secondary"
-                  onClick={() => {
-                    dispatch(setActiveSegment('bloques'));
-                  }}
-                >
+                <IonChip color="secondary">
                   <IonLabel>{selectedBloque.name}</IonLabel>
                 </IonChip>
               </>
             ) : null}
-
-            <IonChip color="secondary"
-              onClick={() => {
-                dispatch(setActiveSegment('camas'));
-              }}
-            >
-              <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
-            </IonChip>
 
             {selectedCama ? (
               <>
@@ -87,13 +100,10 @@ const MonitoreoC = () => {
 
 
       <div className="ion-padding">
-        {activeSegment === 'bloques' && <SegmentMonitoreoBloques />}
         {activeSegment === 'camas' && <SegmentMonitoreoCamas />}
         {activeSegment === 'cuadros' && <SegmentMonitoreoCuadros />}
         {activeSegment === 'diseases' && <SegmentMonitoreoDiseases mode='camas'/>}
         {activeSegment === 'options' && <SegmentMonitoreoOptions />}
-
-
       </div>
     </div>
   );

@@ -8,11 +8,9 @@ export const STORE_PLACAS_MONITORED = 'placas-monitored';
 
 interface PlacasMonitoringState {
   activeSegment: PlacasSegment;
-  selectedBloque: Bloque | null;
   selectedType: PlacaType | null;
   selectedPlacaNumber: number | null;
   selectedDiseases: DiseaseInPlaca[];  // Changed from selectedDisease: Disease | null
-  selectedWeek: number | null;
   notes: string;
   placasMonitored: BloqueMonPlaca[];
   loading: boolean;
@@ -23,11 +21,9 @@ interface PlacasMonitoringState {
 
 const initialState: PlacasMonitoringState = {
   activeSegment: 'bloques',
-  selectedBloque: null,
   selectedType: null,
   selectedPlacaNumber: null,
   selectedDiseases: [],
-  selectedWeek: null,
   notes: '',
   placasMonitored: [],
   loading: false,
@@ -107,24 +103,15 @@ const placasMonitoringSlice = createSlice({
     setActiveSegment: (state, action: PayloadAction<PlacasSegment>) => {
       state.activeSegment = action.payload;
     },
-    setSelectedBloque: (state, action: PayloadAction<Bloque | null>) => {
-      state.selectedBloque = action.payload;
-    },
     setSelectedType: (state, action: PayloadAction<PlacaType | null>) => {
       state.selectedType = action.payload;
     },
     setSelectedPlacaNumber: (state, action: PayloadAction<number | null>) => {
       state.selectedPlacaNumber = action.payload;
     },
-    
-    setSelectedWeek: (state, action: PayloadAction<number | null>) => {
-      state.selectedWeek = action.payload;
-    },
-   
     setNotes: (state, action: PayloadAction<string>) => {
       state.notes = action.payload;
     },
-    
     setSelectedDiseases: (state, action: PayloadAction<DiseaseInPlaca[]>) => {
       state.selectedDiseases = action.payload;
     },
@@ -163,10 +150,8 @@ const placasMonitoringSlice = createSlice({
 
 export const {
   setActiveSegment,
-  setSelectedBloque,
   setSelectedType,
   setSelectedPlacaNumber,
-  setSelectedWeek,
   setNotes,
   resetForm,
   setSelectedDiseases,

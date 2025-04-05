@@ -69,26 +69,7 @@ const SegmentMonitoreoCamas = () => {
       {selectedBloque
         ?
         <div>
-          <IonButton
-            fill="outline"
-            expand="block"
-            onClick={() => setShowNumSemana(!showNumSemana)}
-          >
-            {showNumSemana ? 'Ocultar semana' : 'mostrar semana'}
-          </IonButton>
-          <br />
-          {showNumSemana &&
-            <div style={{ marginBottom: '2rem' }}>
-              < IonSelect label="Seleccione semana" labelPlacement="floating" fill="outline"
-                onIonChange={(e) => handleSelector(e.detail.value)} value={selectedWeek || CURRENT_WEEK_NUMBER}>
-                {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, index) => (
-                  <IonSelectOption key={index + 1} value={index + 1}>
-                    Semana {index + 1}
-                  </IonSelectOption>
-                ))}
-              </IonSelect>
-            </div>
-          }
+          
 
           <br />
           <IonLabel>Seleccione numero de cama</IonLabel>

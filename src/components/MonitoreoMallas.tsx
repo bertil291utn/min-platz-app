@@ -13,12 +13,10 @@ import {
   setObservations,
   resetForm,
   updateMallaMonitoring,
-  setSelectedWeek,
   setIsEdit
 } from '../store/slices/mallasMonitoringSlice';
 import { Disease } from '../interfaces/Diseases';
-import { addCircle, removeCircle } from 'ionicons/icons';
-import SegmentMonitoreoBloques from './SegmentMonitoreoBloques';
+import { addCircle, removeCircle, arrowBack } from 'ionicons/icons';
 import SegmentMonitoreoDiseases from './SegmentMonitoreoDiseases';
 import { ROSE_VARIETIES } from '../interfaces/RoseVariety';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
@@ -26,6 +24,10 @@ import { useState, useEffect } from 'react';
 
 const MonitoreoMallas = () => {
   const dispatch = useAppDispatch();
+  
+  // Get selectedBloque and selectedWeek from monitoringBloque state
+  const { selectedBloque, selectedWeek } = useAppSelector(state => state.monitoringBloque);
+  
   const {
     activeSegment,
     selectedVariety,
@@ -33,18 +35,11 @@ const MonitoreoMallas = () => {
     observations,
     loading,
     isToastSavedOpen,
-    selectedWeek,
     mallasMonitored,
     isEdit
   } = useAppSelector(state => state.mallasMonitoring);
-  const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
 
-  const [showNumSemana, setShowNumSemana] = useState<boolean>(false);
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
-
-  const handleWeekSelect = (value: number) => {
-    dispatch(setSelectedWeek(value));
-  }
 
   const handleSave = () => {
     if (!selectedBloque?.id || !selectedVariety || selectedDiseases.length === 0) return;
@@ -58,7 +53,7 @@ const MonitoreoMallas = () => {
 
     dispatch(resetForm());
     dispatch(setIsEdit(false));
-    dispatch(setActiveSegment('diseases'));
+    dispatch(setActiveSegment('variety'));
   };
 
   // Check if this is an edit case when variety is selected
@@ -85,141 +80,141 @@ const MonitoreoMallas = () => {
     }
   }, [selectedVariety, selectedBloque?.id, selectedWeek, mallasMonitored, dispatch]);
 
+  const handleSelectVariety = (variety: string) => {
+    dispatch(setSelectedVariety(variety));
+    dispatch(setActiveSegment('diseases'));
+  };
+
+  const handleUpdateDiseaseStatus = (diseaseId: number, status: 'vivo' | 'muerto') => {
+    dispatch(updateDiseaseStatus({ diseaseId, status }));
+  };
+
+  const handleUpdateDiseaseCount = (diseaseId: number, count: number) => {
+    dispatch(updateDiseaseCount({ diseaseId, count }));
+  };
+
+  // Al iniciar, establecer activeSegment a 'variety' si no hay uno definido
+  useEffect(() => {
+    if (!activeSegment || activeSegment === 'bloques') {
+      dispatch(setActiveSegment('variety'));
+    }
+  }, []);
+
+  const renderDiseasesList = () => (
+    <IonList>
+      {selectedDiseases.map(disease => (
+        <IonItem key={disease.id}>
+          <IonLabel>{disease.name}</IonLabel>
+          <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <IonSelect
+              value={disease.status}
+              interface="popover"
+              onIonChange={e => handleUpdateDiseaseStatus(disease.id, e.detail.value)}
+            >
+              <IonSelectOption value="vivo">Vivo</IonSelectOption>
+              <IonSelectOption value="muerto">Muerto</IonSelectOption>
+            </IonSelect>
+
+            <IonButton onClick={() =>
+              handleUpdateDiseaseCount(disease.id, Math.max(1, disease.count - 1))
+            }>
+              <IonIcon icon={removeCircle} />
+            </IonButton>
+            <IonLabel>{disease.count}</IonLabel>
+            <IonButton onClick={() =>
+              handleUpdateDiseaseCount(disease.id, disease.count + 1)
+            }>
+              <IonIcon icon={addCircle} />
+            </IonButton>
+          </div>
+        </IonItem>
+      ))}
+    </IonList>
+  );
+
   const renderContent = () => {
     switch (activeSegment) {
-      case 'bloques':
-        return <SegmentMonitoreoBloques />;
-
       case 'variety':
         return (
           <div className="ion-padding">
+            <div style={{ margin: '1.5rem 0' }}>
+              <IonLabel>Seleccione la variedad</IonLabel>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {ROSE_VARIETIES.map(variety => (
+                <IonCard
+                  key={variety.id}
+                  onClick={() => handleSelectVariety(variety.id)}
+                  color={selectedVariety === variety.id ? 'primary' : ''}
+                  button
+                >
+                  <IonCardHeader>
+                    <IonCardTitle>{variety.name}</IonCardTitle>
+                  </IonCardHeader>
+                </IonCard>
+              ))}
+            </div>
 
-            <IonButton
-              fill="outline"
-              expand="block"
-              onClick={() => setShowNumSemana(!showNumSemana)}
-            >
-              {showNumSemana ? 'Ocultar semana' : 'mostrar semana'}
-            </IonButton>
-            {showNumSemana && (
-              <div style={{ margin: '2rem 0' }}>
-                <IonSelect
-                  label="Seleccione semana"
-                  labelPlacement="floating"
-                  fill="outline"
-                  onIonChange={(e) => handleWeekSelect(e.detail.value)}
-                  value={selectedWeek || CURRENT_WEEK_NUMBER}
-                >
-                  {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, index) => (
-                    <IonSelectOption key={index + 1} value={index + 1}>
-                      Semana {index + 1}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </div>
-            )}
-            <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Seleccione Variedad</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <IonSelect
-                  label="Variedad"
-                  labelPlacement="floating"
-                  fill="outline"
-                  value={selectedVariety}
-                  onIonChange={e => {
-                    dispatch(setSelectedVariety(e.detail.value));
+            <IonAlert
+              isOpen={displayAlert}
+              onDidDismiss={() => setDisplayAlert(false)}
+              header="Variedad ya monitoreada"
+              message="Esta variedad ya ha sido monitoreada en esta semana. ¿Desea continuar?"
+              buttons={[
+                {
+                  text: 'Cancelar',
+                  role: 'cancel',
+                  handler: () => {
+                    dispatch(setActiveSegment('variety'));
+                  }
+                },
+                {
+                  text: 'Continuar',
+                  handler: () => {
+                    setDisplayAlert(false);
                     dispatch(setActiveSegment('diseases'));
-                  }}
-                >
-                  {ROSE_VARIETIES.map(variety => (
-                    <IonSelectOption key={variety.id} value={variety.id}>
-                      {variety.name}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonCardContent>
-            </IonCard>
+                  }
+                }
+              ]}
+            />
           </div>
         );
-
       case 'diseases':
         return (
-          <SegmentMonitoreoDiseases
-            mode="mallas"
-          />
+          <div className="ion-padding">
+            <SegmentMonitoreoDiseases
+              mode="mallas"
+            />
+          </div>
         );
-
       case 'details':
         return (
           <div className="ion-padding">
-            <IonList>
-              {selectedDiseases.map(disease => (
-                <IonCard key={disease.id}>
-                  <IonCardHeader>
-                    <IonCardTitle>{disease.name}</IonCardTitle>
-                  </IonCardHeader>
-                  <IonCardContent>
-                    <IonButton
-                      fill={disease.status === 'vivo' ? 'solid' : 'outline'}
-                      onClick={() => dispatch(updateDiseaseStatus({
-                        diseaseId: disease.id,
-                        status: 'vivo'
-                      }))}
-                    >
-                      Vivo
-                    </IonButton>
-                    <IonButton
-                      fill={disease.status === 'muerto' ? 'solid' : 'outline'}
-                      onClick={() => dispatch(updateDiseaseStatus({
-                        diseaseId: disease.id,
-                        status: 'muerto'
-                      }))}
-                    >
-                      Muerto
-                    </IonButton>
+            <ReturnButtonMallas segmentReturn="diseases" />
+            <div style={{ margin: '1.5rem 0' }}>
+              <IonLabel>Detalle de plagas encontradas</IonLabel>
+            </div>
 
-                    <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '1.5rem 0' }}>
-                      <IonButton onClick={() => dispatch(updateDiseaseCount({
-                        diseaseId: disease.id,
-                        count: Math.max(0, disease.count - 1)
-                      }))}>
-                        <IonIcon icon={removeCircle} />
-                      </IonButton>
-                      <IonLabel>{disease.count}</IonLabel>
-                      <IonButton onClick={() => dispatch(updateDiseaseCount({
-                        diseaseId: disease.id,
-                        count: disease.count + 1
-                      }))}>
-                        <IonIcon icon={addCircle} />
-                      </IonButton>
-                    </div>
-                  </IonCardContent>
-                </IonCard>
-              ))}
+            {renderDiseasesList()}
 
-              <div style={{ margin: '2rem 0' }}>
-                <IonTextarea
-                  label="Observaciones"
-                  labelPlacement="floating"
-                  fill="outline"
-                  value={observations}
-                  onIonInput={e => dispatch(setObservations(e.detail.value!))}
-                  rows={4}
-                />
-              </div>
+            <div style={{ margin: '2rem 0' }}>
+              <IonTextarea
+                label="Observaciones adicionales"
+                labelPlacement="floating"
+                fill="outline"
+                value={observations}
+                onIonInput={e => dispatch(setObservations(e.detail.value!))}
+                rows={4}
+              />
+            </div>
 
-              <IonButton
-                expand="block"
-                onClick={handleSave}
-                disabled={loading}
-              >
-                {loading ? <IonSpinner /> : 'Guardar'}
-              </IonButton>
-            </IonList>
+            <IonButton expand="block" onClick={handleSave} disabled={loading}>
+              {loading ? <IonSpinner /> : 'Guardar'}
+            </IonButton>
           </div>
         );
+      default:
+        return null;
     }
   };
 
@@ -229,36 +224,24 @@ const MonitoreoMallas = () => {
         <IonCard>
           <IonCardContent>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-
-              <IonChip color="secondary" onClick={() => {
-                dispatch(setActiveSegment('bloques'));
-              }}>
+              <IonChip color="secondary">
                 <IonLabel>{`Semana ${selectedWeek || CURRENT_WEEK_NUMBER}`}</IonLabel>
               </IonChip>
-              <IonChip
-                color="secondary"
-                onClick={() => dispatch(setActiveSegment('bloques'))}
-              >
+              <IonChip color="secondary">
                 <IonLabel>{selectedBloque.name}</IonLabel>
               </IonChip>
-
               {selectedVariety && (
-                <IonChip
-                  color="secondary"
-                  onClick={() => dispatch(setActiveSegment('variety'))}
-                >
-                  <IonLabel>
-                    {ROSE_VARIETIES.find(v => v.id === selectedVariety)?.name}
-                  </IonLabel>
+                <IonChip color="secondary" onClick={() => {
+                  dispatch(setActiveSegment('variety'));
+                  dispatch(setSelectedDiseases([]));
+                  dispatch(setObservations(''));
+                }}>
+                  <IonLabel>{ROSE_VARIETIES.find(v => v.id === selectedVariety)?.name || selectedVariety}</IonLabel>
                 </IonChip>
               )}
-
               {selectedDiseases.length > 0 && (
-                <IonChip
-                  color="secondary"
-                  onClick={() => dispatch(setActiveSegment('diseases'))}
-                >
-                  <IonLabel>Enfermedades</IonLabel>
+                <IonChip color="secondary" onClick={() => dispatch(setActiveSegment('diseases'))}>
+                  <IonLabel>Diseases</IonLabel>
                 </IonChip>
               )}
             </div>
@@ -273,31 +256,22 @@ const MonitoreoMallas = () => {
         message="Monitoreo guardado exitosamente"
         duration={2000}
       />
-
-      <IonAlert
-        isOpen={displayAlert}
-        onDidDismiss={() => setDisplayAlert(false)}
-        header="Variedad ya monitoreada"
-        message="Esta variedad ya ha sido monitoreada en esta semana. ¿Desea continuar?"
-        buttons={[
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            handler: () => {
-              dispatch(setActiveSegment('variety'));
-            }
-          },
-          {
-            text: 'Continuar',
-            handler: () => {
-              setDisplayAlert(false);
-              dispatch(setActiveSegment('diseases'));
-            }
-          }
-        ]}
-      />
     </>
   );
 };
 
 export default MonitoreoMallas;
+
+export interface ReturnButtonMallasProps {
+  segmentReturn: string;
+}
+
+export const ReturnButtonMallas: React.FC<ReturnButtonMallasProps> = ({ segmentReturn }) => {
+  const dispatch = useAppDispatch();
+  return (
+    <IonButton fill="clear" onClick={() => dispatch(setActiveSegment(segmentReturn as any))}>
+      <IonIcon slot="start" icon={arrowBack}></IonIcon>
+      regresar
+    </IonButton>
+  );
+};
