@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { MallasSegment, MallaMonitored, BloqueMallaMonitored, DiseaseStatus } from '../../interfaces/MallasMonitoring';
 import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../../helpers/regularHelper';
 
-export const STORE_MALLAS_MONITORED = 'STORE_MALLAS_MONITORED';
+export const STORE_MALLAS_MONITORED = 'mallas-monitored';
 
 interface MallasMonitoringState {
   activeSegment: MallasSegment;

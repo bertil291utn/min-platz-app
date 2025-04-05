@@ -42,10 +42,6 @@ const MonitoreoMallas = () => {
 
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
 
-  // Load data from localStorage when component mounts
-  // useEffect(() => {
-  //   dispatch(fetchMallasMonitored());
-  // }, [dispatch]);
 
   const handleSave = () => {
     if (!selectedBloque?.id || !selectedVariety || selectedDiseases.length === 0) return;
@@ -64,7 +60,7 @@ const MonitoreoMallas = () => {
 
   // Check if this is an edit case when variety is selected
   useEffect(() => {
-    if (selectedVariety && selectedBloque?.id && mallasMonitored && mallasMonitored.length > 0) {
+    if (selectedVariety && selectedBloque?.id) {
       const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
       
       const bloqueIndex = mallasMonitored.findIndex(b => 
