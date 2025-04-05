@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { MallasSegment, MallaMonitored, BloqueMallaMonitored, DiseaseStatus } from '../../interfaces/MallasMonitoring';
 import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../../helpers/regularHelper';
 
-const STORE_MALLAS_MONITORED = 'mallas-monitored';
+export const STORE_MALLAS_MONITORED = 'STORE_MALLAS_MONITORED';
 
 interface MallasMonitoringState {
   activeSegment: MallasSegment;
@@ -31,8 +31,16 @@ const initialState: MallasMonitoringState = {
 export const fetchMallasMonitored = createAsyncThunk(
   'mallasMonitoring/fetchMallasMonitored',
   async () => {
-    const stored = localStorage.getItem(STORE_MALLAS_MONITORED);
-    return stored ? JSON.parse(stored) : [];
+    try {
+      const stored = localStorage.getItem(STORE_MALLAS_MONITORED);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching mallas data:", error);
+      return [];
+    }
   }
 );
 
@@ -52,8 +60,10 @@ export const updateMallaMonitoring = createAsyncThunk(
     const state = getState() as { mallasMonitoring: MallasMonitoringState };
     const updatedMallas = [...state.mallasMonitoring.mallasMonitored];
     
+    const weekNumber = (getState() as any).monitoringBloque.selectedWeek || CURRENT_WEEK_NUMBER;
+    
     const bloqueIndex = updatedMallas.findIndex(b => 
-      b.id === bloqueId && b.weekNumber === CURRENT_WEEK_NUMBER
+      b.id === bloqueId && b.weekNumber === weekNumber
     );
 
     if (bloqueIndex === -1) {
@@ -61,7 +71,7 @@ export const updateMallaMonitoring = createAsyncThunk(
         id: bloqueId,
         name: `Bloque ${bloqueId}`,
         dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
-        weekNumber: CURRENT_WEEK_NUMBER,
+        weekNumber: weekNumber,
         mallas: []
       };
       updatedMallas.push(newBloque);
@@ -71,7 +81,7 @@ export const updateMallaMonitoring = createAsyncThunk(
       id: Date.now(),
       bloqueId,
       dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
-      weekNumber: CURRENT_WEEK_NUMBER,
+      weekNumber: weekNumber,
       variety,
       diseases,
       observations
@@ -84,6 +94,7 @@ export const updateMallaMonitoring = createAsyncThunk(
     }
 
     localStorage.setItem(STORE_MALLAS_MONITORED, JSON.stringify(updatedMallas));
+    console.log("Saved mallas data to localStorage:", JSON.stringify(updatedMallas));
     return updatedMallas;
   }
 );

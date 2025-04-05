@@ -13,7 +13,8 @@ import {
   setObservations,
   resetForm,
   updateMallaMonitoring,
-  setIsEdit
+  setIsEdit,
+  fetchMallasMonitored
 } from '../store/slices/mallasMonitoringSlice';
 import { Disease } from '../interfaces/Diseases';
 import { addCircle, removeCircle, arrowBack } from 'ionicons/icons';
@@ -41,6 +42,11 @@ const MonitoreoMallas = () => {
 
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
 
+  // Load data from localStorage when component mounts
+  // useEffect(() => {
+  //   dispatch(fetchMallasMonitored());
+  // }, [dispatch]);
+
   const handleSave = () => {
     if (!selectedBloque?.id || !selectedVariety || selectedDiseases.length === 0) return;
 
@@ -58,31 +64,41 @@ const MonitoreoMallas = () => {
 
   // Check if this is an edit case when variety is selected
   useEffect(() => {
-    if (selectedVariety && selectedBloque?.id) {
+    if (selectedVariety && selectedBloque?.id && mallasMonitored && mallasMonitored.length > 0) {
       const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
-      const bloqueIndex = mallasMonitored?.findIndex(b => 
+      
+      const bloqueIndex = mallasMonitored.findIndex(b => 
         b.id === selectedBloque.id && b.weekNumber === weekNumber
       );
       
       if (bloqueIndex !== -1) {
-        const mallaExists = mallasMonitored[bloqueIndex].mallas.some(
+        const existingMalla = mallasMonitored[bloqueIndex].mallas.find(
           m => m.variety === selectedVariety
         );
-        if (mallaExists) {
+        
+        if (existingMalla) {
           setDisplayAlert(true);
           dispatch(setIsEdit(true));
+          
+          // Pre-load existing data for editing
+          if (existingMalla.diseases.length > 0) {
+            dispatch(setSelectedDiseases(existingMalla.diseases));
+            dispatch(setObservations(existingMalla.observations || ''));
+          }
         } else {
           dispatch(setIsEdit(false));
+          dispatch(setActiveSegment('diseases'));
         }
       } else {
         dispatch(setIsEdit(false));
+        dispatch(setActiveSegment('diseases'));
       }
     }
   }, [selectedVariety, selectedBloque?.id, selectedWeek, mallasMonitored, dispatch]);
 
   const handleSelectVariety = (variety: string) => {
     dispatch(setSelectedVariety(variety));
-    dispatch(setActiveSegment('diseases'));
+    // Navigation will be handled by the useEffect above
   };
 
   const handleUpdateDiseaseStatus = (diseaseId: number, status: 'vivo' | 'muerto') => {
@@ -101,35 +117,72 @@ const MonitoreoMallas = () => {
   }, []);
 
   const renderDiseasesList = () => (
-    <IonList>
+    <div style={{ 
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+      gap: '1rem',
+      padding: '1rem 0'
+    }}>
       {selectedDiseases.map(disease => (
-        <IonItem key={disease.id}>
-          <IonLabel>{disease.name}</IonLabel>
-          <div slot="end" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <IonSelect
-              value={disease.status}
-              interface="popover"
-              onIonChange={e => handleUpdateDiseaseStatus(disease.id, e.detail.value)}
-            >
-              <IonSelectOption value="vivo">Vivo</IonSelectOption>
-              <IonSelectOption value="muerto">Muerto</IonSelectOption>
-            </IonSelect>
+        <IonCard key={disease.id} style={{ display: 'flex', flexDirection: 'column' }}>
+          <IonCardHeader>
+            <IonCardTitle>{disease.name}</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '0.5rem', 
+              marginBottom: '1rem' 
+            }}>
+              <IonButton 
+                expand="block" 
+                fill={disease.status === 'vivo' ? 'solid' : 'outline'} 
+                color="primary" 
+                onClick={() => handleUpdateDiseaseStatus(disease.id, 'vivo')}
+              >
+                Vivo
+              </IonButton>
+              <IonButton 
+                expand="block" 
+                fill={disease.status === 'muerto' ? 'solid' : 'outline'} 
+                color="primary" 
+                onClick={() => handleUpdateDiseaseStatus(disease.id, 'muerto')}
+              >
+                Muerto
+              </IonButton>
+            </div>
 
-            <IonButton onClick={() =>
-              handleUpdateDiseaseCount(disease.id, Math.max(1, disease.count - 1))
-            }>
-              <IonIcon icon={removeCircle} />
-            </IonButton>
-            <IonLabel>{disease.count}</IonLabel>
-            <IonButton onClick={() =>
-              handleUpdateDiseaseCount(disease.id, disease.count + 1)
-            }>
-              <IonIcon icon={addCircle} />
-            </IonButton>
-          </div>
-        </IonItem>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <IonLabel>Cantidad:</IonLabel>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <IonButton 
+                  fill="clear" 
+                  onClick={() => handleUpdateDiseaseCount(disease.id, Math.max(1, disease.count - 1))}
+                >
+                  <IonIcon icon={removeCircle} />
+                </IonButton>
+                <div style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  margin: '0 0.5rem', 
+                  minWidth: '2rem', 
+                  textAlign: 'center' 
+                }}>
+                  {disease.count}
+                </div>
+                <IonButton 
+                  fill="clear" 
+                  onClick={() => handleUpdateDiseaseCount(disease.id, disease.count + 1)}
+                >
+                  <IonIcon icon={addCircle} />
+                </IonButton>
+              </div>
+            </div>
+          </IonCardContent>
+        </IonCard>
       ))}
-    </IonList>
+    </div>
   );
 
   const renderContent = () => {
@@ -166,6 +219,10 @@ const MonitoreoMallas = () => {
                   role: 'cancel',
                   handler: () => {
                     dispatch(setActiveSegment('variety'));
+                    dispatch(setSelectedVariety(null));
+                    dispatch(setSelectedDiseases([]));
+                    dispatch(setObservations(''));
+                    dispatch(setIsEdit(false));
                   }
                 },
                 {

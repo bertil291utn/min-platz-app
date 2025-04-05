@@ -10,6 +10,7 @@ import { USER_AUTH, USER_SET } from './helpers/AuthConst';
 import { setUser } from './store/slices/userSlice';
 import { setupIonicReact } from '@ionic/react';
 import './theme/variables.css';
+import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
 
 setupIonicReact({
   mode: 'md',
@@ -49,6 +50,7 @@ if (userAuth) {
 // Fetch initial data
 store.dispatch(fetchBloques());
 store.dispatch(fetchMonitoredBloques());
+store.dispatch(fetchMallasMonitored());
 store.dispatch(checkAuthStatus());
 
 // Render the application
