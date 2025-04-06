@@ -41,26 +41,12 @@ const MonitoreoMallas = () => {
   } = useAppSelector(state => state.mallasMonitoring);
 
   const [displayAlert, setDisplayAlert] = useState<boolean>(false);
-
-
-  const handleSave = () => {
-    if (!selectedBloque?.id || !selectedVariety || selectedDiseases.length === 0) return;
-
-    dispatch(updateMallaMonitoring({
-      bloqueId: selectedBloque.id,
-      variety: selectedVariety,
-      diseases: selectedDiseases,
-      observations,
-    }));
-
-    dispatch(resetForm());
-    dispatch(setIsEdit(false));
-    dispatch(setActiveSegment('variety'));
-  };
+  const [initialCheckDone, setInitialCheckDone] = useState<boolean>(false);
 
   // Check if this is an edit case when variety is selected
   useEffect(() => {
-    if (selectedVariety && selectedBloque?.id) {
+    if (selectedVariety && selectedBloque?.id && !initialCheckDone) {
+      setInitialCheckDone(true);
       const weekNumber = selectedWeek || CURRENT_WEEK_NUMBER;
       
       const bloqueIndex = mallasMonitored.findIndex(b => 
@@ -90,11 +76,32 @@ const MonitoreoMallas = () => {
         dispatch(setActiveSegment('diseases'));
       }
     }
-  }, [selectedVariety, selectedBloque?.id, selectedWeek, mallasMonitored, dispatch]);
+  }, [selectedVariety, selectedBloque?.id, selectedWeek, dispatch, initialCheckDone]);
 
   const handleSelectVariety = (variety: string) => {
+    setInitialCheckDone(false);  // Reset the check flag when selecting a new variety
     dispatch(setSelectedVariety(variety));
-    // Navigation will be handled by the useEffect above
+  };
+
+  const handleSave = async () => {
+    if (!selectedBloque?.id || !selectedVariety) return;
+
+    try {
+      await dispatch(updateMallaMonitoring({
+        bloqueId: selectedBloque.id,
+        variety: selectedVariety,
+        diseases: selectedDiseases,
+        observations,
+      })).unwrap();
+
+      await dispatch(fetchMallasMonitored()).unwrap();
+
+      dispatch(resetForm());
+      dispatch(setIsEdit(false));
+      dispatch(setActiveSegment('variety'));
+    } catch (error) {
+      console.error('Error saving malla:', error);
+    }
   };
 
   const handleUpdateDiseaseStatus = (diseaseId: number, status: 'vivo' | 'muerto') => {

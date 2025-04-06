@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { MallasSegment, MallaMonitored, BloqueMallaMonitored, DiseaseStatus } from '../../interfaces/MallasMonitoring';
 import { CURRENT_DATE_UTC5, CURRENT_WEEK_NUMBER } from '../../helpers/regularHelper';
-
-export const STORE_MALLAS_MONITORED = 'mallas-monitored';
+import { STORE_MALLAS_MONITORED } from '../../helpers/bloquesConstant';
 
 interface MallasMonitoringState {
   activeSegment: MallasSegment;
@@ -57,45 +56,62 @@ export const updateMallaMonitoring = createAsyncThunk(
     diseases: DiseaseStatus[];
     observations: string;
   }, { getState }) => {
-    const state = getState() as { mallasMonitoring: MallasMonitoringState };
-    const updatedMallas = [...state.mallasMonitoring.mallasMonitored];
-    
-    const weekNumber = (getState() as any).monitoringBloque.selectedWeek || CURRENT_WEEK_NUMBER;
-    
-    const bloqueIndex = updatedMallas.findIndex(b => 
-      b.id === bloqueId && b.weekNumber === weekNumber
-    );
-
-    if (bloqueIndex === -1) {
-      const newBloque: BloqueMallaMonitored = {
-        id: bloqueId,
-        name: `Bloque ${bloqueId}`,
+    try {
+      const state = getState() as { mallasMonitoring: MallasMonitoringState };
+      const weekNumber = (getState() as any).monitoringBloque.selectedWeek || CURRENT_WEEK_NUMBER;
+      
+      // Create a deep copy of the current state
+      const updatedMallas = JSON.parse(JSON.stringify(state.mallasMonitoring.mallasMonitored));
+      
+      // Find the bloque for the current week
+      const bloqueIndex = updatedMallas.findIndex((b: { id: number; weekNumber: number }) => 
+        b.id === bloqueId && b.weekNumber === weekNumber
+      );
+      
+      const mallaMonitored: MallaMonitored = {
+        id: Date.now(),
+        bloqueId,
         dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
-        weekNumber: weekNumber,
-        mallas: []
+        weekNumber,
+        variety,
+        diseases,
+        observations
       };
-      updatedMallas.push(newBloque);
+
+      if (bloqueIndex === -1) {
+        // Create new bloque if it doesn't exist
+        const newBloque: BloqueMallaMonitored = {
+          id: bloqueId,
+          name: `Bloque ${bloqueId}`,
+          dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
+          weekNumber,
+          mallas: [mallaMonitored]
+        };
+        updatedMallas.push(newBloque);
+      } else {
+        // Find existing malla for this variety
+        const mallaIndex = updatedMallas[bloqueIndex].mallas.findIndex(
+          (m: { variety: string }) => m.variety === variety
+        );
+
+        if (mallaIndex === -1) {
+          // Add new malla
+          updatedMallas[bloqueIndex].mallas.push(mallaMonitored);
+        } else {
+          // Update existing malla
+          updatedMallas[bloqueIndex].mallas[mallaIndex] = mallaMonitored;
+        }
+      }
+
+      // Save to localStorage
+      localStorage.setItem(STORE_MALLAS_MONITORED, JSON.stringify(updatedMallas));
+      console.log('Saved mallas data:', updatedMallas);
+      
+      return updatedMallas;
+    } catch (error) {
+      console.error('Error updating malla:', error);
+      throw error;
     }
-
-    const mallaMonitored: MallaMonitored = {
-      id: Date.now(),
-      bloqueId,
-      dateMonitoring: CURRENT_DATE_UTC5.toISOString(),
-      weekNumber: weekNumber,
-      variety,
-      diseases,
-      observations
-    };
-
-    if (bloqueIndex === -1) {
-      updatedMallas[updatedMallas.length - 1].mallas.push(mallaMonitored);
-    } else {
-      updatedMallas[bloqueIndex].mallas.push(mallaMonitored);
-    }
-
-    localStorage.setItem(STORE_MALLAS_MONITORED, JSON.stringify(updatedMallas));
-    console.log("Saved mallas data to localStorage:", JSON.stringify(updatedMallas));
-    return updatedMallas;
   }
 );
 

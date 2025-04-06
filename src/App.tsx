@@ -12,6 +12,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 import RegisterPage from './pages/RegisterPage';
 import VerificationPage from './pages/VerificationPage';
+import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
 
 // Define Capacitor types for TypeScript
 interface CapacitorGlobal {
@@ -99,6 +100,12 @@ const AppWrapper = () => {
       window.removeEventListener('offline', handleOffline);
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchMallasMonitored());
+    }
+  }, [isAuthenticated, dispatch]);
 
   // Rest of your component...
   return (
