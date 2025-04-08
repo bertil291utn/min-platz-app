@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, IonToast } from '@ionic/react';
+import { IonApp, IonRouterOutlet, IonToast, IonMenuToggle, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Provider } from 'react-redux';
 import Home from './pages/Home';
@@ -13,6 +13,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import RegisterPage from './pages/RegisterPage';
 import VerificationPage from './pages/VerificationPage';
 import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
+import Menu from './components/Menu';
 
 // Define Capacitor types for TypeScript
 interface CapacitorGlobal {
@@ -111,7 +112,8 @@ const AppWrapper = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonRouterOutlet>
+        <Menu />
+        <IonRouterOutlet id="main">
           <Route exact path="/home">
             <Home />
           </Route>

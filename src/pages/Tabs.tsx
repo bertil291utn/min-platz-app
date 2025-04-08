@@ -8,6 +8,11 @@ import {
   IonTabButton,
   IonTabs,
   IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonMenuButton,
 } from '@ionic/react';
 import { library, home, settings, rose } from 'ionicons/icons';
 
@@ -16,6 +21,9 @@ import TabHome from './TabHome';
 import TabMonitoreo from './TabMonitoreo';
 import TabLibrary from './TabLibrary';
 import TabSettings from './TabSettings';
+import TabFacturacion from './TabFacturacion';
+import TabNotasEnvio from './TabNotasEnvio';
+import TabFacturaCompra from './TabFacturaCompra';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { logout } from '../store/slices/authSlice';
 import { cleanUser } from '../store/slices/userSlice';
@@ -31,9 +39,16 @@ const Tabs: React.FC = () => {
     return <Redirect to="/login" />;
   }
 
-
   return (
     <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Min Platz</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonTabs>
         <IonRouterOutlet>
           <Route exact path="/tabs/home">
@@ -47,6 +62,15 @@ const Tabs: React.FC = () => {
           </Route>
           <Route exact path="/tabs/settings">
             <TabSettings />
+          </Route>
+          <Route exact path="/tabs/facturacion">
+            <TabFacturacion />
+          </Route>
+          <Route exact path="/tabs/notas-envio">
+            <TabNotasEnvio />
+          </Route>
+          <Route exact path="/tabs/factura-compra">
+            <TabFacturaCompra />
           </Route>
           <Route exact path="/tabs">
             <Redirect to="/tabs/monitoreo" />
@@ -63,7 +87,6 @@ const Tabs: React.FC = () => {
             <IonIcon size='large' icon={rose} />
             <IonLabel>Monitoreo</IonLabel>
           </IonTabButton>
-
 
           <IonTabButton tab="settings" href="/tabs/settings">
             <IonIcon size='large' icon={settings} />
