@@ -1,5 +1,5 @@
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonListHeader, IonFooter, IonButton } from '@ionic/react';
-import { documentTextOutline, cubeOutline, analyticsOutline, receiptOutline, settingsOutline } from 'ionicons/icons';
+import { documentTextOutline, cubeOutline, analyticsOutline, receiptOutline, settingsOutline, cloudyOutline } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router';
 
 const Menu: React.FC = () => {
@@ -7,13 +7,14 @@ const Menu: React.FC = () => {
   const location = useLocation();
 
   const activeMenuItems = [
-    { title: 'Monitoreo', icon: analyticsOutline, path: '/monitoreo' }
+    { title: 'Manejo de plagas', icon: analyticsOutline, path: '/monitoreo' }
   ];
 
   const upcomingMenuItems = [
     { title: 'Facturación', icon: documentTextOutline, path: '/facturacion' },
     { title: 'Notas de Envío', icon: cubeOutline, path: '/notas-envio' },
-    { title: 'Factura Compra', icon: receiptOutline, path: '/factura-compra' }
+    { title: 'Factura Compra', icon: receiptOutline, path: '/factura-compra' },
+    { title: 'Pronósticos Climáticos', icon: cloudyOutline, path: '/pronosticos' }
   ];
 
   const handleMenuClick = (path: string) => {
