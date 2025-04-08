@@ -3,7 +3,7 @@ import assetsConfig from './capacitor.assets.config';
 
 const config: CapacitorConfig = {
   appId: 'com.minplats.app',
-  appName: 'Min Platz App',
+  appName: 'Florvis',
   webDir: 'dist',
   ...assetsConfig,
   server: {

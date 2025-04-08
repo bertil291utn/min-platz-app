@@ -1,5 +1,5 @@
 {
-  "name": "Min Platz App",
+  "name": "Florvis",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -54,8 +54,7 @@
     "vite": "5.2.14",
     "vitest": "^0.34.6"
   },
-  "description": "Una aplicacion para la gestion de espacios de trabajo en Min Platz",
-  "author": "Min Platz",
-  "license": "MIT",
+  "description": "Una app intuitiva, inteligente, que guía incluso a los que no tienen mucha experiencia técnica",
+  "author": "Garage Design",
   "lang": "es"
 }

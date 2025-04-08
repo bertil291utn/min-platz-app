@@ -15,7 +15,7 @@ const Menu: React.FC = () => {
     { title: 'Notas de Envío', icon: cubeOutline, path: '/notas-envio' },
     { title: 'Factura Compra', icon: receiptOutline, path: '/factura-compra' },
     { title: 'Pronósticos Climáticos', icon: cloudyOutline, path: '/pronosticos' },
-    { title: 'Fumigación y fertilzacion', icon: flaskOutline, path: '/fumigacion' },
+    { title: 'Fumigación y fertilización', icon: flaskOutline, path: '/fumigacion' },
   ];
 
   const handleMenuClick = (path: string) => {
@@ -30,7 +30,7 @@ const Menu: React.FC = () => {
     <IonMenu contentId="main">
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Min Platz App</IonTitle>
+          <IonTitle>Florvis</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>

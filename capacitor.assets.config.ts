@@ -3,7 +3,7 @@ import { PluginsConfig } from '@capacitor/cli';
 const config: PluginsConfig = {
   android: {
     source: 'public/favicon.ico',
-    name: 'Min Platz App',
+    name: 'Florvis',
     backgroundImage: 'public/favicon.ico',
     backgroundColor: '#ffffff',
     adaptiveIcon: {
@@ -13,7 +13,7 @@ const config: PluginsConfig = {
   },
   ios: {
     source: 'public/favicon.ico',
-    name: 'Min Platz App'
+    name: 'Florvis'
   }
 };
 

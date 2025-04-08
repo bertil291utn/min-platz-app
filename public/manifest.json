@@ -1,6 +1,6 @@
 {
-  "short_name": "MinPlats",
-  "name": "Min Platz App",
+  "short_name": "Florvis",
+  "name": "Florvis",
   "icons": [
     {
       "src": "assets/icons/icon-48.webp",
@@ -49,6 +49,6 @@
   "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "description": "Una aplicación web progresiva con Ionic, React y Capacitor. para Min platz flowers",
+  "description": "Una app intuitiva, inteligente, que guía incluso a los que no tienen mucha experiencia técnica",
   "lang": "es"
 }
