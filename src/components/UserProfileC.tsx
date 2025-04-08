@@ -99,7 +99,7 @@ const UserProfileC = () => {
              {/* remove this component just for test, this value has to coming from database and set in userset */}
     
             <IonItem>
-              <IonLabel>Usuario premium</IonLabel>
+              <IonLabel>{user.premium ? 'Desactivar de' : 'Activar a'} usuario premium</IonLabel>
               <IonToggle
                 name='premium'
                 checked={user.premium}
