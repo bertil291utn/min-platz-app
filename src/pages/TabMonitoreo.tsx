@@ -27,7 +27,8 @@ import {
   IonChip,
   IonRow,
   IonCol,
-  IonGrid
+  IonGrid,
+  IonMenuButton
 } from '@ionic/react';
 import { clipboardOutline, eyeOutline, calendarOutline } from 'ionicons/icons';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
@@ -141,6 +142,14 @@ const TabMonitoreo: React.FC = () => {
 
   return (
     <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Monitoreo</IonTitle>
+        </IonToolbar>
+      </IonHeader>
       <IonContent fullscreen>
         {IsThereActiveBloques ? (
           <>

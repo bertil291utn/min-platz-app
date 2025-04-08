@@ -1,19 +1,15 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, IonToast, IonMenuToggle, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton } from '@ionic/react';
+import { IonApp, IonToast } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Provider } from 'react-redux';
-import Home from './pages/Home';
-import Tabs from './pages/Tabs';
 import { store } from './store';
 import { useAppSelector, useAppDispatch } from './store/hooks';
 import { useEffect } from 'react';
 import { setOnlineStatus } from './store/slices/appStateSlice';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
-import RegisterPage from './pages/RegisterPage';
-import VerificationPage from './pages/VerificationPage';
 import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
 import Menu from './components/Menu';
+import AppRoutes from './components/AppRoutes';
 
 // Define Capacitor types for TypeScript
 interface CapacitorGlobal {
@@ -62,7 +58,6 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/tabs.css';
-import LoginPages from './pages/LoginPages';
 
 // App wrapper component that includes state management
 const AppWrapper = () => {
@@ -108,31 +103,11 @@ const AppWrapper = () => {
     }
   }, [isAuthenticated, dispatch]);
 
-  // Rest of your component...
   return (
     <IonApp>
       <IonReactRouter>
         <Menu />
-        <IonRouterOutlet id="main">
-          <Route exact path="/home">
-            <Home />
-          </Route>
-          <Route exact path="/login">
-            <LoginPages />
-          </Route>
-          <Route exact path="/">
-            <Redirect to={isAuthenticated ? "/tabs" : "/login"} />
-          </Route>
-          <Route path="/tabs">
-            {isAuthenticated ? <Tabs /> : <Redirect to="/login" />}
-          </Route>
-          <Route exact path="/register">
-            <RegisterPage />
-          </Route>
-          <Route exact path="/verify">
-            <VerificationPage />
-          </Route>
-        </IonRouterOutlet>
+        <AppRoutes />
       </IonReactRouter>
     </IonApp>
   );

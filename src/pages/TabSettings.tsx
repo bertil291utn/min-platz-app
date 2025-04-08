@@ -1,17 +1,23 @@
 import React from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSearchbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButtons, IonMenuButton } from '@ionic/react';
 import SettingsC from '../components/SettingsComponent';
 
-const TabSearch: React.FC = () => {
+const TabSettings: React.FC = () => {
   return (
     <IonPage>
-      <IonContent fullscreen>
-        <div>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Configuración</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
           <SettingsC/>
-        </div>
       </IonContent>
     </IonPage>
   );
 };
 
-export default TabSearch;
+export default TabSettings;
