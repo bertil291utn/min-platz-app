@@ -13,6 +13,7 @@ import TabMonitoreo from '../pages/TabMonitoreo';
 import TabFacturaCompra from '../pages/TabFacturaCompra';
 import TabSettings from '../pages/TabSettings';
 import TabPronosticos from '../pages/TabPronosticos';
+import TabFumigacion from '../pages/TabFumigacion';
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -45,6 +46,9 @@ const AppRoutes: React.FC = () => {
       </Route>
       <Route exact path="/pronosticos">
         {isAuthenticated ? <TabPronosticos /> : <Redirect to="/login" />}
+      </Route>
+      <Route exact path="/fumigacion">
+        {isAuthenticated ? <TabFumigacion /> : <Redirect to="/login" />}
       </Route>
       <Route exact path="/register">
         <RegisterPage />
