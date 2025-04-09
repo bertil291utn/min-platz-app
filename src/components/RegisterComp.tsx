@@ -20,7 +20,7 @@ import {
   IonCardContent
 } from '@ionic/react';
 import { arrowBack, chevronDown, chevronUp, informationCircle } from 'ionicons/icons';
-import { USER_AUTH } from '../helpers/AuthConst';
+import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import './RegisterComp.css';
 import { fetchPersonInfo } from '../services/PersonService';
 import { isValidIdentification } from '../helpers/cedulaHelper';
@@ -132,7 +132,7 @@ const RegisterComp: React.FC = () => {
       }));
       return;
     }
-    const existingUser = JSON.parse(localStorage.getItem('USER_DATA') as string);
+    const existingUser = JSON.parse(localStorage.getItem(USER_DATA) as string);
     if (existingUser) {
       const ciExists = existingUser.ci === formData.ci;
       if (ciExists) {
@@ -183,7 +183,7 @@ const RegisterComp: React.FC = () => {
     } else if (!isValidIdentification(formData.ci)) {
       newErrors.ci = 'Cédula inválida';
     } else {
-      const existingUser = JSON.parse(localStorage.getItem('USER_DATA') as string);
+      const existingUser = JSON.parse(localStorage.getItem(USER_DATA) as string);
       if (existingUser) {
         const ciExists = existingUser.ci === formData.ci;
         if (ciExists) {
@@ -244,7 +244,7 @@ const RegisterComp: React.FC = () => {
         createdAt: new Date().toISOString()
       };
 
-      localStorage.setItem('USER_DATA', JSON.stringify(userData));
+      localStorage.setItem(USER_DATA, JSON.stringify(userData));
       setFormData(INITIAL_FORM_DATA);
 
       // Show success message

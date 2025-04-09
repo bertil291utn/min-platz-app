@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../interfaces/User';
-import { USER_SET } from '../../helpers/AuthConst';
+import { USER_AUTH, USER_DATA, USER_SET } from '../../helpers/AuthConst';
 
 const initialState: { user: User | null } = {
   user: null
@@ -26,6 +26,7 @@ const userSlice = createSlice({
       state.user = null;
       // Remove from localStorage
       localStorage.removeItem(USER_SET);
+      localStorage.removeItem(USER_AUTH)
     },
   },
 });

@@ -14,6 +14,7 @@ import {
   IonNote
 } from '@ionic/react';
 import { arrowBack, checkmarkCircle, refreshCircle } from 'ionicons/icons';
+import { USER_DATA } from '../helpers/AuthConst';
 
 interface VerificationCompProps {
   type: 'email' | 'whatsapp' | 'ruc';
@@ -54,9 +55,9 @@ const VerificationComp: React.FC<VerificationCompProps> = ({ type, contact, onVe
   const handleVerify = () => {
     if (code === verificationCode) {
       // Update verification status in localStorage
-      const userData = JSON.parse(localStorage.getItem('USER_DATA') || '{}');
+      const userData = JSON.parse(localStorage.getItem(USER_DATA) || '{}');
       userData[`${type}Verified`] = true;
-      localStorage.setItem('USER_DATA', JSON.stringify(userData));
+      localStorage.setItem(USER_DATA, JSON.stringify(userData));
 
       setToastMessage('Verificación exitosa!');
       setShowToast(true);

@@ -11,7 +11,7 @@ import {
   IonText,
   IonInputPasswordToggle
 } from '@ionic/react';
-import { USER_AUTH } from '../helpers/AuthConst';
+import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import { setUser } from '../store/slices/userSlice';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 
@@ -47,7 +47,7 @@ const LoginComp: React.FC = () => {
       throw new Error('Cédula inválida');
     }
 
-    const userData = localStorage.getItem('USER_DATA');
+    const userData = localStorage.getItem(USER_DATA);
     if (!userData) {
       throw new Error('Usuario no registrado');
     }

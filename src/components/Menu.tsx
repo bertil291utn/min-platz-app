@@ -1,5 +1,5 @@
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonListHeader, IonFooter, IonButton } from '@ionic/react';
-import { documentTextOutline, cubeOutline, analyticsOutline, receiptOutline, settingsOutline, cloudyOutline, flaskOutline, leafOutline } from 'ionicons/icons';
+import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonListHeader, IonFooter, IonButton, IonItemDivider } from '@ionic/react';
+import { documentTextOutline, cubeOutline, analyticsOutline, receiptOutline, settingsOutline, cloudyOutline, flaskOutline, leafOutline, home } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router';
 
 const Menu: React.FC = () => {
@@ -7,6 +7,7 @@ const Menu: React.FC = () => {
   const location = useLocation();
 
   const activeMenuItems = [
+    { title: 'Principal', icon: home, path: '/home' },
     { title: 'Manejo de plagas', icon: analyticsOutline, path: '/monitoreo' }
   ];
 
@@ -37,9 +38,9 @@ const Menu: React.FC = () => {
         <IonList>
           {/* Active Menu Items */}
           {activeMenuItems.map((item, index) => (
-            <IonItem 
-              key={index} 
-              button 
+            <IonItem
+              key={index}
+              button
               onClick={() => handleMenuClick(item.path)}
               color={location.pathname === item.path ? 'primary' : undefined}
               className={location.pathname === item.path ? 'selected-menu-item' : ''}
@@ -48,35 +49,33 @@ const Menu: React.FC = () => {
               <IonLabel>{item.title}</IonLabel>
             </IonItem>
           ))}
-
-          <IonItem lines="full">
-            <IonLabel></IonLabel>
-          </IonItem>
+          
+          <IonItemDivider />
 
           {/* Upcoming Menu Items */}
           <IonListHeader>
-            <IonLabel style={{color:'gray'}}>Próximamente</IonLabel>
+            <IonLabel style={{ color: 'gray' }}>Próximamente</IonLabel>
           </IonListHeader>
-          
+
           {upcomingMenuItems.map((item, index) => (
-            <IonItem 
-              key={index} 
-              button 
+            <IonItem
+              key={index}
+              button
               onClick={() => handleMenuClick(item.path)}
               color={location.pathname === item.path ? 'primary' : undefined}
               className={location.pathname === item.path ? 'selected-menu-item' : ''}
             >
               <IonIcon slot="start" icon={item.icon} />
-              <IonLabel style={{color:'gray'}}>{item.title}</IonLabel>
+              <IonLabel style={{ color: 'gray' }}>{item.title}</IonLabel>
             </IonItem>
           ))}
         </IonList>
       </IonContent>
       <IonFooter>
         <div className="ion-text-end ion-padding">
-          <IonButton 
-            fill="clear" 
-            size="small" 
+          <IonButton
+            fill="clear"
+            size="small"
             onClick={() => handleMenuClick('/settings')}
             color={location.pathname === '/settings' ? 'primary' : 'medium'}
           >

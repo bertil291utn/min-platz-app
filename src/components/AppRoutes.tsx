@@ -17,17 +17,22 @@ import TabFumigacion from '../pages/TabFumigacion';
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
-
   return (
     <IonRouterOutlet id="main">
-      <Route exact path="/home">
-        <Home />
-      </Route>
+      {/* Public routes - only accessible when NOT authenticated */}
       <Route exact path="/login">
-        <LoginPages />
+        {!isAuthenticated ? <LoginPages /> : <Redirect to="/home" />}
+      </Route>
+      <Route exact path="/register">
+        {!isAuthenticated ? <RegisterPage /> : <Redirect to="/home" />}
+      </Route>
+
+      {/* Protected routes - only accessible when authenticated */}
+      <Route exact path="/home">
+        {isAuthenticated ? <Home /> : <Redirect to="/login" />}
       </Route>
       <Route exact path="/">
-        <Redirect to={isAuthenticated ? "/monitoreo" : "/login"} />
+        <Redirect to={isAuthenticated ? "/home" : "/login"} />
       </Route>
       <Route exact path="/facturacion">
         {isAuthenticated ? <TabFacturacion /> : <Redirect to="/login" />}
@@ -49,9 +54,6 @@ const AppRoutes: React.FC = () => {
       </Route>
       <Route exact path="/fumigacion">
         {isAuthenticated ? <TabFumigacion /> : <Redirect to="/login" />}
-      </Route>
-      <Route exact path="/register">
-        <RegisterPage />
       </Route>
     </IonRouterOutlet>
   );
