@@ -24,6 +24,7 @@ import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import './RegisterComp.css';
 import { fetchPersonInfo } from '../services/PersonService';
 import { isValidIdentification } from '../helpers/cedulaHelper';
+import bcrypt from 'bcryptjs';
 
 interface RegisterForm {
   email: string;
@@ -234,12 +235,16 @@ const RegisterComp: React.FC = () => {
 
     setIsLoading(true);
     try {
+      // Hash password with bcrypt
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(formData.password, salt);
+
       const userData = {
         email: formData.email,
         whatsapp: formData.whatsapp || null,
         nombre: formData.nombre,
         apellido: formData.apellido,
-        password: formData.password,
+        password: hashedPassword, // Store hashed password
         ci: formData.ci,
         createdAt: new Date().toISOString()
       };

@@ -14,6 +14,7 @@ import {
 import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import { setUser } from '../store/slices/userSlice';
 import { isValidIdentification } from '../helpers/cedulaHelper';
+import bcrypt from 'bcryptjs';
 
 const INITIAL_FORM_DATA = {
   ci: '',
@@ -42,7 +43,7 @@ const LoginComp: React.FC = () => {
     localStorage.setItem(USER_AUTH, JSON.stringify(storageData));
   };
 
-  const validateUser = (ci: string, password: string) => {
+  const validateUser = async (ci: string, password: string) => {
     if (!isValidIdentification(ci)) {
       throw new Error('Cédula inválida');
     }
@@ -57,8 +58,9 @@ const LoginComp: React.FC = () => {
       throw new Error('Cédula no encontrada');
     }
 
-    // In a real app, you would hash the password before comparing
-    if (user.password !== password) {
+    // Compare password with hashed password using bcrypt
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
       throw new Error('Contraseña incorrecta');
     }
 
@@ -70,7 +72,7 @@ const LoginComp: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const user = validateUser(credentials.ci, credentials.password);
+      const user = await validateUser(credentials.ci, credentials.password);
 
       // Store auth token
       storeAuthToken(credentials.ci);
@@ -89,7 +91,7 @@ const LoginComp: React.FC = () => {
         premium: user.premium || false,
         expert: user.expert || false
       }));
-      router.push('/tabs')
+      router.push('/home')
       setCredentials(INITIAL_FORM_DATA)
 
     } catch (error) {
