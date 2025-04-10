@@ -23,6 +23,10 @@ const TabPronosticos: React.FC = () => {
               <IonCardTitle className="ion-text-center">Próximamente</IonCardTitle>
             </IonCardHeader>
             <IonCardContent className="ion-text-center">
+            <video controls width="100%" preload="metadata" poster="miniatura.jpg">
+                <source src="assets/videor/clima.webm" type="video/webm" />
+                Tu navegador no soporta el video.
+              </video>
               <p>La funcionalidad de pronósticos climáticos estará disponible pronto.</p>
               <p>Estamos trabajando para brindarte información meteorológica precisa y actualizada que te ayude en la toma de decisiones.</p>
             </IonCardContent>

@@ -11,9 +11,9 @@ interface MonitoringOptionsScreenProps {
   showReturnButton?: boolean;
 }
 
-const MonitoringOptionsScreen = ({ 
-  onOptionSelect, 
-  showReturnButton = true 
+const MonitoringOptionsScreen = ({
+  onOptionSelect,
+  showReturnButton = true
 }: MonitoringOptionsScreenProps) => {
   const selectedBloque = useAppSelector(state => state.monitoringBloque.selectedBloque);
   const dispatch = useAppDispatch();
@@ -29,13 +29,13 @@ const MonitoringOptionsScreen = ({
   };
 
   return (
-    <div className="ion-padding">
-      
+    <div>
+
       <IonGrid>
         <IonRow>
           <IonCol size="12" sizeMd="4">
-            <IonCard 
-              button 
+            <IonCard
+              button
               onClick={() => handleOptionSelect('monitorear-camas')}
               className="monitoring-option-card"
             >
@@ -52,8 +52,8 @@ const MonitoringOptionsScreen = ({
           </IonCol>
 
           <IonCol size="12" sizeMd="4">
-            <IonCard 
-              button 
+            <IonCard
+              button
               onClick={() => handleOptionSelect('monitorear-placas')}
               className="monitoring-option-card"
             >
@@ -70,8 +70,8 @@ const MonitoringOptionsScreen = ({
           </IonCol>
 
           <IonCol size="12" sizeMd="4">
-            <IonCard 
-              button 
+            <IonCard
+              button
               onClick={() => handleOptionSelect('monitorear-mallas')}
               className="monitoring-option-card"
             >

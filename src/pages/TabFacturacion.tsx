@@ -23,6 +23,10 @@ const TabFacturacion: React.FC = () => {
               <IonCardTitle className="ion-text-center">Próximamente</IonCardTitle>
             </IonCardHeader>
             <IonCardContent className="ion-text-center">
+              <video controls width="100%" preload="metadata" poster="miniatura.jpg">
+                <source src="assets/videor/facturacion.webm" type="video/webm" />
+                Tu navegador no soporta el video.
+              </video>
               <p>La funcionalidad de facturación estará disponible pronto.</p>
               <p>Estamos trabajando para ofrecerte la mejor experiencia.</p>
             </IonCardContent>

@@ -96,6 +96,8 @@ const MonitoreoNuevo: React.FC = () => {
           <IonButton onClick={() => history.push('/settings')}>
             {'Añadir bloques'}
           </IonButton>
+          <br />
+          <VideorMon />
         </IonContent>
       </IonPage>
     );
@@ -112,75 +114,73 @@ const MonitoreoNuevo: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <div slot="content">
-          <IonCard className="ion-margin-bottom">
-            <IonCardContent>
-              <IonGrid>
-                <IonRow className="ion-align-items-center">
-                  <IonCol size="auto">
-                    <IonChip
-                      color="secondary"
-                      onClick={() => setShowBloqueSelector(!showBloqueSelector)}
-                      outline
-                    >
-                      <IonIcon icon={businessOutline} />
-                      <IonLabel>{selectedBloque ? selectedBloque.name : 'Cargando...'}</IonLabel>
-                    </IonChip>
+        <IonCard className="ion-margin-bottom">
+          <IonCardContent>
+            <IonGrid>
+              <IonRow className="ion-align-items-center">
+                <IonCol size="auto">
+                  <IonChip
+                    color="secondary"
+                    onClick={() => setShowBloqueSelector(!showBloqueSelector)}
+                    outline
+                  >
+                    <IonIcon icon={businessOutline} />
+                    <IonLabel>{selectedBloque ? selectedBloque.name : 'Cargando...'}</IonLabel>
+                  </IonChip>
+                </IonCol>
+              </IonRow>
+
+              {showBloqueSelector && (
+                <IonRow className="ion-margin-top">
+                  <IonCol>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {activeBloques.map((bloque) => (
+                        <IonChip
+                          key={bloque.id}
+                          color={selectedBloque?.id === bloque.id ? 'secondary' : undefined}
+                          onClick={() => handleBloqueSelect(bloque)}
+                        >
+                          <IonLabel>{bloque.name}</IonLabel>
+                        </IonChip>
+                      ))}
+                    </div>
                   </IonCol>
                 </IonRow>
+              )}
 
-                {showBloqueSelector && (
-                  <IonRow className="ion-margin-top">
-                    <IonCol>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {activeBloques.map((bloque) => (
-                          <IonChip
-                            key={bloque.id}
-                            color={selectedBloque?.id === bloque.id ? 'secondary' : undefined}
-                            onClick={() => handleBloqueSelect(bloque)}
-                          >
-                            <IonLabel>{bloque.name}</IonLabel>
-                          </IonChip>
-                        ))}
-                      </div>
-                    </IonCol>
-                  </IonRow>
-                )}
+              <IonRow className="ion-align-items-center ion-margin-top">
+                <IonCol size="auto">
+                  <IonChip
+                    color="secondary"
+                    outline={true}
+                    onClick={() => setShowWeekSelector(!showWeekSelector)}
+                  >
+                    <IonIcon icon={calendarOutline} />
+                    <IonLabel>Semana {selectedWeek}</IonLabel>
+                  </IonChip>
+                </IonCol>
+              </IonRow>
 
-                <IonRow className="ion-align-items-center ion-margin-top">
-                  <IonCol size="auto">
-                    <IonChip
-                      color="secondary"
-                      outline={true}
-                      onClick={() => setShowWeekSelector(!showWeekSelector)}
-                    >
-                      <IonIcon icon={calendarOutline} />
-                      <IonLabel>Semana {selectedWeek}</IonLabel>
-                    </IonChip>
+              {showWeekSelector && (
+                <IonRow className="ion-margin-top">
+                  <IonCol>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, i) => CURRENT_WEEK_NUMBER - i).map((week) => (
+                        <IonChip
+                          key={week}
+                          color={week === selectedWeek ? 'secondary' : undefined}
+                          onClick={() => handleWeekSelect(week)}
+                        >
+                          <IonLabel>Semana {week}</IonLabel>
+                        </IonChip>
+                      ))}
+                    </div>
                   </IonCol>
                 </IonRow>
-
-                {showWeekSelector && (
-                  <IonRow className="ion-margin-top">
-                    <IonCol>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, i) => CURRENT_WEEK_NUMBER - i).map((week) => (
-                          <IonChip
-                            key={week}
-                            color={week === selectedWeek ? 'secondary' : undefined}
-                            onClick={() => handleWeekSelect(week)}
-                          >
-                            <IonLabel>Semana {week}</IonLabel>
-                          </IonChip>
-                        ))}
-                      </div>
-                    </IonCol>
-                  </IonRow>
-                )}
-              </IonGrid>
-            </IonCardContent>
-          </IonCard>
-        </div>
+              )}
+            </IonGrid>
+          </IonCardContent>
+        </IonCard>
 
         {selectedBloque && (
           <MonitoringOptionsScreen
@@ -188,6 +188,8 @@ const MonitoreoNuevo: React.FC = () => {
             onOptionSelect={handleOptionSelect}
           />
         )}
+
+        <VideorMon />
 
         <MonitoreoModal
           isOpen={isOpenModal}
@@ -199,5 +201,16 @@ const MonitoreoNuevo: React.FC = () => {
     </IonPage>
   );
 };
+const VideorMon = () => {
+  return (
+    <video controls width="100%" preload="metadata" poster="miniatura.jpg">
+      <source src="assets/videor/monitoreo.webm" type="video/webm" />
+      Tu navegador no soporta el video.
+    </video>
+
+  );
+}
+
+
 
 export default MonitoreoNuevo; 
