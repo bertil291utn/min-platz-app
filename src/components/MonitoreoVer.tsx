@@ -7,6 +7,12 @@ import {
   IonLabel,
   IonTitle,
   IonCardTitle,
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonContent,
 } from '@ionic/react';
 import { MonitoringModal } from '../interfaces/Monitoring';
 import MonitoreoModal from './MonitoreoModal';
@@ -35,47 +41,59 @@ const MonitoreoVer: React.FC = () => {
   };
 
   return (
-    <div className="ion-padding">
-      <IonCard
-        button
-        onClick={() => handleOptionSelect('view-camas')}>
-        <IonCardHeader>
-          <IonCardTitle>Monitoreo por camas</IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonLabel>Ver historial de monitoreo por camas</IonLabel>
-        </IonCardContent>
-      </IonCard>
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton />
+          </IonButtons>
+          <IonTitle>Ver Monitoreo</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonCard
+          button
+          onClick={() => handleOptionSelect('view-camas')}>
+          <IonCardHeader>
+            <IonCardTitle>Monitoreo por camas</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonLabel>Ver historial de monitoreo por camas</IonLabel>
+          </IonCardContent>
+        </IonCard>
 
-      <IonCard
-      button onClick={() => handleOptionSelect('view-placas')}
-      >
-        <IonCardHeader>
-          <IonCardTitle>Monitoreo por placas</IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
+        <IonCard
+          button 
+          onClick={() => handleOptionSelect('view-placas')}
+        >
+          <IonCardHeader>
+            <IonCardTitle>Monitoreo por placas</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
             <IonLabel>Ver historial de monitoreo por placas</IonLabel>
-        </IonCardContent>
-      </IonCard>
+          </IonCardContent>
+        </IonCard>
 
-      <IonCard
-      button onClick={() => handleOptionSelect('view-mallas')}
-      >
-        <IonCardHeader>
-          <IonCardTitle>Monitoreo por Mallas</IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
+        <IonCard
+          button 
+          onClick={() => handleOptionSelect('view-mallas')}
+        >
+          <IonCardHeader>
+            <IonCardTitle>Monitoreo por Mallas</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
             <IonLabel>Ver historial de monitoreo por mallas</IonLabel>
-        </IonCardContent>
-      </IonCard>
+          </IonCardContent>
+        </IonCard>
 
-      <MonitoreoModal
-        isOpen={isOpenModal}
-        onClose={() => setIsOpenModal(false)}
-        headerText={headerText}
-        currentModal={currentModal}
-      />
-    </div>
+        <MonitoreoModal
+          isOpen={isOpenModal}
+          onClose={() => setIsOpenModal(false)}
+          headerText={headerText}
+          currentModal={currentModal}
+        />
+      </IonContent>
+    </IonPage>
   );
 };
 

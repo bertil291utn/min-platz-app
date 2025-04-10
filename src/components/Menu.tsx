@@ -29,7 +29,7 @@ import {
   eyeOutline,
   chevronDown,
 } from 'ionicons/icons';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import './Menu.css';
 
@@ -42,10 +42,10 @@ const Menu: React.FC = () => {
     {
       title: 'Manejo de plagas',
       icon: analyticsOutline,
-      path: '/monitoreo',
+      path: '/monitoreo-nuevo',
       subItems: [
-        { title: 'Monitoreo', icon: scanOutline, path: '/monitoreo/nuevo' },
-        { title: 'Ver Monitoreo', icon: eyeOutline, path: '/monitoreo/ver' },
+        { title: 'Monitoreo', icon: scanOutline, path: '/monitoreo-nuevo' },
+        { title: 'Ver Monitoreo', icon: eyeOutline, path: '/monitoreo-ver' },
       ],
     },
   ];
@@ -66,8 +66,15 @@ const Menu: React.FC = () => {
     history.push(path);
   };
 
+  // Check if current path is a subitem path
+  const isSubItemPath = (path: string) => {
+    return activeMenuItems.some(item => 
+      item.subItems?.some(subItem => subItem.path === path)
+    );
+  };
+
   return (
-    <IonMenu contentId="main">
+    <IonMenu contentId="main" className="main-menu">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Florvis</IonTitle>
@@ -90,13 +97,15 @@ const Menu: React.FC = () => {
                 </IonItem>
               ) : (
                 <IonAccordionGroup>
-                  <IonAccordion value={item.title}>
-                    <IonItem slot="header">
+                  <IonAccordion 
+                    value={item.title}
+                    toggleIcon={chevronDown}
+                  >
+                    <IonItem slot="header" className={isSubItemPath(location.pathname) ? 'selected-menu-item' : ''}>
                       <IonIcon slot="start" icon={item.icon} />
                       <IonLabel>{item.title}</IonLabel>
                     </IonItem>
-                    <div slot="content" 
-                    >
+                    <div slot="content" className="submenu-content">
                       {item.subItems.map((subItem, subIndex) => (
                         <IonItem
                           key={`${index}-${subIndex}`}

@@ -1,33 +1,48 @@
-.submenu-content {
+/* Menu component specific styles */
+.main-menu ion-accordion-group {
+  padding: 0 1rem;
+  --ion-safe-area-right: 0;
 }
 
-.submenu-item {
-  padding-left: 16px;
-  --padding-start: 32px;
-  font-size: 14px;
-}
-
-ion-accordion {
+.main-menu ion-accordion {
   margin: 0;
 }
 
-ion-accordion ion-item {
+.main-menu ion-accordion ion-item[slot="header"] {
+  --padding-start: 16px;
   --background: transparent;
 }
 
-ion-accordion ion-item::part(native) {
+.main-menu ion-accordion ion-item {
+  --background: transparent;
+}
+
+.main-menu ion-accordion ion-item::part(native) {
   padding: 0;
 }
 
-ion-accordion-group {
-  margin: 0;
+.main-menu .submenu-content {
+  padding-left: 16px;
 }
 
-.selected-menu-item {
+.main-menu .submenu-item {
+  --padding-start: 32px;
+  font-size: 14px;
+  --background: transparent;
+  width: 100%;
+}
+
+.main-menu .submenu-item.selected-menu-item {
+  --background: var(--ion-color-primary-tint);
+  --color: var(--ion-color-primary);
+  width: 100%;
+}
+
+.main-menu .selected-menu-item {
   --background: var(--ion-color-primary-tint);
   --color: var(--ion-color-primary);
 }
 
-ion-accordion.accordion-expanded ion-item[slot="header"] {
+.main-menu ion-accordion.accordion-expanded ion-item[slot="header"] {
   --color: var(--ion-color-primary);
 } 

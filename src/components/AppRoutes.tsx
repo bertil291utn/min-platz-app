@@ -9,7 +9,8 @@ import LoginPages from '../pages/LoginPages';
 import RegisterPage from '../pages/RegisterPage';
 import TabFacturacion from '../pages/TabFacturacion';
 import TabNotasEnvio from '../pages/TabNotasEnvio';
-import TabMonitoreo from '../pages/TabMonitoreo';
+import MonitoreoNuevo from '../components/MonitoreoNuevo';
+import MonitoreoVer from '../components/MonitoreoVer';
 import TabFacturaCompra from '../pages/TabFacturaCompra';
 import TabSettings from '../pages/TabSettings';
 import TabPronosticos from '../pages/TabPronosticos';
@@ -40,14 +41,11 @@ const AppRoutes: React.FC = () => {
       <Route exact path="/notas-envio">
         {isAuthenticated ? <TabNotasEnvio /> : <Redirect to="/login" />}
       </Route>
-      <Route exact path="/monitoreo">
-        <Redirect to="/monitoreo/nuevo" />
+      <Route exact path="/monitoreo-nuevo">
+        {isAuthenticated ? <MonitoreoNuevo /> : <Redirect to="/login" />}
       </Route>
-      <Route exact path="/monitoreo/nuevo">
-        {isAuthenticated ? <TabMonitoreo initialSegment="monitorear" /> : <Redirect to="/login" />}
-      </Route>
-      <Route exact path="/monitoreo/ver">
-        {isAuthenticated ? <TabMonitoreo initialSegment="historial" /> : <Redirect to="/login" />}
+      <Route exact path="/monitoreo-ver">
+        {isAuthenticated ? <MonitoreoVer /> : <Redirect to="/login" />}
       </Route>
       <Route exact path="/factura-compra">
         {isAuthenticated ? <TabFacturaCompra /> : <Redirect to="/login" />}
