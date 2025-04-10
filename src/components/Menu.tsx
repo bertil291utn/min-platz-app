@@ -1,6 +1,37 @@
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel, IonListHeader, IonFooter, IonButton, IonItemDivider } from '@ionic/react';
-import { documentTextOutline, cubeOutline, analyticsOutline, receiptOutline, settingsOutline, cloudyOutline, flaskOutline, leafOutline, home } from 'ionicons/icons';
+import {
+  IonMenu,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonList,
+  IonItem,
+  IonIcon,
+  IonLabel,
+  IonListHeader,
+  IonFooter,
+  IonButton,
+  IonItemDivider,
+  IonAccordion,
+  IonAccordionGroup,
+} from '@ionic/react';
+import {
+  documentTextOutline,
+  cubeOutline,
+  analyticsOutline,
+  receiptOutline,
+  settingsOutline,
+  cloudyOutline,
+  flaskOutline,
+  leafOutline,
+  home,
+  scanOutline,
+  eyeOutline,
+  chevronDown,
+} from 'ionicons/icons';
+import React from 'react';
 import { useHistory, useLocation } from 'react-router';
+import './Menu.css';
 
 const Menu: React.FC = () => {
   const history = useHistory();
@@ -8,7 +39,15 @@ const Menu: React.FC = () => {
 
   const activeMenuItems = [
     { title: 'Principal', icon: home, path: '/home' },
-    { title: 'Manejo de plagas', icon: analyticsOutline, path: '/monitoreo' }
+    {
+      title: 'Manejo de plagas',
+      icon: analyticsOutline,
+      path: '/monitoreo',
+      subItems: [
+        { title: 'Monitoreo', icon: scanOutline, path: '/monitoreo/nuevo' },
+        { title: 'Ver Monitoreo', icon: eyeOutline, path: '/monitoreo/ver' },
+      ],
+    },
   ];
 
   const upcomingMenuItems = [
@@ -38,18 +77,48 @@ const Menu: React.FC = () => {
         <IonList>
           {/* Active Menu Items */}
           {activeMenuItems.map((item, index) => (
-            <IonItem
-              key={index}
-              button
-              onClick={() => handleMenuClick(item.path)}
-              color={location.pathname === item.path ? 'primary' : undefined}
-              className={location.pathname === item.path ? 'selected-menu-item' : ''}
-            >
-              <IonIcon slot="start" icon={item.icon} />
-              <IonLabel>{item.title}</IonLabel>
-            </IonItem>
+            <React.Fragment key={index}>
+              {!item.subItems ? (
+                <IonItem
+                  button
+                  onClick={() => handleMenuClick(item.path)}
+                  color={location.pathname === item.path ? 'primary' : undefined}
+                  className={location.pathname === item.path ? 'selected-menu-item' : ''}
+                >
+                  <IonIcon slot="start" icon={item.icon} />
+                  <IonLabel>{item.title}</IonLabel>
+                </IonItem>
+              ) : (
+                <IonAccordionGroup>
+                  <IonAccordion value={item.title}>
+                    <IonItem slot="header">
+                      <IonIcon slot="start" icon={item.icon} />
+                      <IonLabel>{item.title}</IonLabel>
+                    </IonItem>
+                    <div slot="content" 
+                    >
+                      {item.subItems.map((subItem, subIndex) => (
+                        <IonItem
+                          key={`${index}-${subIndex}`}
+                          button
+                          onClick={() => handleMenuClick(subItem.path)}
+                          color={location.pathname === subItem.path ? 'primary' : undefined}
+                          className={`submenu-item ${
+                            location.pathname === subItem.path ? 'selected-menu-item' : ''
+                          }`}
+                          lines="none"
+                        >
+                          <IonIcon slot="start" icon={subItem.icon} />
+                          <IonLabel>{subItem.title}</IonLabel>
+                        </IonItem>
+                      ))}
+                    </div>
+                  </IonAccordion>
+                </IonAccordionGroup>
+              )}
+            </React.Fragment>
           ))}
-          
+
           <IonItemDivider />
 
           {/* Upcoming Menu Items */}

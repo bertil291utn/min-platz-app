@@ -41,7 +41,13 @@ const AppRoutes: React.FC = () => {
         {isAuthenticated ? <TabNotasEnvio /> : <Redirect to="/login" />}
       </Route>
       <Route exact path="/monitoreo">
-        {isAuthenticated ? <TabMonitoreo /> : <Redirect to="/login" />}
+        <Redirect to="/monitoreo/nuevo" />
+      </Route>
+      <Route exact path="/monitoreo/nuevo">
+        {isAuthenticated ? <TabMonitoreo initialSegment="monitorear" /> : <Redirect to="/login" />}
+      </Route>
+      <Route exact path="/monitoreo/ver">
+        {isAuthenticated ? <TabMonitoreo initialSegment="historial" /> : <Redirect to="/login" />}
       </Route>
       <Route exact path="/factura-compra">
         {isAuthenticated ? <TabFacturaCompra /> : <Redirect to="/login" />}

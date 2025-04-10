@@ -1,0 +1,33 @@
+.submenu-content {
+}
+
+.submenu-item {
+  padding-left: 16px;
+  --padding-start: 32px;
+  font-size: 14px;
+}
+
+ion-accordion {
+  margin: 0;
+}
+
+ion-accordion ion-item {
+  --background: transparent;
+}
+
+ion-accordion ion-item::part(native) {
+  padding: 0;
+}
+
+ion-accordion-group {
+  margin: 0;
+}
+
+.selected-menu-item {
+  --background: var(--ion-color-primary-tint);
+  --color: var(--ion-color-primary);
+}
+
+ion-accordion.accordion-expanded ion-item[slot="header"] {
+  --color: var(--ion-color-primary);
+} 
