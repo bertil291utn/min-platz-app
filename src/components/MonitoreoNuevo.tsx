@@ -15,6 +15,7 @@ import {
   IonMenuButton,
   IonTitle,
   IonContent,
+  IonButton,
 } from '@ionic/react';
 import { calendarOutline, businessOutline } from 'ionicons/icons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -27,6 +28,7 @@ import MonitoringOptionsScreen from './MonitoringOptionsScreen';
 import { CURRENT_WEEK_NUMBER } from '../helpers/regularHelper';
 import { MonitoringModal } from '../interfaces/Monitoring';
 import MonitoreoModal from './MonitoreoModal';
+import { useHistory } from 'react-router';
 
 const MonitoreoNuevo: React.FC = () => {
   const [showWeekSelector, setShowWeekSelector] = useState<boolean>(false);
@@ -34,6 +36,7 @@ const MonitoreoNuevo: React.FC = () => {
   const [currentModal, setCurrentModal] = useState<MonitoringModal | undefined>();
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [headerText, setHeaderText] = useState<string>('');
+  const history = useHistory();
 
   const dispatch = useAppDispatch();
   const activeBloques = useAppSelector(selectActiveBloques);
@@ -90,6 +93,9 @@ const MonitoreoNuevo: React.FC = () => {
         </IonHeader>
         <IonContent className="ion-padding">
           <p>No hay bloques activos</p>
+          <IonButton onClick={() => history.push('/settings')}>
+            {'Añadir bloques'}
+          </IonButton>
         </IonContent>
       </IonPage>
     );
@@ -112,7 +118,7 @@ const MonitoreoNuevo: React.FC = () => {
               <IonGrid>
                 <IonRow className="ion-align-items-center">
                   <IonCol size="auto">
-                    <IonChip 
+                    <IonChip
                       color="secondary"
                       onClick={() => setShowBloqueSelector(!showBloqueSelector)}
                       outline
@@ -126,7 +132,7 @@ const MonitoreoNuevo: React.FC = () => {
                 {showBloqueSelector && (
                   <IonRow className="ion-margin-top">
                     <IonCol>
-                      <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {activeBloques.map((bloque) => (
                           <IonChip
                             key={bloque.id}
@@ -140,11 +146,11 @@ const MonitoreoNuevo: React.FC = () => {
                     </IonCol>
                   </IonRow>
                 )}
-                
+
                 <IonRow className="ion-align-items-center ion-margin-top">
                   <IonCol size="auto">
-                    <IonChip 
-                      color="secondary" 
+                    <IonChip
+                      color="secondary"
                       outline={true}
                       onClick={() => setShowWeekSelector(!showWeekSelector)}
                     >
@@ -153,11 +159,11 @@ const MonitoreoNuevo: React.FC = () => {
                     </IonChip>
                   </IonCol>
                 </IonRow>
-                
+
                 {showWeekSelector && (
                   <IonRow className="ion-margin-top">
                     <IonCol>
-                      <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                         {Array.from({ length: CURRENT_WEEK_NUMBER }, (_, i) => CURRENT_WEEK_NUMBER - i).map((week) => (
                           <IonChip
                             key={week}
