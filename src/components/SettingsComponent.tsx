@@ -2,7 +2,7 @@ import {
   IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
   IonIcon, IonList, IonNote, IonAvatar, IonChip,
 } from '@ionic/react';
-import { logOutOutline, personCircleOutline, mailOutline, callOutline, cardOutline, settingsOutline } from 'ionicons/icons';
+import { logOutOutline, personCircleOutline, mailOutline, callOutline, cardOutline, settingsOutline, sparkles } from 'ionicons/icons';
 import BloquesSettingsC from './BloquesSettingsC';
 import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
@@ -53,6 +53,24 @@ const SettingsC = () => {
     <div>
       <IonAccordionGroup>
         <UserProfileC />
+
+        <IonAccordion value="planes">
+          <IonItem slot="header" color="light">
+            <IonIcon icon={sparkles} slot="start" style={{ color: 'var(--ion-color-warning)' }} />
+            <IonLabel>Planes y Precios</IonLabel>
+          </IonItem>
+          <div className="ion-padding" slot="content">
+            <div className="ion-text-center">
+              <p>Descubre nuestros planes premium y mejora tu experiencia</p>
+              <IonButton
+                fill='outline' onClick={() => router.push('/planes')}
+              >
+                Ver Planes
+              </IonButton>
+            </div>
+          </div>
+        </IonAccordion>
+
         <IonAccordion value="bloques">
           <IonItem slot="header" color="light">
             <IonLabel>Bloques</IonLabel>
