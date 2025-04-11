@@ -15,6 +15,7 @@ import TabFacturaCompra from '../pages/TabFacturaCompra';
 import TabSettings from '../pages/TabSettings';
 import TabPronosticos from '../pages/TabPronosticos';
 import TabFumigacion from '../pages/TabFumigacion';
+import TabTierPrice from '../pages/TabTierPrice';
 
 const AppRoutes: React.FC = () => {
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
@@ -58,6 +59,9 @@ const AppRoutes: React.FC = () => {
       </Route>
       <Route exact path="/fumigacion">
         {isAuthenticated ? <TabFumigacion /> : <Redirect to="/login" />}
+      </Route>
+      <Route exact path="/planes">
+        {isAuthenticated ? <TabTierPrice /> : <Redirect to="/login" />}
       </Route>
     </IonRouterOutlet>
   );

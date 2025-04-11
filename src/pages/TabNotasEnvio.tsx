@@ -24,7 +24,7 @@ const TabNotasEnvio: React.FC = () => {
             </IonCardHeader>
             <IonCardContent className="ion-text-center">
             <video controls width="100%" preload="metadata" poster="miniatura.jpg">
-                <source src="assets/videor/notas-venta.webm" type="video/webm" />
+                <source src="assets/videor/notas-envio.webm" type="video/webm" />
                 Tu navegador no soporta el video.
               </video>
               <p>La funcionalidad de notas de envío estará disponible pronto.</p>

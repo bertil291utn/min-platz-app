@@ -10,6 +10,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
 import Menu from './components/Menu';
 import AppRoutes from './components/AppRoutes';
+import HelpFabWrapper from './components/HelpFabWrapper';
 
 // Define Capacitor types for TypeScript
 interface CapacitorGlobal {
@@ -108,6 +109,7 @@ const AppWrapper = () => {
       <IonReactRouter>
         <Menu />
         <AppRoutes />
+        <HelpFabWrapper />
       </IonReactRouter>
     </IonApp>
   );
