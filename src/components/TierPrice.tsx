@@ -14,8 +14,18 @@ import {
   IonLabel,
 } from '@ionic/react';
 import { checkmarkOutline, infiniteOutline, businessOutline, documentOutline, statsChartOutline, peopleOutline } from 'ionicons/icons';
+import { useHistory } from 'react-router';
 
 export const TierPrice: React.FC = () => {
+  const history = useHistory();
+
+  const handleWhatsAppRedirect = (tipo: string) => () => {
+    const phoneNumber = '593979626724';
+    const message = 'Quiero mas informacion del plan ' + tipo;
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <IonGrid>
       <IonRow>
@@ -69,7 +79,9 @@ export const TierPrice: React.FC = () => {
                   <IonLabel>Soporte prioritario</IonLabel>
                 </IonItem>
               </IonList>
-              <IonButton expand="block" color="success" className="ion-margin-top">
+              <IonButton expand="block" color="success" className="ion-margin-top"
+              onClick={handleWhatsAppRedirect('super usuario')}
+              >
                 Seleccionar Plan
               </IonButton>
             </IonCardContent>
@@ -87,23 +99,25 @@ export const TierPrice: React.FC = () => {
               </div>
               <IonList lines="none">
                 <IonItem>
-                  <IonIcon icon={businessOutline} slot="start"  />
+                  <IonIcon icon={businessOutline} slot="start" />
                   <IonLabel>Gestión de postcosecha avanzada</IonLabel>
                 </IonItem>
                 <IonItem>
-                  <IonIcon icon={checkmarkOutline} slot="start"  />
+                  <IonIcon icon={checkmarkOutline} slot="start" />
                   <IonLabel>Integración con sistemas existentes</IonLabel>
                 </IonItem>
                 <IonItem>
-                  <IonIcon icon={checkmarkOutline} slot="start"  />
+                  <IonIcon icon={checkmarkOutline} slot="start" />
                   <IonLabel>Reportes personalizados</IonLabel>
                 </IonItem>
                 <IonItem>
-                  <IonIcon icon={peopleOutline} slot="start"  />
+                  <IonIcon icon={peopleOutline} slot="start" />
                   <IonLabel>Soporte dedicado 24/7</IonLabel>
                 </IonItem>
               </IonList>
-              <IonButton expand="block"  className="ion-margin-top" fill='outline'>
+              <IonButton expand="block" className="ion-margin-top" fill='outline'
+                onClick={handleWhatsAppRedirect('enterprise')}
+              >
                 Contáctanos
               </IonButton>
             </IonCardContent>
@@ -126,7 +140,9 @@ export const TierPrice: React.FC = () => {
                   <IonLabel>Acceso a funciones básicas</IonLabel>
                 </IonItem>
               </IonList>
-              <IonButton expand="block" className="ion-margin-top" fill='outline'>
+              <IonButton expand="block" className="ion-margin-top" fill='outline'
+                onClick={() => history.push('/')}
+              >
                 Comenzar Gratis
               </IonButton>
             </IonCardContent>
