@@ -27,6 +27,10 @@ const UserProfileC = () => {
     dispatch(updateUser({ [name]: newValue }));
   };
 
+  const handleTogglePremium = () => {
+    router.push('/planes')
+  };
+
   if (!user) return null;
 
   return (
@@ -96,14 +100,14 @@ const UserProfileC = () => {
                 slot="end"
               />
             </IonItem>
-             {/* remove this component just for test, this value has to coming from database and set in userset */}
-    
+            {/* remove this component just for test, this value has to coming from database and set in userset */}
+
             <IonItem>
               <IonLabel>{user.premium ? 'Desactivar de' : 'Activar a'} usuario premium</IonLabel>
               <IonToggle
                 name='premium'
                 checked={user.premium}
-                onIonChange={handleToggleChange}
+                onIonChange={handleTogglePremium}
                 slot="end"
               />
             </IonItem>
