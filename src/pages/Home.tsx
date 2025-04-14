@@ -1,14 +1,14 @@
-import { 
-  IonPage, 
-  IonHeader, 
-  IonToolbar, 
-  IonButtons, 
-  IonMenuButton, 
-  IonTitle, 
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonTitle,
   IonContent,
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
   IonIcon,
   IonCardContent,
   IonGrid,
@@ -24,11 +24,11 @@ import {
   IonSegment,
   IonSegmentButton
 } from '@ionic/react';
-import { 
+import {
   flowerOutline,
-  trendingUpOutline, 
-  warningOutline, 
-  leafOutline, 
+  trendingUpOutline,
+  warningOutline,
+  leafOutline,
   waterOutline,
   thumbsUpOutline,
   thumbsDownOutline,
@@ -65,6 +65,10 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent>
         <div className="ion-padding">
+          <video controls width="100%" preload="metadata" poster="miniatura.jpg">
+            <source src="assets/videor/intro.webm" type="video/webm" />
+            Tu navegador no soporta el video.
+          </video>
           <IonGrid>
             {/* Production Status */}
             <IonRow>
@@ -72,9 +76,9 @@ const Home: React.FC = () => {
                 <IonCard>
                   <IonCardHeader>
                     <IonCardTitle className="ion-text-center">
-                      <IonIcon 
-                        icon={getMoodIcon(productionMetrics.totalProduction > productionMetrics.previousMonth)} 
-                        style={{ fontSize: '48px', color: productionMetrics.totalProduction > productionMetrics.previousMonth ? 'var(--ion-color-success)' : 'var(--ion-color-warning)' }} 
+                      <IonIcon
+                        icon={getMoodIcon(productionMetrics.totalProduction > productionMetrics.previousMonth)}
+                        style={{ fontSize: '48px', color: productionMetrics.totalProduction > productionMetrics.previousMonth ? 'var(--ion-color-success)' : 'var(--ion-color-warning)' }}
                       />
                       <h2>¿Cómo va mi finca hoy?</h2>
                     </IonCardTitle>
@@ -106,8 +110,8 @@ const Home: React.FC = () => {
                         {productionMetrics.topVariety}
                       </h2>
                       <p>Esta variedad nos está dando los mejores resultados</p>
-                      <IonProgressBar 
-                        value={0.208} 
+                      <IonProgressBar
+                        value={0.208}
                         color="tertiary"
                         style={{ height: '10px', borderRadius: '5px', margin: '10px 0' }}
                       />
@@ -167,8 +171,8 @@ const Home: React.FC = () => {
                       {productionMetrics.problemBlocks.map((block, index) => (
                         <div key={index} className="ion-margin-bottom">
                           <h3>{block}</h3>
-                          <IonProgressBar 
-                            value={0.85} 
+                          <IonProgressBar
+                            value={0.85}
                             color="warning"
                             style={{ height: '10px', borderRadius: '5px', margin: '5px 0' }}
                           />
@@ -194,8 +198,8 @@ const Home: React.FC = () => {
                   <IonCardContent>
                     <div className="ion-text-center">
                       <h2>Próximos días</h2>
-                      <IonProgressBar 
-                        value={0.75} 
+                      <IonProgressBar
+                        value={0.75}
                         color="success"
                         style={{ height: '10px', borderRadius: '5px', margin: '10px 0' }}
                       />
@@ -236,7 +240,7 @@ const Home: React.FC = () => {
                   </IonCardHeader>
                   <IonCardContent>
                     <div className="ion-text-center">
-                      <IonProgressBar 
+                      <IonProgressBar
                         value={dashboardData.inventory.stockHealth / 100}
                         color={dashboardData.inventory.stockHealth > 70 ? 'success' : 'warning'}
                         style={{ height: '10px', borderRadius: '5px', margin: '10px 0' }}
@@ -283,7 +287,7 @@ const Home: React.FC = () => {
                         </IonItem>
                       </div>
                     ))}
-                    
+
                   </IonCardContent>
                 </IonCard>
               </IonCol>
