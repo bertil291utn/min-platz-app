@@ -17,7 +17,12 @@ import {
   IonChip,
   IonLabel,
   IonItem,
-  IonProgressBar
+  IonProgressBar,
+  IonButton,
+  IonList,
+  IonBadge,
+  IonSegment,
+  IonSegmentButton
 } from '@ionic/react';
 import { 
   flowerOutline,
@@ -29,12 +34,59 @@ import {
   thumbsDownOutline,
   alertCircleOutline,
   happyOutline,
-  sadOutline
+  sadOutline,
+  analyticsOutline,
+  cubeOutline,
+  checkmarkCircleOutline,
+  calendarOutline,
+  documentTextOutline,
+  barChartOutline,
+  alertOutline,
+  cameraOutline,
+  peopleOutline,
+  downloadOutline
 } from 'ionicons/icons';
 import './Home.css';
 
 const Home: React.FC = () => {
   // Mock data for demonstration
+  const dashboardData = {
+    predictiveAnalysis: {
+      seasonalForecast: 18500,
+      growthTrend: '+12%',
+      alerts: [
+        { type: 'warning', message: 'Posible plaga en Bloque A' },
+        { type: 'info', message: 'Optimización sugerida para ciclo de riego' }
+      ],
+      harvestOptimization: { currentEfficiency: 85, suggestedChanges: 'Adelantar cosecha 2 días' }
+    },
+    inventory: {
+      lowStock: ['Fertilizante N-P-K', 'Fungicida orgánico'],
+      wastageRate: '3.2%',
+      nextDelivery: '2025-04-20',
+      stockHealth: 78
+    },
+    qualityControl: {
+      topVarieties: [
+        { name: 'Freedom', score: 92 },
+        { name: 'Explorer', score: 88 }
+      ],
+      healthIssues: 2,
+      lastInspection: '2025-04-13'
+    },
+    harvestPlanning: {
+      nextHarvest: '2025-04-18',
+      estimatedYield: 2800,
+      workersNeeded: 12,
+      activeBlocks: ['B1', 'B3', 'B4']
+    },
+    reports: {
+      available: ['Producción Mensual', 'Calidad por Variedad', 'Costos Operativos'],
+      lastExport: '2025-04-12',
+      yearComparison: '+15%'
+    }
+  };
+
   const productionMetrics = {
     totalProduction: 15420,
     previousMonth: 14800,
@@ -176,15 +228,182 @@ const Home: React.FC = () => {
               </IonCol>
             </IonRow>
 
-            {/* Video Section */}
+            {/* Predictive Analysis Section */}
             <IonRow>
               <IonCol size="12">
                 <IonCard>
-                  <IonCardContent className="ion-text-center">
-                    <video controls width="100%" preload="metadata" poster="miniatura.jpg">
-                      <source src="assets/videor/intro.webm" type="video/webm" />
-                      Tu navegador no soporta el video.
-                    </video>
+                  <IonCardHeader>
+                    <IonCardTitle className="ion-text-center">
+                      <IonIcon icon={analyticsOutline} style={{ fontSize: '32px', color: 'var(--ion-color-primary)' }} />
+                      <h3>¿Qué viene para la finca?</h3>
+                    </IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <div className="ion-text-center">
+                      <h2>Próximos días</h2>
+                      <IonProgressBar 
+                        value={0.75} 
+                        color="success"
+                        style={{ height: '10px', borderRadius: '5px', margin: '10px 0' }}
+                      />
+                      <p style={{ color: 'var(--ion-color-success)' }}>¡Todo va bien!</p>
+                    </div>
+                    <IonList>
+                      <IonItem>
+                        <IonIcon icon={barChartOutline} slot="start" color="primary" />
+                        <IonLabel>
+                          <h2>Producción</h2>
+                          <p>Más tallos que el año pasado</p>
+                        </IonLabel>
+                        <IonIcon icon={trendingUpOutline} color="success" />
+                      </IonItem>
+                      {dashboardData.predictiveAnalysis.alerts.map((alert, index) => (
+                        <IonItem key={index}>
+                          <IonIcon icon={alertOutline} slot="start" color={alert.type === 'warning' ? 'warning' : 'medium'} />
+                          <IonLabel>
+                            <p>{alert.message}</p>
+                          </IonLabel>
+                        </IonItem>
+                      ))}
+                    </IonList>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+
+            {/* Inventory Management */}
+            <IonRow>
+              <IonCol size="12">
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle className="ion-text-center">
+                      <IonIcon icon={cubeOutline} style={{ fontSize: '32px', color: 'var(--ion-color-secondary)' }} />
+                      <h3>¿Qué necesitamos?</h3>
+                    </IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <div className="ion-text-center">
+                      <IonProgressBar 
+                        value={dashboardData.inventory.stockHealth / 100}
+                        color={dashboardData.inventory.stockHealth > 70 ? 'success' : 'warning'}
+                        style={{ height: '10px', borderRadius: '5px', margin: '10px 0' }}
+                      />
+                      <p>{dashboardData.inventory.stockHealth > 70 ? '¡Todo en orden!' : 'Necesitamos reponer'} </p>
+                    </div>
+                    <IonList>
+                      <IonItem>
+                        <IonIcon icon={alertCircleOutline} slot="start" color="danger" />
+                        <IonLabel>
+                          <h2>¡Atención!</h2>
+                          <p>Necesitamos reponer:</p>
+                          <p style={{ fontSize: '14px' }}>{dashboardData.inventory.lowStock.join(', ')}</p>
+                        </IonLabel>
+                      </IonItem>
+                    </IonList>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+
+            {/* Quality Control */}
+            <IonRow>
+              <IonCol size="12">
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle className="ion-text-center">
+                      <IonIcon icon={checkmarkCircleOutline} style={{ fontSize: '32px', color: 'var(--ion-color-tertiary)' }} />
+                      <h3>¿Cómo están las flores?</h3>
+                    </IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    {dashboardData.qualityControl.topVarieties.map((variety, index) => (
+                      <div key={index} className="ion-margin-bottom">
+                        <IonItem lines="none">
+                          <IonIcon icon={flowerOutline} slot="start" color="tertiary" />
+                          <IonLabel>
+                            <h2>{variety.name}</h2>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <IonIcon icon={happyOutline} color="success" />
+                              <p style={{ margin: 0 }}>¡Muy buenas!</p>
+                            </div>
+                          </IonLabel>
+                        </IonItem>
+                      </div>
+                    ))}
+                    
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+
+            {/* Harvest Planning */}
+            <IonRow>
+              <IonCol size="12">
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle className="ion-text-center">
+                      <IonIcon icon={calendarOutline} style={{ fontSize: '32px', color: 'var(--ion-color-success)' }} />
+                      <h3>¿Cuándo cosechamos?</h3>
+                    </IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <div className="ion-text-center">
+                      <h2>Próxima cosecha</h2>
+                      <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{dashboardData.harvestPlanning.nextHarvest}</p>
+                      <p>Necesitamos {dashboardData.harvestPlanning.workersNeeded} personas</p>
+                    </div>
+                    <IonList>
+                      <IonItem>
+                        <IonIcon icon={peopleOutline} slot="start" color="success" />
+                        <IonLabel>
+                          <h2>Personas necesarias</h2>
+                          <p>{dashboardData.harvestPlanning.workersNeeded} trabajadores</p>
+                        </IonLabel>
+                      </IonItem>
+                      <IonItem>
+                        <IonIcon icon={leafOutline} slot="start" color="success" />
+                        <IonLabel>
+                          <h2>Bloques a cosechar</h2>
+                          <p>{dashboardData.harvestPlanning.activeBlocks.join(', ')}</p>
+                        </IonLabel>
+                      </IonItem>
+                    </IonList>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
+
+            {/* Custom Reports */}
+            <IonRow>
+              <IonCol size="12">
+                <IonCard>
+                  <IonCardHeader>
+                    <IonCardTitle className="ion-text-center">
+                      <IonIcon icon={documentTextOutline} style={{ fontSize: '32px', color: 'var(--ion-color-medium)' }} />
+                      <h3>Informes de la finca</h3>
+                    </IonCardTitle>
+                  </IonCardHeader>
+                  <IonCardContent>
+                    <div className="ion-text-center ion-margin-bottom">
+                      <h2>¿Qué quieres saber?</h2>
+                      <p>Elige un informe para ver</p>
+                    </div>
+                    <IonList>
+                      {dashboardData.reports.available.map((report, index) => (
+                        <IonItem key={index}>
+                          <IonLabel>
+                            <h2>{report}</h2>
+                            <IonButton expand="block" color="medium" size="small" className="ion-margin-top">
+                              Ver informe
+                            </IonButton>
+                          </IonLabel>
+                        </IonItem>
+                      ))}
+                    </IonList>
+                    <div className="ion-text-center ion-padding-top">
+                      <p style={{ color: 'var(--ion-color-success)' }}>¡Mejor que el año pasado!</p>
+                      <IonBadge color="success">+15%</IonBadge>
+                    </div>
                   </IonCardContent>
                 </IonCard>
               </IonCol>
