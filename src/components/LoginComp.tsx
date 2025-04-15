@@ -78,7 +78,7 @@ const LoginComp: React.FC = () => {
 
       // Set user data
       dispatch(setUser(formatUserForRedux(userData)));
-      
+
       router.push('/home')
       setCredentials(INITIAL_FORM_DATA)
 
@@ -139,25 +139,25 @@ const LoginComp: React.FC = () => {
             <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
           </IonInput>
 
-          <div className="ion-padding-top">
-            <IonButton expand="block" type="submit" disabled={isLoading}>
-              {isLoading ? 'Procesando...' : 'Entrar'}
-            </IonButton>
+          <IonButton expand="block" type="submit" disabled={isLoading}>
+            {isLoading ? 'Procesando...' : 'Entrar'}
+          </IonButton>
 
-            <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-              <IonText color="medium">
-                ¿No tienes una cuenta?
-              </IonText>
-              <IonButton
-                fill="clear"
-                expand="block"
-                onClick={() => router.push('/register', 'forward')}
-              >
-                Registrarse
-              </IonButton>
-            </div>
-          </div>
         </form>
+        <div className="ion-padding-top">
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <IonText color="medium">
+              ¿No tienes una cuenta?
+            </IonText>
+            <IonButton
+              fill="clear"
+              expand="block"
+              onClick={() => router.push('/register', 'forward')}
+            >
+              Registrarse
+            </IonButton>
+          </div>
+        </div>
       </div>
     </div>
   );

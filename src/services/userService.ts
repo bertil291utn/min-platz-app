@@ -7,7 +7,8 @@ import {
   where,
   getDocs
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { signInAnonymously } from 'firebase/auth';
+import { db, auth } from '../config/firebase';
 import { User } from '../interfaces/User';
 
 export interface UserData {
@@ -22,8 +23,17 @@ export interface UserData {
   expert?: boolean;
 }
 
+// Ensure authentication before any operation
+const ensureAuth = async () => {
+  if (!auth.currentUser) {
+    await signInAnonymously(auth);
+  }
+  return auth.currentUser;
+};
+
 export const createUser = async (userData: UserData) => {
   try {
+    await ensureAuth();
     // Create user document in Firestore
     await setDoc(doc(db, 'users', userData.ci), {
       ...userData,
@@ -39,6 +49,7 @@ export const createUser = async (userData: UserData) => {
 
 export const getUserByCi = async (ci: string): Promise<UserData | null> => {
   try {
+    await ensureAuth();
     const userDoc = await getDoc(doc(db, 'users', ci));
     if (userDoc.exists()) {
       return userDoc.data() as UserData;
@@ -52,6 +63,7 @@ export const getUserByCi = async (ci: string): Promise<UserData | null> => {
 
 export const checkUserExists = async (ci: string): Promise<boolean> => {
   try {
+    await ensureAuth();
     const userDoc = await getDoc(doc(db, 'users', ci));
     return userDoc.exists();
   } catch (error) {
