@@ -37,3 +37,4 @@ dev-dist
 android
 package-lock.json
 public/assets/videor
+.env

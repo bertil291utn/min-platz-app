@@ -25,6 +25,7 @@ import './RegisterComp.css';
 import { fetchPersonInfo } from '../services/PersonService';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 import bcrypt from 'bcryptjs';
+import { createUser } from '../services/userService';
 
 interface RegisterForm {
   email: string;
@@ -244,12 +245,14 @@ const RegisterComp: React.FC = () => {
         whatsapp: formData.whatsapp || null,
         nombre: formData.nombre,
         apellido: formData.apellido,
-        password: hashedPassword, // Store hashed password
+        password: hashedPassword,
         ci: formData.ci,
         createdAt: new Date().toISOString()
       };
 
-      localStorage.setItem(USER_DATA, JSON.stringify(userData));
+      // Store in Firestore (this will work offline too thanks to persistence)
+      await createUser(userData);
+      
       setFormData(INITIAL_FORM_DATA);
 
       // Show success message
@@ -259,7 +262,7 @@ const RegisterComp: React.FC = () => {
       // Wait for toast to be visible before redirecting
       router.push('/login', 'root');
     } catch (error) {
-      setToastMessage('Error al registrar');
+      setToastMessage('Error al registrar: ' + (error instanceof Error ? error.message : 'Error desconocido'));
       setShowToast(true);
     } finally {
       setIsLoading(false);

@@ -15,6 +15,7 @@ import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import { setUser } from '../store/slices/userSlice';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 import bcrypt from 'bcryptjs';
+import { getUserByCi, formatUserForRedux } from '../services/userService';
 
 const INITIAL_FORM_DATA = {
   ci: '',
@@ -48,23 +49,18 @@ const LoginComp: React.FC = () => {
       throw new Error('Cédula inválida');
     }
 
-    const userData = localStorage.getItem(USER_DATA);
+    const userData = await getUserByCi(ci);
     if (!userData) {
       throw new Error('Usuario no registrado');
     }
 
-    const user = JSON.parse(userData);
-    if (user.ci !== ci) {
-      throw new Error('Cédula no encontrada');
-    }
-
     // Compare password with hashed password using bcrypt
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(password, userData.password);
     if (!isValidPassword) {
       throw new Error('Contraseña incorrecta');
     }
 
-    return user;
+    return userData;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,7 +68,7 @@ const LoginComp: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const user = await validateUser(credentials.ci, credentials.password);
+      const userData = await validateUser(credentials.ci, credentials.password);
 
       // Store auth token
       storeAuthToken(credentials.ci);
@@ -81,16 +77,8 @@ const LoginComp: React.FC = () => {
       dispatch(setAuthenticated(true));
 
       // Set user data
-      dispatch(setUser({
-        id: user.ci,
-        email: user.email,
-        name: user.nombre,
-        lastName: user.apellido,
-        whatsapp: user.whatsapp || null,
-        ci: user.ci,
-        premium: user.premium || false,
-        expert: user.expert || false
-      }));
+      dispatch(setUser(formatUserForRedux(userData)));
+      
       router.push('/home')
       setCredentials(INITIAL_FORM_DATA)
 
