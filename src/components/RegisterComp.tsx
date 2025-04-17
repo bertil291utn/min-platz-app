@@ -26,6 +26,7 @@ import { fetchPersonInfo } from '../services/PersonService';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 import bcrypt from 'bcryptjs';
 import { createUser } from '../services/userService';
+import { sleep } from '../helpers/regularHelper';
 
 interface RegisterForm {
   email: string;
@@ -251,7 +252,8 @@ const RegisterComp: React.FC = () => {
       };
 
       // Store in Firestore (this will work offline too thanks to persistence)
-      await createUser(userData);
+       createUser(userData);
+       await sleep(3)
       
       setFormData(INITIAL_FORM_DATA);
 

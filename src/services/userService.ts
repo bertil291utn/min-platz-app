@@ -1,7 +1,7 @@
-import { 
-  doc, 
-  setDoc, 
-  getDoc, 
+import {
+  doc,
+  setDoc,
+  getDoc,
   collection,
   query,
   where,
@@ -61,7 +61,8 @@ export const createUser = async (userData: UserData, options: SetOptions = { mer
   try {
     await ensureAuth();
     // Create user document in Firestore with merge option for offline scenarios
-    await setDoc(doc(db, 'users', userData.ci), {
+    const userRef = doc(db, 'users', userData.ci);
+    await setDoc(userRef, {
       ...userData,
       premium: false,
       expert: false
@@ -83,20 +84,20 @@ export const getUserByCi = async (ci: string): Promise<UserData | null> => {
     await ensureAuth();
     const userDocRef = doc(db, 'users', ci);
     const userDoc = await getDoc(userDocRef);
-    
+
     if (userDoc.exists()) {
       // Document exists in cache or from server
       const source = userDoc.metadata.fromCache ? 'local cache' : 'server';
       console.log('Data came from ' + source);
       return userDoc.data() as UserData;
     }
-    
+
     if (userDoc.metadata.fromCache) {
       // If we're offline and the doc doesn't exist in cache, return null instead of throwing
       console.log('Document not found in cache while offline');
       return null;
     }
-    
+
     return null;
   } catch (error: any) {
     console.error('Error getting user:', error);
@@ -112,8 +113,8 @@ export const getUserByCi = async (ci: string): Promise<UserData | null> => {
 // Real-time listener for user data with offline support
 export const subscribeToUser = (ci: string, onUpdate: (userData: UserData | null) => void) => {
   const userDocRef = doc(db, 'users', ci);
-  
-  return onSnapshot(userDocRef, 
+
+  return onSnapshot(userDocRef,
     { includeMetadataChanges: true },
     (doc: DocumentSnapshot) => {
       if (doc.exists()) {
@@ -136,10 +137,10 @@ export const checkUserExists = async (ci: string): Promise<boolean> => {
   try {
     await ensureAuth();
     const userDoc = await getDoc(doc(db, 'users', ci));
-    
+
     const source = userDoc.metadata.fromCache ? 'local cache' : 'server';
     console.log('Existence check data came from ' + source);
-    
+
     return userDoc.exists();
   } catch (error: any) {
     console.error('Error checking user:', error);
