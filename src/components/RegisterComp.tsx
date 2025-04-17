@@ -25,7 +25,7 @@ import './RegisterComp.css';
 import { fetchPersonInfo } from '../services/PersonService';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 import bcrypt from 'bcryptjs';
-import { createUser } from '../services/userService';
+import { createUser, checkUserExists } from '../services/userService';
 import { sleep } from '../helpers/regularHelper';
 
 interface RegisterForm {
@@ -185,14 +185,6 @@ const RegisterComp: React.FC = () => {
       newErrors.ci = 'La cédula es requerida';
     } else if (!isValidIdentification(formData.ci)) {
       newErrors.ci = 'Cédula inválida';
-    } else {
-      const existingUser = JSON.parse(localStorage.getItem(USER_DATA) as string);
-      if (existingUser) {
-        const ciExists = existingUser.ci === formData.ci;
-        if (ciExists) {
-          newErrors.ci = 'Esta cédula ya está registrada';
-        }
-      }
     }
 
     if (!formData.nombre) {
@@ -237,7 +229,16 @@ const RegisterComp: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Hash password with bcrypt
+      // Primero verificamos si el usuario existe
+      const userExists = await checkUserExists(formData.ci);
+      
+      if (userExists) {
+        setToastMessage('Usuario ya existente');
+        setShowToast(true);
+        return;
+      }
+
+      // Si no existe, continuamos con el registro
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(formData.password, salt);
 
@@ -251,19 +252,36 @@ const RegisterComp: React.FC = () => {
         createdAt: new Date().toISOString()
       };
 
-      // Store in Firestore (this will work offline too thanks to persistence)
-       createUser(userData);
-       await sleep(3)
-      
+      // Check connection status first
+      if (!navigator.onLine) {
+        // En modo offline, iniciamos la operación pero no esperamos
+        createUser(userData);
+        setToastMessage('Usuario registrado. Se sincronizará cuando haya conexión.');
+      } else {
+        // En modo online, esperamos la respuesta
+        try {
+          await Promise.race([
+            createUser(userData),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de espera agotado')), 5000))
+          ]);
+          setToastMessage('Usuario registrado exitosamente');
+        } catch (error) {
+          // Si falla en online, tratamos como offline
+          console.warn('Fallback to offline mode:', error);
+          setToastMessage('Usuario registrado. Se sincronizará cuando haya conexión.');
+        }
+      }
+
+      // Limpiar form y mostrar mensaje
       setFormData(INITIAL_FORM_DATA);
-
-      // Show success message
-      setToastMessage('Usuario registrado exitosamente');
       setShowToast(true);
-
-      // Wait for toast to be visible before redirecting
+      
+      // Breve espera para que se vea el mensaje
+      await sleep(2);
       router.push('/login', 'root');
+
     } catch (error) {
+      console.error('Registration error:', error);
       setToastMessage('Error al registrar: ' + (error instanceof Error ? error.message : 'Error desconocido'));
       setShowToast(true);
     } finally {

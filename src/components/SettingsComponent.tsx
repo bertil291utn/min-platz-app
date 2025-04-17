@@ -50,7 +50,7 @@ const SettingsC = () => {
   const IsThereActiveBloques = activeBloques.length > 0;
 
   return (
-    <div>
+    <>
       <IonAccordionGroup>
         <UserProfileC />
 
@@ -105,7 +105,7 @@ const SettingsC = () => {
         handleConfirm={handleConfirm}
         type='new'
       />
-    </div>
+    </>
   );
 }
 
