@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore, CACHE_SIZE_UNLIMITED, persistentLocalCache, persistentSingleTabManager } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { apiKey, appId, authDomain, messagingSenderId, projectId, storageBucket } from '../helpers/firebaseEnvVar';
+
 const firebaseConfig = {
   apiKey: apiKey,
   authDomain: authDomain,
@@ -15,7 +16,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firestore with persistence enabled
-const db = getFirestore(app);
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentSingleTabManager({ forceOwnership: true })
+  })
+});
+
 const auth = getAuth(app);
 
 export { db, auth }; 
