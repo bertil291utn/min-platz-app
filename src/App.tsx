@@ -11,10 +11,12 @@ import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
 import { setAuthenticated } from './store/slices/authSlice';
 import { setUser } from './store/slices/userSlice';
 import { USER_AUTH, USER_SET } from './helpers/AuthConst';
-import { verifyToken, isTokenExpired } from './services/authService';
+import { getStoredAuth, verifyToken, isTokenExpired } from './services/authService';
+import { StorageService } from './services/storageService';
 import Menu from './components/Menu';
 import AppRoutes from './components/AppRoutes';
 import HelpFabWrapper from './components/HelpFabWrapper';
+import { User } from './interfaces/User';
 
 // Define Capacitor types for TypeScript
 interface CapacitorGlobal {
@@ -72,35 +74,36 @@ const AppWrapper = () => {
   // Check initial authentication state
   useEffect(() => {
     const checkInitialAuth = async () => {
-      const userAuth = localStorage.getItem(USER_AUTH);
-      if (userAuth) {
+      const authData = await getStoredAuth();
+      if (authData) {
         try {
-          const authData = JSON.parse(userAuth);
-          
           if (authData.token && !isTokenExpired(authData.token)) {
             const payload = await verifyToken(authData.token);
             if (payload && payload.ci === authData.ci) {
               dispatch(setAuthenticated(true));
               
               // Get user data if available
-              const userData = localStorage.getItem(USER_SET);
+              const userData = await StorageService.get<User>(USER_SET);
               if (userData) {
-                const parsedUserData = JSON.parse(userData);
-                dispatch(setUser(parsedUserData));
+                dispatch(setUser(userData));
               }
               return;
             }
           }
           
           // Token invalid or expired
-          localStorage.removeItem(USER_AUTH);
+          await StorageService.remove(USER_AUTH);
           dispatch(setAuthenticated(false));
         } catch (e) {
           console.error('Error checking initial auth:', e);
-          localStorage.removeItem(USER_AUTH);
+          await StorageService.remove(USER_AUTH);
           dispatch(setAuthenticated(false));
         }
       }
+
+      // Migrate existing data if any
+      await StorageService.migrateFromLocalStorage(USER_AUTH);
+      await StorageService.migrateFromLocalStorage(USER_SET);
     };
 
     checkInitialAuth();

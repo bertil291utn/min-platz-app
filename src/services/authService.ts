@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify, decodeJwt, JWTPayload as JoseJWTPayload } from 'jose';
-import { UserData } from './userService';
+import { StorageService } from './storageService';
+import { USER_AUTH, USER_SET } from '../helpers/AuthConst';
 
 const secretMessage = import.meta.env.VITE_SECRET_MESSAGE;
 const JWT_SECRET = new TextEncoder().encode(secretMessage); // En producción, esto debería venir de variables de entorno
@@ -59,5 +60,15 @@ export const storeAuthData = async (ci: string): Promise<AuthStorage> => {
     expiry: decoded.exp || 0
   };
 
+  await StorageService.set(USER_AUTH, authData);
   return authData;
+};
+
+export const getStoredAuth = async (): Promise<AuthStorage | null> => {
+  return StorageService.get<AuthStorage>(USER_AUTH);
+};
+
+export const clearAuth = async (): Promise<void> => {
+  await StorageService.remove(USER_AUTH);
+  await StorageService.remove(USER_SET);
 }; 

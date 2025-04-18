@@ -11,12 +11,12 @@ import {
   IonText,
   IonInputPasswordToggle
 } from '@ionic/react';
-import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import { setUser } from '../store/slices/userSlice';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 import bcrypt from 'bcryptjs';
 import { getUserByCi, formatUserForRedux } from '../services/userService';
 import { storeAuthData } from '../services/authService';
+import { StorageService } from '../services/storageService';
 
 const INITIAL_FORM_DATA = {
   ci: '',
@@ -33,8 +33,7 @@ const LoginComp: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const storeAuthToken = async (ci: string) => {
-    const authData = await storeAuthData(ci);
-    localStorage.setItem(USER_AUTH, JSON.stringify(authData));
+    await storeAuthData(ci);
   };
 
   const validateUser = async (ci: string, password: string) => {
@@ -65,6 +64,7 @@ const LoginComp: React.FC = () => {
 
       // Store auth token
       await storeAuthToken(credentials.ci);
+
 
       // Set authentication state
       dispatch(setAuthenticated(true));
