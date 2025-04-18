@@ -19,33 +19,7 @@ setupIonicReact({
   animated: false
 });
 
-// Initialize Redux store with any persisted data
-const userAuth = localStorage.getItem(USER_AUTH);
-if (userAuth) {
-  try {
-    const authData = JSON.parse(userAuth);
-    const currentTime = new Date().getTime();
-    
-    if (authData.expiry && authData.expiry > currentTime) {
-      store.dispatch(setAuthenticated(true));
-      
-      // Get user data if available
-      const userData = localStorage.getItem(USER_SET);
-      if (userData) {
-        const parsedUserData = JSON.parse(userData);
-        store.dispatch(setUser(parsedUserData));
-      }
-    } else {
-      // Token expired, clear it
-      localStorage.removeItem(USER_AUTH);
-      store.dispatch(setAuthenticated(false));
-    }
-  } catch (e) {
-    console.error('Error parsing auth data', e);
-    localStorage.removeItem(USER_AUTH);
-    store.dispatch(setAuthenticated(false));
-  }
-}
+
 
 // Fetch initial data
 store.dispatch(fetchBloques());

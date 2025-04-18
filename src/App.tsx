@@ -8,6 +8,10 @@ import { setOnlineStatus } from './store/slices/appStateSlice';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
+import { setAuthenticated } from './store/slices/authSlice';
+import { setUser } from './store/slices/userSlice';
+import { USER_AUTH, USER_SET } from './helpers/AuthConst';
+import { verifyToken, isTokenExpired } from './services/authService';
 import Menu from './components/Menu';
 import AppRoutes from './components/AppRoutes';
 import HelpFabWrapper from './components/HelpFabWrapper';
@@ -64,6 +68,43 @@ import './theme/tabs.css';
 const AppWrapper = () => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  // Check initial authentication state
+  useEffect(() => {
+    const checkInitialAuth = async () => {
+      const userAuth = localStorage.getItem(USER_AUTH);
+      if (userAuth) {
+        try {
+          const authData = JSON.parse(userAuth);
+          
+          if (authData.token && !isTokenExpired(authData.token)) {
+            const payload = await verifyToken(authData.token);
+            if (payload && payload.ci === authData.ci) {
+              dispatch(setAuthenticated(true));
+              
+              // Get user data if available
+              const userData = localStorage.getItem(USER_SET);
+              if (userData) {
+                const parsedUserData = JSON.parse(userData);
+                dispatch(setUser(parsedUserData));
+              }
+              return;
+            }
+          }
+          
+          // Token invalid or expired
+          localStorage.removeItem(USER_AUTH);
+          dispatch(setAuthenticated(false));
+        } catch (e) {
+          console.error('Error checking initial auth:', e);
+          localStorage.removeItem(USER_AUTH);
+          dispatch(setAuthenticated(false));
+        }
+      }
+    };
+
+    checkInitialAuth();
+  }, [dispatch]);
 
   useEffect(() => {
     // Set up online/offline event listeners

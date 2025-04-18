@@ -1,8 +1,8 @@
 import {
   IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonButton,
-  IonIcon, IonList, IonNote, IonAvatar, IonChip,
+  IonIcon,
 } from '@ionic/react';
-import { logOutOutline, personCircleOutline, mailOutline, callOutline, cardOutline, settingsOutline, sparkles } from 'ionicons/icons';
+import { sparkles } from 'ionicons/icons';
 import BloquesSettingsC from './BloquesSettingsC';
 import { useEffect, useState } from 'react';
 import AddBloquesSettingsModalC from './AddBloquesSettingsC';
@@ -12,8 +12,6 @@ import { Bloque } from '../interfaces/Bloque';
 import UserProfileC from './UserProfileC';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { addBloque, INITIAL_BLOQUE, selectActiveBloques } from '../store/slices/bloqueInfoSlice';
-import { cleanUser } from '../store/slices/userSlice';
-import { setAuthenticated } from '../store/slices/authSlice';
 import { useIonRouter } from '@ionic/react';
 import './SettingsComponent.css';
 
@@ -41,11 +39,7 @@ const SettingsC = () => {
     setBloqueForm(INITIAL_BLOQUE);
   };
 
-  const handleLogout = () => {
-    dispatch(cleanUser());
-    dispatch(setAuthenticated(false));
-    router.push('/login');
-  };
+
 
   const IsThereActiveBloques = activeBloques.length > 0;
 

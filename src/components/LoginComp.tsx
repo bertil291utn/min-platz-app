@@ -16,6 +16,7 @@ import { setUser } from '../store/slices/userSlice';
 import { isValidIdentification } from '../helpers/cedulaHelper';
 import bcrypt from 'bcryptjs';
 import { getUserByCi, formatUserForRedux } from '../services/userService';
+import { storeAuthData } from '../services/authService';
 
 const INITIAL_FORM_DATA = {
   ci: '',
@@ -31,17 +32,9 @@ const LoginComp: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
 
-  const storeAuthToken = (ci: string) => {
-    const expiryDate = new Date();
-    expiryDate.setMonth(expiryDate.getMonth() + 1);
-
-    const storageData = {
-      ci,
-      expiry: expiryDate.getTime(),
-      token: 'your-auth-token'
-    };
-
-    localStorage.setItem(USER_AUTH, JSON.stringify(storageData));
+  const storeAuthToken = async (ci: string) => {
+    const authData = await storeAuthData(ci);
+    localStorage.setItem(USER_AUTH, JSON.stringify(authData));
   };
 
   const validateUser = async (ci: string, password: string) => {
@@ -71,7 +64,7 @@ const LoginComp: React.FC = () => {
       const userData = await validateUser(credentials.ci, credentials.password);
 
       // Store auth token
-      storeAuthToken(credentials.ci);
+      await storeAuthToken(credentials.ci);
 
       // Set authentication state
       dispatch(setAuthenticated(true));

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import {  USER_AUTH } from '../../helpers/AuthConst';
+import { USER_AUTH } from '../../helpers/AuthConst';
+import { verifyToken, isTokenExpired } from '../../services/authService';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -17,32 +18,32 @@ const initialState: AuthState = {
 export const checkAuthStatus = createAsyncThunk(
   'auth/checkStatus',
   async () => {
-    // Check if user auth exists in local storage
     const userAuth = localStorage.getItem(USER_AUTH);
-
     let isAuthenticated = false;
-    let expertUser = false;
 
     if (userAuth) {
       try {
         const authData = JSON.parse(userAuth);
-        const now = new Date().getTime();
+        
+        // Verify JWT token
+        if (authData.token && !isTokenExpired(authData.token)) {
+          const payload = await verifyToken(authData.token);
+          if (payload && payload.ci === authData.ci) {
+            isAuthenticated = true;
+          }
+        }
 
-        // Check if token is still valid (not expired) and has CI
-        if (authData.expiry && authData.expiry > now && authData.ci) {
-          isAuthenticated = true;
-        } else {
-          // Token expired or invalid, clean up
+        if (!isAuthenticated) {
+          // Token invalid or expired, clean up
           localStorage.removeItem(USER_AUTH);
         }
       } catch (error) {
-        // Invalid JSON, clean up
+        // Invalid JSON or other error, clean up
         localStorage.removeItem(USER_AUTH);
       }
     }
 
-
-    return { isAuthenticated, expertUser };
+    return { isAuthenticated };
   }
 );
 
