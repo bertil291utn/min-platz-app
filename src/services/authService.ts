@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify, decodeJwt, JWTPayload as JoseJWTPayload } from 'jose';
 import { StorageService } from './storageService';
+import { SecureStorageService } from './secureStorageService';
 import { USER_AUTH } from '../helpers/AuthConst';
 
 const secretMessage = import.meta.env.VITE_SECRET_MESSAGE;
@@ -12,33 +13,33 @@ interface JWTPayload {
   iat?: number;
 }
 
-export const generateToken = async (userData: { ci: string }): Promise<string> => {
-  const jwt = await new SignJWT({ ci: userData.ci })
+export const generateToken = async (payload: JWTPayload): Promise<string> => {
+  const token = await new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(TOKEN_EXPIRY)
     .sign(JWT_SECRET);
-  
-  return jwt;
+  return token;
 };
 
-export const verifyToken = async (token: string): Promise<JWTPayload | null> => {
+export const verifyToken = async (token: string): Promise<JWTPayload> => {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return { ci: payload.ci as string, exp: payload.exp, iat: payload.iat } as JWTPayload;
+    const verifiedPayload = payload as unknown as JWTPayload;
+    if (!verifiedPayload.ci) {
+      throw new Error('Token inválido: falta CI');
+    }
+    return verifiedPayload;
   } catch (error) {
-    console.error('Error verifying token:', error);
-    return null;
+    throw new Error('Token inválido');
   }
 };
 
 export const isTokenExpired = (token: string): boolean => {
   try {
     const decoded = decodeJwt(token);
-    if (!decoded || !decoded.exp) return true;
-    
-    const currentTime = Math.floor(Date.now() / 1000);
-    return decoded.exp < currentTime;
+    if (!decoded.exp) return true;
+    return Date.now() >= decoded.exp * 1000;
   } catch {
     return true;
   }
@@ -60,14 +61,14 @@ export const storeAuthData = async (ci: string): Promise<AuthStorage> => {
     expiry: decoded.exp || 0
   };
 
-  await StorageService.set(USER_AUTH, authData);
+  await SecureStorageService.setSecure(USER_AUTH, authData);
   return authData;
 };
 
 export const getStoredAuth = async (): Promise<AuthStorage | null> => {
-  return StorageService.get<AuthStorage>(USER_AUTH);
+  return SecureStorageService.getSecure<AuthStorage>(USER_AUTH);
 };
 
 export const clearAuth = async (): Promise<void> => {
-  await StorageService.remove(USER_AUTH);
+  await SecureStorageService.removeSecure(USER_AUTH);
 }; 

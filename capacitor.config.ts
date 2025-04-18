@@ -27,6 +27,9 @@ const config: CapacitorConfig = {
       style: "DEFAULT",
       backgroundColor: "#000000",
     },
+    SecureStorage: {
+      // No se requiere configuración específica
+    }
   },
   android: {
     backgroundColor: "transparent"
