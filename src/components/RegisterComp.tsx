@@ -20,7 +20,6 @@ import {
   IonCardContent
 } from '@ionic/react';
 import { arrowBack, chevronDown, chevronUp, informationCircle } from 'ionicons/icons';
-import { USER_AUTH, USER_DATA } from '../helpers/AuthConst';
 import './RegisterComp.css';
 import { fetchPersonInfo } from '../services/PersonService';
 import { isValidIdentification } from '../helpers/cedulaHelper';
@@ -135,16 +134,13 @@ const RegisterComp: React.FC = () => {
       }));
       return;
     }
-    const existingUser = JSON.parse(localStorage.getItem(USER_DATA) as string);
+    const existingUser = await checkUserExists(formData.ci);
     if (existingUser) {
-      const ciExists = existingUser.ci === formData.ci;
-      if (ciExists) {
-        setErrors(prev => ({
-          ...prev,
-          ci: 'Esta cédula ya está registrada'
-        }));
-        return;
-      }
+      setErrors(prev => ({
+        ...prev,
+        ci: 'Esta cédula ya está registrada'
+      }));
+      return;
     }
 
     setFetchingCiInfo(true);
@@ -231,7 +227,7 @@ const RegisterComp: React.FC = () => {
     try {
       // Primero verificamos si el usuario existe
       const userExists = await checkUserExists(formData.ci);
-      
+
       if (userExists) {
         setToastMessage('Usuario ya existente');
         setShowToast(true);
@@ -275,7 +271,7 @@ const RegisterComp: React.FC = () => {
       // Limpiar form y mostrar mensaje
       setFormData(INITIAL_FORM_DATA);
       setShowToast(true);
-      
+
       // Breve espera para que se vea el mensaje
       await sleep(2);
       router.push('/login', 'root');

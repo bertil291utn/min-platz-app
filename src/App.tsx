@@ -1,4 +1,4 @@
-import { IonApp, IonToast } from '@ionic/react';
+import { IonApp } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Provider } from 'react-redux';
 import { store } from './store';
@@ -10,8 +10,9 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { fetchMallasMonitored } from './store/slices/mallasMonitoringSlice';
 import { setAuthenticated } from './store/slices/authSlice';
 import { setUser } from './store/slices/userSlice';
-import { USER_AUTH, USER_SET } from './helpers/AuthConst';
+import { USER_AUTH } from './helpers/AuthConst';
 import { getStoredAuth, verifyToken, isTokenExpired } from './services/authService';
+import { getUserByCi } from './services/userService';
 import { StorageService } from './services/storageService';
 import Menu from './components/Menu';
 import AppRoutes from './components/AppRoutes';
@@ -82,10 +83,19 @@ const AppWrapper = () => {
             if (payload && payload.ci === authData.ci) {
               dispatch(setAuthenticated(true));
               
-              // Get user data if available
-              const userData = await StorageService.get<User>(USER_SET);
+              // Get user data from Firestore
+              const userData = await getUserByCi(authData.ci);
               if (userData) {
-                dispatch(setUser(userData));
+                dispatch(setUser({
+                  id: userData.ci,
+                  ci: userData.ci,
+                  name: userData.nombre,
+                  lastName: userData.apellido,
+                  email: userData.email,
+                  whatsapp: userData.whatsapp,
+                  premium: userData.premium || false,
+                  expert: userData.expert || false
+                }));
               }
               return;
             }
@@ -103,7 +113,6 @@ const AppWrapper = () => {
 
       // Migrate existing data if any
       await StorageService.migrateFromLocalStorage(USER_AUTH);
-      await StorageService.migrateFromLocalStorage(USER_SET);
     };
 
     checkInitialAuth();
