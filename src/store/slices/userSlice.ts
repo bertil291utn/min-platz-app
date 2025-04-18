@@ -20,7 +20,6 @@ const userSlice = createSlice({
     },
     cleanUser: (state) => {
       state.user = null;
-      localStorage.removeItem(USER_AUTH);
     },
   },
 });

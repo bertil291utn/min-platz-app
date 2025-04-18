@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { USER_AUTH } from '../../helpers/AuthConst';
-import { verifyToken, isTokenExpired } from '../../services/authService';
+import { verifyToken, isTokenExpired, clearAuth } from '../../services/authService';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -24,7 +24,7 @@ export const checkAuthStatus = createAsyncThunk(
     if (userAuth) {
       try {
         const authData = JSON.parse(userAuth);
-        
+
         // Verify JWT token
         if (authData.token && !isTokenExpired(authData.token)) {
           const payload = await verifyToken(authData.token);
@@ -35,11 +35,11 @@ export const checkAuthStatus = createAsyncThunk(
 
         if (!isAuthenticated) {
           // Token invalid or expired, clean up
-          localStorage.removeItem(USER_AUTH);
+          clearAuth()
         }
       } catch (error) {
         // Invalid JSON or other error, clean up
-        localStorage.removeItem(USER_AUTH);
+        clearAuth()
       }
     }
 
@@ -55,7 +55,7 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload;
     },
     logout: (state) => {
-      localStorage.removeItem(USER_AUTH);
+      clearAuth()
       state.isAuthenticated = false;
     }
   },

@@ -6,7 +6,7 @@ import {
 import { logOutOutline, personCircleOutline, mailOutline, callOutline, cardOutline, settingsOutline } from 'ionicons/icons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { cleanUser, updateUser } from '../store/slices/userSlice';
-import { setAuthenticated } from '../store/slices/authSlice';
+import { logout, setAuthenticated } from '../store/slices/authSlice';
 import { useIonRouter } from '@ionic/react';
 import './SettingsComponent.css';
 
@@ -16,6 +16,7 @@ const UserProfileC = () => {
   const router = useIonRouter();
 
   const handleLogout = () => {
+    dispatch(logout());
     dispatch(cleanUser());
     dispatch(setAuthenticated(false));
     router.push('/login');
